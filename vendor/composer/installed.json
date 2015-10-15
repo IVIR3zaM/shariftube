@@ -1,0 +1,55 @@
+[
+    {
+        "name": "sallar/jdatetime",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/sallar/jDateTime.git",
+            "reference": "e6bef94defe0f1ac07bd807f54ca673b676ef8a9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/sallar/jDateTime/zipball/e6bef94defe0f1ac07bd807f54ca673b676ef8a9",
+            "reference": "e6bef94defe0f1ac07bd807f54ca673b676ef8a9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "time": "2015-03-13 22:36:28",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "jdatetime.class.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Sallar Kaboli",
+                "email": "sallar.kaboli@gmail.com",
+                "homepage": "http://sallar.me",
+                "role": "Developer"
+            }
+        ],
+        "description": "Jalali (Shamsi) DateTime class written in PHP, Supports year higher than 2038",
+        "homepage": "http://sallar.me/projects/jdatetime/",
+        "keywords": [
+            "Jalali",
+            "date",
+            "datetime",
+            "farsi",
+            "iran",
+            "jalalidate",
+            "jdatetime",
+            "persian",
+            "shamsi",
+            "time"
+        ]
+    }
+]

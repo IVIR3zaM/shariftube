@@ -1,0 +1,75 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "f87693c5c1db43b7fa24d38043ff6625",
+    "content-hash": "eb236392dfee3f376c215a4046fc652d",
+    "packages": [
+        {
+            "name": "sallar/jdatetime",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sallar/jDateTime.git",
+                "reference": "e6bef94defe0f1ac07bd807f54ca673b676ef8a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sallar/jDateTime/zipball/e6bef94defe0f1ac07bd807f54ca673b676ef8a9",
+                "reference": "e6bef94defe0f1ac07bd807f54ca673b676ef8a9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "jdatetime.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sallar Kaboli",
+                    "email": "sallar.kaboli@gmail.com",
+                    "homepage": "http://sallar.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Jalali (Shamsi) DateTime class written in PHP, Supports year higher than 2038",
+            "homepage": "http://sallar.me/projects/jdatetime/",
+            "keywords": [
+                "Jalali",
+                "date",
+                "datetime",
+                "farsi",
+                "iran",
+                "jalalidate",
+                "jdatetime",
+                "persian",
+                "shamsi",
+                "time"
+            ],
+            "time": "2015-03-13 22:36:28"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "sallar/jdatetime": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.4.0",
+        "ext-phalcon": ">=2.0.6"
+    },
+    "platform-dev": []
+}
