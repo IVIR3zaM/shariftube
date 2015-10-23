@@ -1,6 +1,7 @@
 <?php
 
 //error_reporting(0);
+//\Phalcon\Mvc\Model::setup(['exceptionOnFailedSave' => true]);
 
 try {
     define('BASE_DIR', dirname(__DIR__));
@@ -12,7 +13,7 @@ try {
 
 	include APP_DIR . '/config/services.php';
 
-//    include APP_DIR . '/config/helpers.php';
+    include APP_DIR . '/config/helpers.php';
 
 	/**
 	 * Handle the request

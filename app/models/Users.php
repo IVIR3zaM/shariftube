@@ -5,6 +5,7 @@ class Users extends BaseModel
 {
     public $email;
     public $password;
+    public $name;
     public $referral_code;
     public $referral_id;
     public $quota;
@@ -13,6 +14,26 @@ class Users extends BaseModel
     public $deleted_at;
     public $modified_at;
     public $created_at;
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->belongsTo('referral_id', 'Shariftube\Models\Users', 'id', ['alias' => 'Referral', 'foreignKey' => ['allowNulls' => true]]);
+        $this->hasMany('id', 'Shariftube\Models\Files', 'user_id', ['alias' => 'Files']);
+        $this->hasMany('id', 'Shariftube\Models\Purchases', 'user_id', ['alias' => 'Purchases']);
+        $this->hasMany('id', 'Shariftube\Models\Incomes', 'user_id', ['alias' => 'Incomes']);
+        $this->hasMany('id', 'Shariftube\Models\FailedLogins', 'user_id', ['alias' => 'FailedLogins']);
+        $this->hasMany('id', 'Shariftube\Models\PasswordChanges', 'user_id', ['alias' => 'PasswordChanges']);
+        $this->hasMany('id', 'Shariftube\Models\RememberTokens', 'user_id', ['alias' => 'RememberTokens']);
+        $this->hasMany('id', 'Shariftube\Models\ResetPasswords', 'user_id', ['alias' => 'ResetPasswords']);
+    }
+
+    public function beforeValidationOnCreate()
+    {
+        $this->quota = 0;
+        $this->used = 0;
+        $this->remain = 0;
+    }
 
     public function createReferralCode($id = 0)
     {
@@ -34,16 +55,5 @@ class Users extends BaseModel
             ],
         ])->count());
         return $referral_code;
-    }
-
-    public function ModelInitialize()
-    {
-        $this->belongsTo('referral_id', 'Shariftube\Models\Users', 'id', ['alias' => 'Referral', 'foreignKey' => ['allowNulls' => true]]);
-        $this->hasMany('id', 'Shariftube\Models\Files', 'user_id', ['alias' => 'Files']);
-        $this->hasMany('id', 'Shariftube\Models\Purchases', 'user_id', ['alias' => 'Purchases']);
-        $this->hasMany('id', 'Shariftube\Models\FailedLogins', 'user_id', ['alias' => 'FailedLogins']);
-        $this->hasMany('id', 'Shariftube\Models\PasswordChanges', 'user_id', ['alias' => 'PasswordChanges']);
-        $this->hasMany('id', 'Shariftube\Models\RememberTokens', 'user_id', ['alias' => 'RememberTokens']);
-        $this->hasMany('id', 'Shariftube\Models\ResetPasswords', 'user_id', ['alias' => 'ResetPasswords']);
     }
 }

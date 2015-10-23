@@ -20,6 +20,8 @@
   "require": {
     "php": ">=5.4.0",
     "ext-phalcon": ">=2.0.6",
-    "sallar/jdatetime": "dev-master"
+    "sallar/jdatetime": "dev-master",
+    "phpmailer/phpmailer": "v5.2.13",
+    "paquettg/php-html-parser": "dev-master"
   }
 }

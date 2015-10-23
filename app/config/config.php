@@ -1,5 +1,15 @@
 <?php
 return new \Phalcon\Config(array(
+    'mail' => array(
+        'host' => 'smtp.mandrillapp.com',
+        'port' => '587',
+        'username' => 'mrezamaghoul@gmail.com',
+        'password' => 'vow1bHRWREYKJCzeRf5k3g',
+        'security' => '',
+        'timeout' => '30',
+        'fromname' => 'Shariftube',
+        'from' => 'noreplay@shariftube.ir',
+    ),
     'database' => array(
         'adapter' => 'Mysql',
         'host' => 'localhost',
@@ -20,6 +30,7 @@ return new \Phalcon\Config(array(
         'cacheDir' => APP_DIR . '/cache/',
         'baseUri' => '/',
         'publicUrl' => 'shariftube.ir',
-        'cryptSalt' => 'BNKxkQBU0OimPgXJY8xJvGpd'
+        'cryptSalt' => 'BNKxkQBU0OimPgXJY8xJvGpd',
+        'affiliate_percentage' => '30',
     ),
 ));

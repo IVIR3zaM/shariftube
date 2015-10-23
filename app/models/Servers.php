@@ -14,13 +14,15 @@ class Servers extends BaseModel
     public $modified_at;
     public $created_at;
 
-    public function ModelInitialize()
+    public function initialize()
     {
+        parent::initialize();
         $this->hasMany('id', 'Shariftube\Models\Files', 'server_id', ['alias' => 'Files']);
     }
 
-    public function ModelBeforeSave()
+    public function beforeSave()
     {
+        parent::beforeSave();
         if ($this->remain < 100 && $this->enable = 'Yes') {
             $this->enable = 'No';
         }

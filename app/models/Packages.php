@@ -8,8 +8,9 @@ class Packages extends BaseModel
     public $price;
     public $status;
 
-    public function ModelInitialize()
+    public function initialize()
     {
+        parent::initialize();
         $this->hasMany('id', 'Shariftube\Models\Purchases', 'package_id', ['alias' => 'Purchases']);
     }
 }

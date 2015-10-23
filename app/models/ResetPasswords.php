@@ -7,12 +7,13 @@ class ResetPasswords extends BaseModel
     public $code;
     public $created_at;
 
-    public function ModelInitialize()
+    public function initialize()
     {
+        parent::initialize();
         $this->belongsTo('user_id', 'Shariftube\Models\Users', 'id', ['alias' => 'User']);
     }
 
-    public function ModelBeforeCreate()
+    public function beforeValidationOnCreate()
     {
         do {
             $code = array();

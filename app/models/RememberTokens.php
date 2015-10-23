@@ -8,12 +8,13 @@ class RememberTokens extends BaseModel
     public $user_agent;
     public $created_at;
 
-    public function ModelInitialize()
+    public function initialize()
     {
+        parent::initialize();
         $this->belongsTo('user_id', 'Shariftube\Models\Users', 'id', ['alias' => 'User']);
     }
 
-    public function ModelBeforeCreate()
+    public function beforeValidationOnCreate()
     {
         do {
             $token = array();
@@ -25,7 +26,7 @@ class RememberTokens extends BaseModel
         } while (RememberTokens::find([
             'token = :token:',
             'bind' => [
-                '$token' => $token
+                'token' => $token
             ],
         ])->count());
         $this->token = $token;

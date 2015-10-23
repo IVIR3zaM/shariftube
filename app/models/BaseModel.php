@@ -18,9 +18,6 @@ abstract class BaseModel extends Model
                 ])
             );
         }
-        if (method_exists(get_called_class(), 'ModelInitialize')) {
-            $this->ModelInitialize();
-        }
     }
 
     public function getId()
@@ -33,18 +30,12 @@ abstract class BaseModel extends Model
         if (property_exists(get_called_class(), 'created_at')) {
             $this->created_at = date('Y-m-d H:i:s');
         }
-        if (method_exists(get_called_class(), 'ModelBeforeCreate')) {
-            $this->ModelBeforeCreate();
-        }
     }
 
     public function beforeSave()
     {
         if (property_exists(get_called_class(), 'modified_at')) {
             $this->modified_at = date('Y-m-d H:i:s');
-        }
-        if (method_exists(get_called_class(), 'ModelBeforeSave')) {
-            $this->ModelBeforeSave();
         }
     }
 }

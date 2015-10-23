@@ -2,10 +2,10 @@
 namespace Shariftube\Auth;
 
 use Phalcon\Mvc\User\Component;
-use Shariftube\Models\RememberTokens;
-use Shariftube\Models\Users;
-use Shariftube\Models\SuccessLogins;
 use Shariftube\Models\FailedLogins;
+use Shariftube\Models\RememberTokens;
+use Shariftube\Models\SuccessLogins;
+use Shariftube\Models\Users;
 
 /**
  * Shariftube\Auth\Auth
@@ -17,10 +17,11 @@ class Auth extends Component
 
     public function __construct()
     {
-        if ($this->cookies->get('SharifUser')){
-            $this->user = $this->loginWithRememberMe();
+        if ($this->cookies->get('SharifUser')->getValue()) {
+            $this->loginWithRememberMe();
         }
     }
+
     /**
      * Checks the user credentials
      *
@@ -33,7 +34,7 @@ class Auth extends Component
         // Check if the user exist
         $user = Users::findFirst([
             'email = :email: AND deleted_at = 0',
-            'bind'      => [
+            'bind' => [
                 'email' => $credentials['email'],
             ],
         ]);
@@ -56,8 +57,8 @@ class Auth extends Component
 
         $this->createRememberEnviroment($user);
 
-            // Register the successful login
-            $this->saveSuccessLogin($user->id);
+        // Register the successful login
+        $this->saveSuccessLogin($user->id);
         $this->user = $user;
 
 
@@ -69,32 +70,32 @@ class Auth extends Component
         $user_agent = $this->request->getUserAgent();
 
         $remember = new RememberTokens();
-        $remember->users_id = $user->getId();
+        $remember->user_id = $user->getId();
         $remember->user_agent = $user_agent;
 
         if ($remember->save() != false) {
             $expire = time() + (86400 * 8);
-            $this->cookies->set('SharifUser', $remember->token, $expire);
+            $this->cookies->set('SharifUser', $this->crypt->encryptBase64($remember->token), $expire);
         }
     }
+
     public function loginWithRememberMe()
     {
-        $cookieToken = $this->cookies->get('SharifUser')->getValue();
+        $cookieToken = $this->crypt->decryptBase64($this->cookies->get('SharifUser')->getValue());
         $remember = RememberTokens::findFirstByToken($cookieToken);
-        if ($remember){
-            $user = $remember->getUser()->getFirst();
+        if ($remember) {
+            $user = $remember->getUser();
+
             if ($user) {
+                // Check if the cookie has not expired
+                if ((time() - (86400 * 8)) < strtotime($remember->created_at)) {
 
-
-                    // Check if the cookie has not expired
-                    if ((time() - (86400 * 8)) < $remember->created_at) {
-
-                        // Check if the user was flagged
-                        $this->checkUserFlags($user);
-
+                    // Check if the user was flagged
+                    if ($this->checkUserFlags($user)) {
                         $this->user = $user;
                         return true;
                     }
+                }
 
 
             }
@@ -150,7 +151,7 @@ class Auth extends Component
                 sleep(2);
                 break;
             default:
-                sleep(4);
+                sleep(($attempts - 3) * $attempts);
                 break;
         }
     }
@@ -220,6 +221,8 @@ class Auth extends Component
 
         $this->saveSuccessLogin($user->id);
         $this->user = $user;
+
+        $this->createRememberEnviroment($user);
         return true;
     }
 }

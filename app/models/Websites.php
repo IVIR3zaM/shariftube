@@ -6,8 +6,9 @@ class Websites extends BaseModel
     public $name;
     public $domains;
 
-    public function ModelInitialize()
+    public function initialize()
     {
+        parent::initialize();
         $this->hasMany('id', 'Shariftube\Models\Files', 'server_id', ['alias' => 'Files']);
     }
 
