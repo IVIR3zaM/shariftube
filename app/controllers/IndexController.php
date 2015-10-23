@@ -3,6 +3,7 @@ namespace Shariftube\Controllers;
 
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
+use PHPHtmlParser\Dom;
 use Shariftube\Models\Incomes;
 use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Users;
@@ -64,19 +65,43 @@ class IndexController extends ControllerBase
             $this->response->redirect(['for' => 'login']);
             return;
         }
-        $this->view->start = $this->dispatcher->getParam(0);
+        $this->view->start = intval($this->dispatcher->getParam(0));
         $this->view->dur = $this->dispatcher->getParam(1);
+        if (!$this->view->dur) {
+            $this->view->dur = 'All';
+        }
         $this->view->hq = $this->dispatcher->getParam(2);
+        if (!$this->view->hq) {
+            $this->view->hq = 'All';
+        }
         $this->view->qdr = $this->dispatcher->getParam(3);
+        if (!$this->view->qdr) {
+            $this->view->qdr = 'All';
+        }
         $this->view->website = $this->dispatcher->getParam(4);
+        if (!$this->view->website) {
+            $this->view->website = 'All';
+        }
         $this->view->q = $this->dispatcher->getParam(5);
         $this->view->websites = Websites::find();
 
         $this->view->title = 'جست و جوی ویدئو';
 
-        $this->view->records = array();
+        $records = array();
+        $this->view->captcha = false;
+        $this->view->captcha_image = '';
+        $this->view->hidden_items = array();
+        $this->view->last_item = 0;
+        $this->view->have_next = false;
         if ($this->view->q) {
-            $link = 'https://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' ? '+site%3A' . urlencode($this->view->website) : '') . '&num=100&tbm=vid';
+            $websites = array();
+            foreach($this->view->websites as $item) {
+                $list = array_filter(explode(',', $item->domains));
+                foreach($list as $domain) {
+                    $websites[$domain] = $item->name;
+                }
+            }
+            $link = 'https://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website, $websites) ? '+site%3A' . urlencode(array_search($this->view->website, $websites)) : '') . '&num=10&tbm=vid';
             if ($this->view->start > 0) {
                 $link .= '&start=' . intval($this->view->start);
             }
@@ -97,7 +122,113 @@ class IndexController extends ControllerBase
                 }
                 $link .= '&tbs=' . implode(',', $str);
             }
-            $content = get_url($link);
+            $header = array();
+
+            if ($this->request->getPost('captcha')) {
+                $params = $this->request->getPost('params');
+//                $action = $this->crypt->decryptBase64($params['action']);
+                $action = $params['action'];
+//                $header['Referer'] = $this->crypt->decryptBase64($params['referer']);
+                $header['Referer'] = $params['referer'];
+                $query = array();
+                foreach($params as $index=>$value){
+                    if (!in_array($index, ['referer','action'])){
+//                        $query[]=urlencode($index) .'=' .urlencode($this->crypt->decryptBase64($value));
+                        $query[]=urlencode($index) .'=' .urlencode($value);
+                    }
+                }
+                $query[]='captcha='.urlencode($this->request->getPost('code'));
+                $query[]='submit=Submit';
+                $link = "{$action}?".implode('&', $query);
+            }
+//            die(urlencode($link));
+//            $link = 'http://ipv4.google.com/sorry/IndexRedirect?continue=http%3A%2F%2Fwww.google.com%2Fsearch%3Fq%3Dgalant%26num%3D10%26tbm%3Dvid';
+//            $content = get_url($link, $header,false,1);
+            $content = get_url($link, $header);
+            if ($content['content']){
+                $dom = new Dom();
+                $dom->load($content['content'], ['whitespaceTextNode' => false,]);
+                $url = $content['head']['url'];
+                unset($content);
+                if (count($dom->find('img[src^=/sorry/]'))) {
+                    $this->view->captcha = true;
+                    $link = $dom->find('img[src^=/sorry/]')->getAttribute('src');
+                    $parse = parse_url($url);
+                    $image = "{$parse['scheme']}://{$parse['host']}{$link}";
+
+                    $action = $dom->find('form')[0]->getAttribute('action');
+                    $path = substr($parse['path'],0, strrpos($parse['path'], '/'));
+                    $action="{$parse['scheme']}://{$parse['host']}{$path}/{$action}";
+
+                    $hidden = array();
+                    $hidden['action'] = $this->crypt->encryptBase64($action);
+                    $hidden['action'] = $action;
+                    $hidden['referer'] = $this->crypt->encryptBase64($url);
+                    $hidden['referer'] = $url;
+                    foreach($dom->find('form input[type=hidden]') as $tag)  {
+                        $hidden[$tag->getAttribute('name')]=$this->crypt->encryptBase64($tag->getAttribute('value'));
+                        $hidden[$tag->getAttribute('name')]=$tag->getAttribute('value');
+                    }
+                    $this->view->hidden_items = $hidden;
+
+
+
+                    $content = get_url($image, array('Referer' => $url));
+                    if ($content['content']) {
+                        $this->view->captcha_image = 'data:'.@$content['head']['content_type'].';base64,'.urlencode(base64_encode($content['content']));
+                    }
+                    unset($content);
+                } else{
+                    $index = count($dom->find('#foot .b .csb')) - 1;
+                    if ($index>=0 && strtolower(trim($dom->find('#foot .b .csb')[$index]->nextSibling()->text)) == 'next') {
+                        $this->view->have_next = true;
+                    }
+                    foreach ($dom->find('li.videobox') as $index=>$li) {
+                        $this->view->last_item = $index+1;
+                        if (isset($websites[$li->find('.kv')->text])) {
+                            $item = array();
+                            $item['website'] = $websites[$li->find('.kv')->text];
+                            $href = $li->find('h3 a')->getAttribute('href');
+                            parse_str(substr($href, strpos($href, '?')+1), $parse);
+                            if (!isset($parse['q'])) {
+                                continue;
+                            }
+                            $item['link'] = $parse['q'];
+                            $item['title'] = $li->find('h3 a')->text;
+                            $item['date'] = strtotime($li->find('.st .f .nobr')[0]->text);
+                            $item['description'] = strip_tags(substr($li->find('.st')->innerHtml, strpos($li->find('.st')->innerHtml,'<br />')));
+
+                            $item['image'] = '';
+                            $src = $li->find('img')[0]->getAttribute('src');
+                            if ($src) {
+                                $content = get_url($src);
+                                if ($content['content']) {
+                                    $item['image'] = 'data:'.@$content['head']['content_type'].';base64,'.urlencode(base64_encode($content['content']));
+                                }
+                                unset($content);
+                            }
+                            $item['duration'] = '';
+                            if (count($li->find('a')[0]->find('div')) == 2) {
+                                strtok($li->find('a')[0]->find('div')[1]->text, ' ');
+                                $item['duration'] = strtok(' ');
+                            }
+                            $records[] = (object)$item;
+                            unset($item);
+                            if (count($records) >= 10) {
+                                if (!$this->view->have_next && $index<count($dom->find('li.videobox'))-1) {
+                                    $this->view->have_next = true;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                unset($dom);
+                $this->view->records = $records;
+                unset($records);
+            } else{
+                $this->flash->error('جست و جوی مورد نظر شما انجام نشد. لطفا مجددا تلاش نمایید.');
+            }
         }
 
 

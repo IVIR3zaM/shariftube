@@ -45,6 +45,10 @@ body {
   clear: both
 }
 
+.inline{
+  display: inline-block;
+}
+
 
 .progress-bar{
   display: inline-block; width: 200px; border: 1px solid;position: relative; height: 20px;
@@ -70,4 +74,17 @@ ul.links li a{
 }
 ul.links li a.active{
   background-color: #aadefd;
+}
+
+
+ul.results {
+  display: block;
+  list-style: outside none none;
+}
+ul.results li {
+  display: inline-block;
+  width: 47%;
+}
+ul.results li img{
+  float: right;
 }

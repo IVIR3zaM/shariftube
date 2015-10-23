@@ -15,6 +15,19 @@ function get_url($url = '', $headers = array(), $onlyhead = false, $debug = fals
     if (!isset($headers['User-Agent'])) {
         $headers['User-Agent'] = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)';
     }
+    if (preg_match('/google\.com/', $url)) {
+        $cookie = @unserialize(file_get_contents(APP_DIR.'/cache/google.cookie'));
+        if (is_array($cookie)) {
+            $list = array();
+            foreach($cookie as $name => $value) {
+                $list[] = "{$name}={$value}";
+            }
+            $list = implode('; ', $list);
+            if($list) {
+                $headers['Cookie'] = $list;
+            }
+        }
+    }
     $theader = array();
     foreach ($headers as $i => $v) {
         $theader[] = "{$i}: {$v}";
@@ -45,6 +58,14 @@ function get_url($url = '', $headers = array(), $onlyhead = false, $debug = fals
         return get_url($match['url'], $org_header, $onlyhead, $debug);
     } else {
         $content = substr($content, $head['header_size']);
+    }
+    if (preg_match('/google\.com/', $url) && preg_match('/Set\-Cookie\s*:\s*(?P<name>[^\=]+)\=(?P<value>[^\s\;]+)/i', $true_head, $match)) {
+        $cookie = @unserialize(file_get_contents(APP_DIR.'/cache/google.cookie'));
+        if (!is_array($cookie)) {
+            $cookie = array();
+        }
+        $cookie[$match['name']] = $match['value'];
+        file_put_contents(APP_DIR.'/cache/google.cookie', serialize($cookie));
     }
     if (isset($head['url'])) {
         $url = $head['url'];

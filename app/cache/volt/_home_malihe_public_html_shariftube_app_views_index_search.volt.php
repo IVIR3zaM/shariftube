@@ -27,9 +27,40 @@
         <?php } ?>
     </select>
 </form>
+<?php if ($captcha) { ?>
+    <form method="post" action="<?php echo $this->escaper->escapeHtml($this->url->get(array('for' => 'search', 'params' => implode('/', array($start, $dur, $hq, $qdr, $website, $q))))); ?>">
+        <?php foreach ($hidden_items as $name => $value) { ?>
+        <input type="hidden" name="params[<?php echo $this->escaper->escapeHtml($name); ?>]" value="<?php echo $this->escaper->escapeHtml($value); ?>">
+        <?php } ?>
+        <p>
+            لطفا برای ادامه کار کد امنیتی زیر را وارد نمایید.<br>
+            <img src="<?php echo $captcha_image; ?>"><br>
+            <input type="text" name="code" placeholder="کد تصویر بالا"><br>
+            <input type="submit" name="captcha" value="ادامه">
+        </p>
 
+
+    </form>
+<?php } ?>
 <?php if ($this->length($records)) { ?>
+    <ul class="results">
     <?php foreach ($records as $record) { ?>
-
+        <li>
+            <?php if ($record->image) { ?>
+            <img src="<?php echo $record->image; ?>">
+            <?php } ?>
+            <h3><?php echo $record->title; ?></h3>
+            <div><?php echo $record->description; ?></div>
+            <?php if ($record->duration) { ?>
+            <div class="inline"><?php echo $record->duration; ?></div>
+            <?php } ?>
+            <div class="inline"><?php echo $record->website; ?></div>
+            <div class="inline"><?php echo $date->date('j F Y', $record->date); ?></div>
+            <a class="inline" href="<?php echo $this->escaper->escapeHtml($this->url->get(array('for' => 'link', 'link' => $record->link))); ?>">دریافت</a>
+        </li>
     <?php } ?>
+    </ul>
+<?php } ?>
+<?php if ($have_next) { ?>
+    <a href="<?php echo $this->escaper->escapeHtml($this->url->get(array('for' => 'search', 'params' => implode('/', array($last_item, $dur, $hq, $qdr, $website, $q))))); ?>">صفحه بعدی</a>
 <?php } ?>

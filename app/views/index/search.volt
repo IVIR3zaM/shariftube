@@ -27,9 +27,40 @@
         {% endfor %}
     </select>
 </form>
+{% if captcha %}
+    <form method="post" action="{{ url.get(['for':'search', 'params':implode('/',[start, dur, hq, qdr, website, q])])|e }}">
+        {% for name, value in hidden_items%}
+        <input type="hidden" name="params[{{ name|e }}]" value="{{ value|e }}">
+        {% endfor %}
+        <p>
+            لطفا برای ادامه کار کد امنیتی زیر را وارد نمایید.<br>
+            <img src="{{ captcha_image }}"><br>
+            <input type="text" name="code" placeholder="کد تصویر بالا"><br>
+            <input type="submit" name="captcha" value="ادامه">
+        </p>
 
+
+    </form>
+{% endif %}
 {% if records|length %}
+    <ul class="results">
     {% for record in records %}
-
+        <li>
+            {% if record.image %}
+            <img src="{{ record.image }}">
+            {% endif %}
+            <h3>{{ record.title }}</h3>
+            <div>{{ record.description }}</div>
+            {% if record.duration %}
+            <div class="inline">{{ record.duration }}</div>
+            {% endif %}
+            <div class="inline">{{ record.website }}</div>
+            <div class="inline">{{ date.date('j F Y', record.date) }}</div>
+            <a class="inline" href="{{ url.get(['for':'link', 'link':record.link])|e }}">دریافت</a>
+        </li>
     {% endfor %}
+    </ul>
+{% endif %}
+{% if have_next %}
+    <a href="{{ url.get(['for':'search', 'params':implode('/',[last_item, dur, hq, qdr, website, q])])|e }}">صفحه بعدی</a>
 {% endif %}
