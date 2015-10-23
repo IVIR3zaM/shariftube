@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 15, 2015 at 05:57 PM
+-- Generation Time: Oct 23, 2015 at 11:32 PM
 -- Server version: 5.5.35
 -- PHP Version: 5.4.45-2+deb.sury.org~precise+2
 
@@ -33,7 +33,16 @@ CREATE TABLE IF NOT EXISTS `failed_logins` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_Id` (`user_Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `failed_logins`
+--
+
+INSERT INTO `failed_logins` (`id`, `user_Id`, `ip_address`, `created_at`) VALUES
+(1, NULL, '127.0.0.1', '2015-10-23 08:28:00'),
+(2, NULL, '127.0.0.1', '2015-10-23 08:54:27'),
+(3, NULL, '127.0.0.1', '2015-10-23 09:00:07');
 
 -- --------------------------------------------------------
 
@@ -58,6 +67,26 @@ CREATE TABLE IF NOT EXISTS `files` (
   KEY `user_Id` (`user_Id`),
   KEY `server_id` (`server_id`),
   KEY `website_id` (`website_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `incomes`
+--
+
+CREATE TABLE IF NOT EXISTS `incomes` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `purchase_id` int(10) unsigned DEFAULT NULL,
+  `percentage` tinyint(3) unsigned NOT NULL,
+  `amount` int(10) unsigned NOT NULL,
+  `deleted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `purchase_id` (`purchase_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -99,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `password_changes` (
 
 CREATE TABLE IF NOT EXISTS `purchases` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_Id` int(10) unsigned DEFAULT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
   `package_id` int(10) unsigned DEFAULT NULL,
   `amount` int(10) unsigned NOT NULL,
   `gateway` enum('Payline') NOT NULL,
@@ -111,8 +140,8 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`),
-  KEY `user_Id` (`user_Id`),
-  KEY `package_id` (`package_id`)
+  KEY `package_id` (`package_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -123,14 +152,25 @@ CREATE TABLE IF NOT EXISTS `purchases` (
 
 CREATE TABLE IF NOT EXISTS `remember_tokens` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_Id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
   `token` char(32) NOT NULL,
-  `user_agent` varchar(120) NOT NULL,
+  `user_agent` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`),
-  KEY `user_id` (`user_Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `remember_tokens`
+--
+
+INSERT INTO `remember_tokens` (`id`, `user_id`, `token`, `user_agent`, `created_at`) VALUES
+(1, 1, '412a0f1c25c19d7da89c8e00b49335fa', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 08:25:20'),
+(2, 1, 'f2ebe9af4f7b979263b87eb895e84ec2', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 08:28:08'),
+(3, 2, '6a233e3fdaeec3ca2eb7e2a7eb24776b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 08:48:18'),
+(4, 1, '2e8d2ad518583746f4fa1537ba6d7f7f', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 09:00:29'),
+(5, 1, 'd986f2832c3b846dc5679d65e32cfb9b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 11:07:25');
 
 -- --------------------------------------------------------
 
@@ -140,13 +180,13 @@ CREATE TABLE IF NOT EXISTS `remember_tokens` (
 
 CREATE TABLE IF NOT EXISTS `reset_passwords` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_Id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
   `code` char(32) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`),
-  KEY `user_Id` (`user_Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -183,7 +223,18 @@ CREATE TABLE IF NOT EXISTS `success_logins` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+
+--
+-- Dumping data for table `success_logins`
+--
+
+INSERT INTO `success_logins` (`id`, `user_id`, `ip_address`, `created_at`) VALUES
+(11, 1, '127.0.0.1', '2015-10-23 08:25:20'),
+(12, 1, '127.0.0.1', '2015-10-23 08:28:08'),
+(13, 2, '127.0.0.1', '2015-10-23 08:48:18'),
+(14, 1, '127.0.0.1', '2015-10-23 09:00:29'),
+(15, 1, '127.0.0.1', '2015-10-23 11:07:25');
 
 -- --------------------------------------------------------
 
@@ -195,6 +246,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `password` char(60) NOT NULL,
+  `name` varchar(150) NOT NULL,
   `referral_code` varchar(20) DEFAULT NULL,
   `referral_id` int(10) unsigned DEFAULT NULL,
   `quota` float(10,2) unsigned NOT NULL,
@@ -208,7 +260,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `referral_code` (`referral_code`),
   KEY `referral_id` (`referral_id`),
   KEY `quota` (`quota`,`used`,`remain`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `email`, `password`, `name`, `referral_code`, `referral_id`, `quota`, `used`, `remain`, `deleted_at`, `modified_at`, `created_at`) VALUES
+(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 10485760.00, 5042880.00, 5442880.00, '0000-00-00 00:00:00', '2015-10-23 08:57:26', '2015-10-23 08:25:20'),
+(2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'تکرار من', NULL, 1, 0.00, 0.00, 0.00, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18');
 
 -- --------------------------------------------------------
 
@@ -222,14 +282,15 @@ CREATE TABLE IF NOT EXISTS `websites` (
   `domains` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `websites`
 --
 
 INSERT INTO `websites` (`id`, `name`, `domains`) VALUES
-(1, 'Youtube', 'youtube.com,youtu.be');
+(1, 'Youtube', 'youtube.com,youtu.be'),
+(2, 'Vimeo', 'vimeo.com');
 
 --
 -- Constraints for dumped tables
@@ -245,9 +306,16 @@ ALTER TABLE `failed_logins`
 -- Constraints for table `files`
 --
 ALTER TABLE `files`
-  ADD CONSTRAINT `files_ibfk_3` FOREIGN KEY (`website_id`) REFERENCES `websites` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `files_ibfk_2` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `files_ibfk_2` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `files_ibfk_3` FOREIGN KEY (`website_id`) REFERENCES `websites` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `incomes`
+--
+ALTER TABLE `incomes`
+  ADD CONSTRAINT `incomes_ibfk_2` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `incomes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `password_changes`
@@ -259,6 +327,7 @@ ALTER TABLE `password_changes`
 -- Constraints for table `purchases`
 --
 ALTER TABLE `purchases`
+  ADD CONSTRAINT `purchases_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `purchases_ibfk_3` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `purchases_ibfk_4` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -266,13 +335,15 @@ ALTER TABLE `purchases`
 -- Constraints for table `remember_tokens`
 --
 ALTER TABLE `remember_tokens`
+  ADD CONSTRAINT `remember_tokens_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `remember_tokens_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `reset_passwords`
 --
 ALTER TABLE `reset_passwords`
-  ADD CONSTRAINT `reset_passwords_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `reset_passwords_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reset_passwords_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `success_logins`
