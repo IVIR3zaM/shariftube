@@ -87,7 +87,7 @@ class IndexController extends ControllerBase
 
         $this->view->title = 'جست و جوی ویدئو';
 
-        $records = array();
+        $this->view->records = $records = array();
         $this->view->captcha = false;
         $this->view->captcha_image = '';
         $this->view->hidden_items = array();
@@ -95,13 +95,15 @@ class IndexController extends ControllerBase
         $this->view->have_next = false;
         if ($this->view->q) {
             $websites = array();
-            foreach($this->view->websites as $item) {
+            foreach ($this->view->websites as $item) {
                 $list = array_filter(explode(',', $item->domains));
-                foreach($list as $domain) {
+                foreach ($list as $domain) {
                     $websites[$domain] = $item->name;
                 }
             }
-            $link = 'https://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website, $websites) ? '+site%3A' . urlencode(array_search($this->view->website, $websites)) : '') . '&num=10&tbm=vid';
+            $link = 'https://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
+                    $websites) ? '+site%3A' . urlencode(array_search($this->view->website,
+                        $websites)) : '') . '&num=50&tbm=vid';
             if ($this->view->start > 0) {
                 $link .= '&start=' . intval($this->view->start);
             }
@@ -126,26 +128,22 @@ class IndexController extends ControllerBase
 
             if ($this->request->getPost('captcha')) {
                 $params = $this->request->getPost('params');
-//                $action = $this->crypt->decryptBase64($params['action']);
-                $action = $params['action'];
-//                $header['Referer'] = $this->crypt->decryptBase64($params['referer']);
-                $header['Referer'] = $params['referer'];
+                $action = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($params['action']));
+                $header['Referer'] = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($params['referer']));
                 $query = array();
-                foreach($params as $index=>$value){
-                    if (!in_array($index, ['referer','action'])){
-//                        $query[]=urlencode($index) .'=' .urlencode($this->crypt->decryptBase64($value));
-                        $query[]=urlencode($index) .'=' .urlencode($value);
+                foreach ($params as $index => $value) {
+                    if (!in_array($index, ['referer', 'action'])) {
+                        $query[] = urlencode($index) . '=' . urlencode(preg_replace('/[\x00]+/', '',$this->crypt->decryptBase64($value)));
                     }
                 }
-                $query[]='captcha='.urlencode($this->request->getPost('code'));
-                $query[]='submit=Submit';
-                $link = "{$action}?".implode('&', $query);
+                $query[] = 'captcha=' . urlencode($this->request->getPost('code'));
+                $query[] = 'submit=Submit';
+                $link = "{$action}?" . implode('&', $query);
             }
-//            die(urlencode($link));
-//            $link = 'http://ipv4.google.com/sorry/IndexRedirect?continue=http%3A%2F%2Fwww.google.com%2Fsearch%3Fq%3Dgalant%26num%3D10%26tbm%3Dvid';
-//            $content = get_url($link, $header,false,1);
-            $content = get_url($link, $header);
-            if ($content['content']){
+//            $link = 'https://ipv4.google.com/sorry/IndexRedirect?continue=' . urlencode($link);
+//            $content = $this->curl->get($link, 5, 1, $header,false,1);
+            $content = $this->curl->get($link, 20, 2, $header);
+            if ($content['content']) {
                 $dom = new Dom();
                 $dom->load($content['content'], ['whitespaceTextNode' => false,]);
                 $url = $content['head']['url'];
@@ -157,53 +155,54 @@ class IndexController extends ControllerBase
                     $image = "{$parse['scheme']}://{$parse['host']}{$link}";
 
                     $action = $dom->find('form')[0]->getAttribute('action');
-                    $path = substr($parse['path'],0, strrpos($parse['path'], '/'));
-                    $action="{$parse['scheme']}://{$parse['host']}{$path}/{$action}";
+                    $path = substr($parse['path'], 0, strrpos($parse['path'], '/'));
+                    $action = "{$parse['scheme']}://{$parse['host']}{$path}/{$action}";
 
                     $hidden = array();
                     $hidden['action'] = $this->crypt->encryptBase64($action);
-                    $hidden['action'] = $action;
                     $hidden['referer'] = $this->crypt->encryptBase64($url);
-                    $hidden['referer'] = $url;
-                    foreach($dom->find('form input[type=hidden]') as $tag)  {
-                        $hidden[$tag->getAttribute('name')]=$this->crypt->encryptBase64($tag->getAttribute('value'));
-                        $hidden[$tag->getAttribute('name')]=$tag->getAttribute('value');
+                    foreach ($dom->find('form input[type=hidden]') as $tag) {
+                        $hidden[$tag->getAttribute('name')] = $this->crypt->encryptBase64($tag->getAttribute('value'));
                     }
                     $this->view->hidden_items = $hidden;
 
 
-
-                    $content = get_url($image, array('Referer' => $url));
+                    $content = $this->curl->get($image, 20, 5, array('Referer' => $url));
                     if ($content['content']) {
-                        $this->view->captcha_image = 'data:'.@$content['head']['content_type'].';base64,'.urlencode(base64_encode($content['content']));
+                        $this->view->captcha_image = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
                     }
                     unset($content);
-                } else{
+                } else {
                     $index = count($dom->find('#foot .b .csb')) - 1;
-                    if ($index>=0 && strtolower(trim($dom->find('#foot .b .csb')[$index]->nextSibling()->text)) == 'next') {
+                    if ($index >= 0 && strtolower(trim($dom->find('#foot .b .csb')[$index]->nextSibling()->text)) == 'next') {
                         $this->view->have_next = true;
                     }
-                    foreach ($dom->find('li.videobox') as $index=>$li) {
-                        $this->view->last_item = $index+1;
+//                    if (!count($dom->find('li.videobox'))) {
+//                        $this->flash->warning('جست و جوی شما نتیجه ای در بر نداشت.');
+//                    }
+
+                    foreach ($dom->find('li.videobox') as $index => $li) {
+                        $this->view->last_item = $index + 1;
                         if (isset($websites[$li->find('.kv')->text])) {
                             $item = array();
                             $item['website'] = $websites[$li->find('.kv')->text];
                             $href = $li->find('h3 a')->getAttribute('href');
-                            parse_str(substr($href, strpos($href, '?')+1), $parse);
+                            parse_str(substr($href, strpos($href, '?') + 1), $parse);
                             if (!isset($parse['q'])) {
                                 continue;
                             }
                             $item['link'] = $parse['q'];
                             $item['title'] = $li->find('h3 a')->text;
                             $item['date'] = strtotime($li->find('.st .f .nobr')[0]->text);
-                            $item['description'] = strip_tags(substr($li->find('.st')->innerHtml, strpos($li->find('.st')->innerHtml,'<br />')));
+                            $item['description'] = strip_tags(substr($li->find('.st')->innerHtml,
+                                strpos($li->find('.st')->innerHtml, '<br />')));
 
                             $item['image'] = '';
                             $src = $li->find('img')[0]->getAttribute('src');
                             if ($src) {
-                                $content = get_url($src);
+                                $content = $this->curl->get($src, 10, 1);
                                 if ($content['content']) {
-                                    $item['image'] = 'data:'.@$content['head']['content_type'].';base64,'.urlencode(base64_encode($content['content']));
+                                    $item['image'] = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
                                 }
                                 unset($content);
                             }
@@ -215,7 +214,7 @@ class IndexController extends ControllerBase
                             $records[] = (object)$item;
                             unset($item);
                             if (count($records) >= 10) {
-                                if (!$this->view->have_next && $index<count($dom->find('li.videobox'))-1) {
+                                if (!$this->view->have_next && $index < count($dom->find('li.videobox')) - 1) {
                                     $this->view->have_next = true;
                                 }
                                 break;
@@ -226,7 +225,7 @@ class IndexController extends ControllerBase
                 unset($dom);
                 $this->view->records = $records;
                 unset($records);
-            } else{
+            } else {
                 $this->flash->error('جست و جوی مورد نظر شما انجام نشد. لطفا مجددا تلاش نمایید.');
             }
         }

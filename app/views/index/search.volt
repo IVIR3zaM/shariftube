@@ -1,3 +1,4 @@
+{{ flash.output() }}
 <form id="search-form" action="{{ url.get(['for':'search']) }}" method="get">
     <label for="q">عبارت</label>
     <input id="q" type="text" size="50" name="q" value="{{ q|e }}">
@@ -30,7 +31,7 @@
 {% if captcha %}
     <form method="post" action="{{ url.get(['for':'search', 'params':implode('/',[start, dur, hq, qdr, website, q])])|e }}">
         {% for name, value in hidden_items%}
-        <input type="hidden" name="params[{{ name|e }}]" value="{{ value|e }}">
+        <input type="hidden" name="params[{{ name|e }}]" value="{{ value }}">
         {% endfor %}
         <p>
             لطفا برای ادامه کار کد امنیتی زیر را وارد نمایید.<br>
