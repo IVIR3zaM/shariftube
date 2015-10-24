@@ -27,4 +27,17 @@ class Servers extends BaseModel
             $this->enable = 'No';
         }
     }
+
+    static public function getServer($quota = 0)
+    {
+        if ($quota > 0) {
+            return Servers::findFirst([
+                "deleted_at = 0 AND enable = 'Yes' AND remain >= :quota:",
+                'bind' => [
+                    'quota' => $quota,
+                ],
+            ]);
+        }
+        return null;
+    }
 }

@@ -87,7 +87,8 @@ class Curl
             $content = curl_exec($ch);
             $head = curl_getinfo($ch);
             curl_close($ch);
-            if (strpos($head['content_type'], 'text/html') !== false
+            if ($onlyhead
+                || strpos($head['content_type'], 'text/html') !== false
                 || strpos($head['content_type'], 'image/') !== false
             ) {
                 $this->cache->save($key, json_encode([

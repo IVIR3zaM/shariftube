@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 23, 2015 at 11:32 PM
+-- Generation Time: Oct 24, 2015 at 08:25 PM
 -- Server version: 5.5.35
 -- PHP Version: 5.4.45-2+deb.sury.org~precise+2
 
@@ -52,22 +52,34 @@ INSERT INTO `failed_logins` (`id`, `user_Id`, `ip_address`, `created_at`) VALUES
 
 CREATE TABLE IF NOT EXISTS `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_Id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
   `server_id` int(10) unsigned NOT NULL,
   `website_id` int(10) unsigned NOT NULL,
   `name` varchar(150) NOT NULL,
   `label` varchar(255) NOT NULL,
-  `quota` float(10,2) unsigned NOT NULL,
-  `link` varchar(1024) NOT NULL,
-  `quality` varchar(50) NOT NULL,
+  `size` bigint(20) unsigned NOT NULL,
+  `link` varchar(2048) NOT NULL,
+  `quality` enum('144p','240p','270p','360p','480p','720p','1080p','2160p','3072p','4320p') NOT NULL,
+  `is_3d` enum('No','Yes') NOT NULL DEFAULT 'No',
+  `fetched` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `status` enum('Waiting','InProgress','Failed','Success') NOT NULL DEFAULT 'Waiting',
   `deleted_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `user_Id` (`user_Id`),
   KEY `server_id` (`server_id`),
-  KEY `website_id` (`website_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  KEY `website_id` (`website_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+--
+-- Dumping data for table `files`
+--
+
+INSERT INTO `files` (`id`, `user_id`, `server_id`, `website_id`, `name`, `label`, `size`, `link`, `quality`, `is_3d`, `fetched`, `status`, `deleted_at`, `modified_at`, `created_at`) VALUES
+(9, 1, 1, 1, 'f8db40f3aa4123925e1bb8afd5de7f72.3gp', '2001 Mitsubishi Galant V6. Start Up, Engine, In Depth Tour', 4405111, 'http://r15---sn-5hnedne7.googlevideo.com/videoplayback?lmt=1389947609900454&itag=17&initcwndbps=95000&upn=H_zfylXYJt4&id=o-ABEY4JKFWr_VcGNCjcsBJhU0D15Uz2WWA0Nh9T7Ekl5Q&fexp=9405961%2C9407190%2C9408710%2C9414764%2C9415435%2C9415521%2C9416126%2C9416729%2C9416910%2C9417635%2C9417707%2C9418997%2C9419444%2C9419800%2C9420924%2C9421911&signature=10BFE7E514C6AE553B2B36DA50832D63C8328B8A.9056DEFA47325F1C93F0B4D7D26A27CCD2D3136B&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Csource%2Cupn%2Cexpire&ipbits=0&ip=176.9.240.87&nh=IgpwcjA0LmFtczE1KgkxMjcuMC4wLjE&pl=19&source=youtube&key=yt6&expire=1445723658&sver=3&dur=431.148&mv=m&mt=1445701920&ms=au&mn=sn-5hnedne7&mm=31&mime=video%2F3gpp', '144p', 'No', 4305111, 'InProgress', '0000-00-00 00:00:00', '2015-10-24 16:46:07', '2015-10-24 16:46:07'),
+(10, 1, 1, 1, 'f8db40f3aa4123925e1bb8afd5de7f72.3gp', '2001 Mitsubishi Galant V6. Start Up, Engine, In Depth Tour', 4405111, 'http://r15---sn-5hnedne7.googlevideo.com/videoplayback?lmt=1389947609900454&itag=17&initcwndbps=95000&upn=H_zfylXYJt4&id=o-ABEY4JKFWr_VcGNCjcsBJhU0D15Uz2WWA0Nh9T7Ekl5Q&fexp=9405961%2C9407190%2C9408710%2C9414764%2C9415435%2C9415521%2C9416126%2C9416729%2C9416910%2C9417635%2C9417707%2C9418997%2C9419444%2C9419800%2C9420924%2C9421911&signature=10BFE7E514C6AE553B2B36DA50832D63C8328B8A.9056DEFA47325F1C93F0B4D7D26A27CCD2D3136B&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Csource%2Cupn%2Cexpire&ipbits=0&ip=176.9.240.87&nh=IgpwcjA0LmFtczE1KgkxMjcuMC4wLjE&pl=19&source=youtube&key=yt6&expire=1445723658&sver=3&dur=431.148&mv=m&mt=1445701920&ms=au&mn=sn-5hnedne7&mm=31&mime=video%2F3gpp', '144p', 'No', 0, 'Waiting', '0000-00-00 00:00:00', '2015-10-24 16:48:33', '2015-10-24 16:48:33'),
+(11, 1, 1, 1, 'f8db40f3aa4123925e1bb8afd5de7f72.3gp', '2001 Mitsubishi Galant V6. Start Up, Engine, In Depth Tour', 4405111, 'http://r15---sn-5hnedne7.googlevideo.com/videoplayback?lmt=1389947609900454&itag=17&initcwndbps=95000&upn=H_zfylXYJt4&id=o-ABEY4JKFWr_VcGNCjcsBJhU0D15Uz2WWA0Nh9T7Ekl5Q&fexp=9405961%2C9407190%2C9408710%2C9414764%2C9415435%2C9415521%2C9416126%2C9416729%2C9416910%2C9417635%2C9417707%2C9418997%2C9419444%2C9419800%2C9420924%2C9421911&signature=10BFE7E514C6AE553B2B36DA50832D63C8328B8A.9056DEFA47325F1C93F0B4D7D26A27CCD2D3136B&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Csource%2Cupn%2Cexpire&ipbits=0&ip=176.9.240.87&nh=IgpwcjA0LmFtczE1KgkxMjcuMC4wLjE&pl=19&source=youtube&key=yt6&expire=1445723658&sver=3&dur=431.148&mv=m&mt=1445701920&ms=au&mn=sn-5hnedne7&mm=31&mime=video%2F3gpp', '144p', 'No', 4405111, 'Success', '0000-00-00 00:00:00', '2015-10-24 16:48:46', '2015-10-24 16:48:46');
 
 -- --------------------------------------------------------
 
@@ -98,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `incomes` (
 CREATE TABLE IF NOT EXISTS `packages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(255) NOT NULL,
-  `quota` float(10,2) unsigned NOT NULL,
+  `quota` bigint(20) unsigned NOT NULL,
   `price` int(10) unsigned NOT NULL,
   `status` enum('Enable','Disable') NOT NULL DEFAULT 'Enable',
   PRIMARY KEY (`id`)
@@ -159,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `remember_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `remember_tokens`
@@ -170,7 +182,9 @@ INSERT INTO `remember_tokens` (`id`, `user_id`, `token`, `user_agent`, `created_
 (2, 1, 'f2ebe9af4f7b979263b87eb895e84ec2', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 08:28:08'),
 (3, 2, '6a233e3fdaeec3ca2eb7e2a7eb24776b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 08:48:18'),
 (4, 1, '2e8d2ad518583746f4fa1537ba6d7f7f', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 09:00:29'),
-(5, 1, 'd986f2832c3b846dc5679d65e32cfb9b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 11:07:25');
+(5, 1, 'd986f2832c3b846dc5679d65e32cfb9b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-23 11:07:25'),
+(6, 1, '621d174795f2695bc4a651ee94a89842', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-24 05:22:16'),
+(7, 1, '94763b439cff357b9a555893fd3ee6d7', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-24 06:15:40');
 
 -- --------------------------------------------------------
 
@@ -186,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `reset_passwords` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -197,18 +211,25 @@ CREATE TABLE IF NOT EXISTS `reset_passwords` (
 CREATE TABLE IF NOT EXISTS `servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hostname` varchar(50) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `quota` float(10,2) unsigned NOT NULL,
-  `used` float(10,2) unsigned NOT NULL,
-  `remain` float(10,2) unsigned NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `quota` bigint(20) unsigned NOT NULL,
+  `used` bigint(20) unsigned NOT NULL,
+  `remain` bigint(20) unsigned NOT NULL,
   `enable` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `deleted_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `quota` (`quota`,`used`,`remain`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `servers`
+--
+
+INSERT INTO `servers` (`id`, `hostname`, `username`, `password`, `quota`, `used`, `remain`, `enable`, `deleted_at`, `modified_at`, `created_at`) VALUES
+(1, '127.0.0.1', '', '', 100000000, 152861332, 47138668, 'Yes', '0000-00-00 00:00:00', '2015-10-24 16:51:50', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -223,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `success_logins` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 --
 -- Dumping data for table `success_logins`
@@ -234,7 +255,9 @@ INSERT INTO `success_logins` (`id`, `user_id`, `ip_address`, `created_at`) VALUE
 (12, 1, '127.0.0.1', '2015-10-23 08:28:08'),
 (13, 2, '127.0.0.1', '2015-10-23 08:48:18'),
 (14, 1, '127.0.0.1', '2015-10-23 09:00:29'),
-(15, 1, '127.0.0.1', '2015-10-23 11:07:25');
+(15, 1, '127.0.0.1', '2015-10-23 11:07:25'),
+(16, 1, '127.0.0.1', '2015-10-24 05:22:16'),
+(17, 1, '127.0.0.1', '2015-10-24 06:15:40');
 
 -- --------------------------------------------------------
 
@@ -249,9 +272,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(150) NOT NULL,
   `referral_code` varchar(20) DEFAULT NULL,
   `referral_id` int(10) unsigned DEFAULT NULL,
-  `quota` float(10,2) unsigned NOT NULL,
-  `used` float(10,2) unsigned NOT NULL,
-  `remain` float(10,2) unsigned NOT NULL,
+  `quota` bigint(20) unsigned NOT NULL,
+  `used` bigint(20) unsigned NOT NULL,
+  `remain` bigint(20) unsigned NOT NULL,
   `deleted_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -267,8 +290,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `name`, `referral_code`, `referral_id`, `quota`, `used`, `remain`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 10485760.00, 5042880.00, 5442880.00, '0000-00-00 00:00:00', '2015-10-23 08:57:26', '2015-10-23 08:25:20'),
-(2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'تکرار من', NULL, 1, 0.00, 0.00, 0.00, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18');
+(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 104857600, 53499101, 51358499, '0000-00-00 00:00:00', '2015-10-24 16:48:46', '2015-10-23 08:25:20'),
+(2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'تکرار من', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18');
 
 -- --------------------------------------------------------
 
@@ -306,6 +329,7 @@ ALTER TABLE `failed_logins`
 -- Constraints for table `files`
 --
 ALTER TABLE `files`
+  ADD CONSTRAINT `files_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `files_ibfk_2` FOREIGN KEY (`server_id`) REFERENCES `servers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `files_ibfk_3` FOREIGN KEY (`website_id`) REFERENCES `websites` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -314,8 +338,8 @@ ALTER TABLE `files`
 -- Constraints for table `incomes`
 --
 ALTER TABLE `incomes`
-  ADD CONSTRAINT `incomes_ibfk_2` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `incomes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `incomes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `incomes_ibfk_2` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `password_changes`
@@ -327,16 +351,16 @@ ALTER TABLE `password_changes`
 -- Constraints for table `purchases`
 --
 ALTER TABLE `purchases`
-  ADD CONSTRAINT `purchases_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `purchases_ibfk_3` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `purchases_ibfk_4` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `purchases_ibfk_4` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchases_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `remember_tokens`
 --
 ALTER TABLE `remember_tokens`
-  ADD CONSTRAINT `remember_tokens_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `remember_tokens_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `remember_tokens_ibfk_1` FOREIGN KEY (`user_Id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `remember_tokens_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `reset_passwords`

@@ -4,6 +4,7 @@ namespace Shariftube\Controllers;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
 use PHPHtmlParser\Dom;
+use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
 use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Users;
@@ -53,9 +54,112 @@ class IndexController extends ControllerBase
             $this->response->redirect(['for' => 'login']);
             return;
         }
+
+        if ($this->request->getPost('progress')) {
+            $this->view->disable();
+            $response = array(
+                'completed' => false,
+                'success' => false,
+                'index' => intval($this->request->getPost('index')),
+                'percentage' => 0,
+                'message' => '',
+            );
+
+            $file = Files::findFirst([
+                'id = :id: AND deleted_at = 0',
+                'bind' =>[
+                    'id' =>$this->request->getPost('progress'),
+                ],
+            ]);
+            if ($file) {
+                $response['percentage'] = number_format(($file->fetched*100)/$file->size, 2);
+                switch ($file->status){
+                    case 'Waiting':
+                        $response['message'] = 'در انتظار دریافت فایل';
+                        break;
+                    case 'InProgress':
+                        $response['message'] = "{$response['percentage']}%";
+                        break;
+                    case 'Failed':
+                        $response['completed'] = true;
+                        $response['message'] = 'دریافت فایل با مشکل روبرو شد';
+                        break;
+                    case 'Success':
+                        $response['completed'] = true;
+                        $response['success'] = true;
+                        $response['message'] = 'دریافت فایل به اتمام رسید';
+                        break;
+                }
+            } else {
+                $response['completed'] = true;
+                $response['message'] = 'فایل یافت نشد';
+            }
+
+
+            $this->response->setContentType('application/json');
+            $this->response->setContent(json_encode($response));
+            $this->response->send();
+            return;
+        }
+
         $this->view->title = 'درخواست ویدئو';
-
-
+        $this->view->link = $link = @base64_decode($this->dispatcher->getParam('link'));
+        $this->view->records = array();
+        $this->view->label = '';
+        $this->view->file_id = 0;
+        if ($link) {
+            $website = Websites::findWebsite($link);
+            if ($this->request->getPost('get')) {
+                try {
+                    $params = json_decode(preg_replace('/[\x00]+/', '',
+                        $this->crypt->decryptBase64($this->request->getPost('params'))));
+                } catch (\Exception $e) {
+                    $this->flash->error('ویدئوی درخواستی نا معتبر می باشد.');
+                    return;
+                }
+                $file = new Files();
+                $file->user_id = $this->auth->getIdentity()->getId();
+                $file->website_id = $website->getId();
+                $file->name = $params->name;
+                $file->label = $params->label;
+                $file->size = $params->size;
+                $file->link = $params->link;
+                $file->quality = $params->quality;
+                $file->is_3d = $params->is_3d ? 'Yes' : 'No';
+                $file->fetched = 0;
+                $file->status = 'Waiting';
+                try {
+                    if (!$file->save()) {
+                        $this->flash->error('فایل مورد نظر شما دانلود نشد. لطفا بعدا مجددا تلاش نمایید.');
+                        return;
+                    }
+                } catch (\Exception $e) {
+                    $this->flash->error($e->getMessage());
+                    return;
+                }
+                $this->view->file_id = $file->getId();
+                return;
+            }
+            if (!$website || !class_exists('\\Shariftube\\Websites\\' . $website->name)) {
+                $this->flash->warning('آدرس وارد شده پشتیبانی نمی شود.');
+                return;
+            }
+            $leecher = '\\Shariftube\\Websites\\' . $website->name;
+            $leecher = new $leecher;
+            $result = $leecher->getInfo($link);
+            if (empty($result) || empty($result['records'])) {
+                $this->flash->warning('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
+                $this->view->records = array();
+            } else {
+                foreach ($result['records'] as $index => $value) {
+                    $value['params'] = $this->crypt->encryptBase64(json_encode($value));
+                    $result['records'][$index] = (object)$value;
+                }
+                $this->view->records = $result['records'];
+                $this->view->label = $result['label'];
+            }
+            unset($result);
+        }
     }
 
     public function searchAction()
@@ -133,7 +237,8 @@ class IndexController extends ControllerBase
                 $query = array();
                 foreach ($params as $index => $value) {
                     if (!in_array($index, ['referer', 'action'])) {
-                        $query[] = urlencode($index) . '=' . urlencode(preg_replace('/[\x00]+/', '',$this->crypt->decryptBase64($value)));
+                        $query[] = urlencode($index) . '=' . urlencode(preg_replace('/[\x00]+/', '',
+                                $this->crypt->decryptBase64($value)));
                     }
                 }
                 $query[] = 'captcha=' . urlencode($this->request->getPost('code'));
@@ -191,7 +296,7 @@ class IndexController extends ControllerBase
                             if (!isset($parse['q'])) {
                                 continue;
                             }
-                            $item['link'] = $parse['q'];
+                            $item['link'] = base64_encode($parse['q']);
                             $item['title'] = $li->find('h3 a')->text;
                             $item['date'] = strtotime($li->find('.st .f .nobr')[0]->text);
                             $item['description'] = strip_tags(substr($li->find('.st')->innerHtml,

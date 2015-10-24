@@ -16,11 +16,13 @@ class Websites extends BaseModel
     {
         $parse = parse_url($link);
         if (@$parse['host']) {
+            $parse['host'] = strtolower($parse['host']);
+            if (substr($parse['host'], 0 , 4) =='www.'){
+                $parse['host'] = substr($parse['host'], 4);
+            }
+            $parse['host'] = preg_replace('/[^a-z0-9\-\.]+/', '', $parse['host']);
             return Websites::findFirst([
-                'domains REGEXP :domain:',
-                'bind' => [
-                    'domain' => $parse['host'],
-                ]
+                "domains LIKE '%{$parse['host']}%'",
             ]);
         }
         return null;

@@ -4,7 +4,7 @@
     <div class="progress-bar">
         <div class="bar" style="width: {{ ((auth.getIdentity().used*100)/auth.getIdentity().quota)|intval }}%;"></div>
         <div class="info">
-            {{ number_format(auth.getIdentity().used/1024/1024, 2) }}GB/{{ number_format(auth.getIdentity().quota/1024/1024, 2) }}GB
+            {{ number_format(auth.getIdentity().used/1024/1024/1024, 2) }}GB/{{ number_format(auth.getIdentity().quota/1024/1024/1024, 2) }}GB
         </div>
     </div>
     <a href="{{ url.get(['for':'shop']) }}">خرید حجم</a>

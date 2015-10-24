@@ -1,7 +1,7 @@
 <?php
 
 //error_reporting(0);
-//\Phalcon\Mvc\Model::setup(['exceptionOnFailedSave' => true]);
+\Phalcon\Mvc\Model::setup(['exceptionOnFailedSave' => true]);
 //phpinfo();exit;
 
 try {

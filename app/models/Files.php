@@ -8,9 +8,12 @@ class Files extends BaseModel
     public $website_id;
     public $name;
     public $label;
-    public $quota;
+    public $size;
     public $link;
     public $quality;
+    public $is_3d;
+    public $fetched;
+    public $status;
     public $deleted_at;
     public $modified_at;
     public $created_at;
@@ -22,22 +25,28 @@ class Files extends BaseModel
         $this->belongsTo('server_id', 'Shariftube\Models\Servers', 'id', ['alias' => 'Server']);
         $this->belongsTo('website_id', 'Shariftube\Models\Websites', 'id', ['alias' => 'Website']);
     }
-    public function beforeCreate()
+    public function beforeValidationOnCreate()
     {
-        parent::beforeCreate();
-        $server = $this->getServer();
-        if (!empty($server)) {
-            $server->used += $this->quota;
-            $server->remain -= $this->quota;
-            $server->save();
-        }
-
-        $user = $this->getUser();
-        if (empty($user) || $user->quota < $this->quota) {
+        $server = Servers::getServer($this->size);
+        if (!$server) {
             return false;
+        }
+        $this->server_id = $server->getId();
+        $server->used += $this->size;
+        $server->remain -= $this->size;
+        $server->save();
+
+        $user = Users::findFirst([
+            'id = :id:',
+            'bind' => [
+                'id' =>$this->user_id,
+            ],
+        ]);
+        if (empty($user) || $user->remain < $this->size) {
+            throw new \Exception('شما فضای کافی برای دانلود این ویدئو ندارید. می توانید فضای بیشتر خرید کنید.');
         } else {
-            $user->used += $this->quota;
-            $user->remain -= $this->quota;
+            $user->used += $this->size;
+            $user->remain -= $this->size;
             $user->save();
         }
     }
