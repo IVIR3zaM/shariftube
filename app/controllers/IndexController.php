@@ -37,11 +37,11 @@ class IndexController extends ControllerBase
                 'bind' => [
                     'user_id' => $this->auth->getIdentity()->getId(),
                     'start' => $date->date('Y-m-d H:i:s',
-                        $date->mktime(0, 0, 0, $date->date('n', $time, false), 1, $date->date('Y', $time, false)),
-                        false, false),
+                            $date->mktime(0, 0, 0, $date->date('n', $time, false), 1, $date->date('Y', $time, false)),
+                            false, false),
                     'end' => $date->date('Y-m-d H:i:s',
-                        $date->mktime(23, 59, 59, $date->date('n', $time, false), $date->date('t', $time, false),
-                            $date->date('Y', $time, false)), false, false),
+                            $date->mktime(23, 59, 59, $date->date('n', $time, false), $date->date('t', $time, false),
+                                $date->date('Y', $time, false)), false, false),
                 ],
             ]);
         }
@@ -67,13 +67,13 @@ class IndexController extends ControllerBase
 
             $file = Files::findFirst([
                 'id = :id: AND deleted_at = 0',
-                'bind' =>[
-                    'id' =>$this->request->getPost('progress'),
+                'bind' => [
+                    'id' => $this->request->getPost('progress'),
                 ],
             ]);
             if ($file) {
-                $response['percentage'] = number_format(($file->fetched*100)/$file->size, 2);
-                switch ($file->status){
+                $response['percentage'] = number_format(($file->fetched * 100) / $file->size, 2);
+                switch ($file->status) {
                     case 'Waiting':
                         $response['message'] = 'در انتظار دریافت فایل';
                         break;
@@ -135,7 +135,15 @@ class IndexController extends ControllerBase
                         return;
                     }
                 } catch (\Exception $e) {
-                    $this->flash->error($e->getMessage());
+                    $messages = array(
+                        'LOW_BALANCE' => sprintf('شما اعتبار کافی برای دریافت این ویدئو ندارید. می توانید از %s حجم بیشتری خرید نمایید.', '<a href="'.$this->url->get(['for' => 'shop']).'">اینجا</a>'),
+                        'NO_SERVER' => 'دریافت این فایل فعلا امکان پذیر نیست. لطفا لحطاتی بعد مجددا تلاش نمایید.',
+                    );
+                    $message = $e->getMessage();
+                    if (isset($messages[$message])) {
+                        $message = $messages[$message];
+                    }
+                    $this->flash->error($message);
                     return;
                 }
                 $this->view->file_id = $file->getId();
@@ -196,7 +204,7 @@ class IndexController extends ControllerBase
         $this->view->captcha = false;
         $this->view->captcha_image = '';
         $this->view->hidden_items = array();
-        $this->view->last_item = 0;
+        $this->view->last_item = $this->view->start;
         $this->view->have_next = false;
         if ($this->view->q) {
             $websites = array();
@@ -288,7 +296,7 @@ class IndexController extends ControllerBase
                     }
 
                     foreach ($dom->find('li.videobox') as $index => $li) {
-                        $this->view->last_item = $index + 1;
+                        $this->view->last_item += $index + 1;
                         if (isset($websites[$li->find('.kv')->text])) {
                             $item = array();
                             $item['website'] = $websites[$li->find('.kv')->text];

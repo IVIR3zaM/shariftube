@@ -29,7 +29,7 @@ class Files extends BaseModel
     {
         $server = Servers::getServer($this->size);
         if (!$server) {
-            return false;
+            throw new \Exception('NO_SERVER');
         }
         $this->server_id = $server->getId();
         $server->used += $this->size;
@@ -43,7 +43,7 @@ class Files extends BaseModel
             ],
         ]);
         if (empty($user) || $user->remain < $this->size) {
-            throw new \Exception('شما فضای کافی برای دانلود این ویدئو ندارید. می توانید فضای بیشتر خرید کنید.');
+            throw new \Exception('LOW_BALANCE');
         } else {
             $user->used += $this->size;
             $user->remain -= $this->size;
