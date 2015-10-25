@@ -5,7 +5,6 @@
         "This file is @generated automatically"
     ],
     "hash": "e05667abe9bb17d12f1ef0fa7c2bd880",
-    "content-hash": "02093b79379b15726055794319327eed",
     "packages": [
         {
             "name": "paquettg/php-html-parser",

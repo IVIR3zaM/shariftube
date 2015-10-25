@@ -17,6 +17,7 @@
     <table class="videos">
         <tr>
             <th>کیفیت</th>
+            <th>نوع</th>
             <th>سه بعدی</th>
             <th>ظرفیت</th>
             <th>لینک</th>
@@ -24,6 +25,7 @@
     {% for record in records %}
         <tr>
             <td>{{ record.quality }}</td>
+            <td>{{ record.type }}</td>
             <td>{% if record.is_3d %}بلی{% else %}خیر{% endif %}</td>
             <td>{{ number_format(record.size/1024/1024, 2) }} مگابایت</td>
             <td>

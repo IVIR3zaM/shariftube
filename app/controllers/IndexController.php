@@ -120,7 +120,8 @@ class IndexController extends ControllerBase
                 $file = new Files();
                 $file->user_id = $this->auth->getIdentity()->getId();
                 $file->website_id = $website->getId();
-                $file->name = $params->name;
+                $file->type = $params->type;
+                $file->name = '';
                 $file->label = $params->label;
                 $file->size = $params->size;
                 $file->link = $params->link;
@@ -282,9 +283,9 @@ class IndexController extends ControllerBase
                     if ($index >= 0 && strtolower(trim($dom->find('#foot .b .csb')[$index]->nextSibling()->text)) == 'next') {
                         $this->view->have_next = true;
                     }
-//                    if (!count($dom->find('li.videobox'))) {
-//                        $this->flash->warning('جست و جوی شما نتیجه ای در بر نداشت.');
-//                    }
+                    if (!count($dom->find('li.videobox'))) {
+                        $this->flash->warning('جست و جوی شما نتیجه ای در بر نداشت.');
+                    }
 
                     foreach ($dom->find('li.videobox') as $index => $li) {
                         $this->view->last_item = $index + 1;

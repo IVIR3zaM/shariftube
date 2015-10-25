@@ -11,7 +11,6 @@ class Youtube extends Component implements Website
             return false;
         }
         $data = $this->curl->get('http://www.youtube.com/get_video_info?video_id=' . $match['code']);
-        $code = $match['code'];
         $data = $data['content'];
         parse_str($data, $data);
         if (!isset($data['url_encoded_fmt_stream_map'])) {
@@ -52,7 +51,7 @@ class Youtube extends Component implements Website
                     $size = intval($content['head']['download_content_length']);
                 }
                 $videos[] = array(
-                    'name' => md5($code . $title . $itag) . '.' . $formats[$itag][0],
+                    'type' => $formats[$itag][0],
                     'size' => $size,
                     'label' => $title,
                     'link' => $url,
