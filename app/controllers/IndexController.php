@@ -214,7 +214,7 @@ class IndexController extends ControllerBase
                     $websites[$domain] = $item->name;
                 }
             }
-            $link = 'https://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
+            $link = 'http://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
                     $websites) ? '+site%3A' . urlencode(array_search($this->view->website,
                         $websites)) : '') . '&num=50&tbm=vid';
             if ($this->view->start > 0) {
@@ -254,7 +254,7 @@ class IndexController extends ControllerBase
                 $query[] = 'submit=Submit';
                 $link = "{$action}?" . implode('&', $query);
             }
-//            $link = 'https://ipv4.google.com/sorry/IndexRedirect?continue=' . urlencode($link);
+//            $link = 'http://ipv4.google.com/sorry/IndexRedirect?continue=' . urlencode($link);
 //            $content = $this->curl->get($link, 5, 1, $header,false,1);
             $content = $this->curl->get($link, 20, 2, $header);
             if ($content['content']) {
