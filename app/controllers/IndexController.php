@@ -296,7 +296,7 @@ class IndexController extends ControllerBase
                     }
 
                     foreach ($dom->find('li.videobox') as $index => $li) {
-                        $this->view->last_item += $index + 1;
+                        $this->view->last_item = $this->view->start + $index + 1;
                         if (isset($websites[$li->find('.kv')->text])) {
                             $item = array();
                             $item['website'] = $websites[$li->find('.kv')->text];
