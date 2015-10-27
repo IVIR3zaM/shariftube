@@ -7,6 +7,7 @@ $loader = new \Phalcon\Loader();
 $loader->registerNamespaces(array(
     'Shariftube\Models' => $config->application->modelsDir,
     'Shariftube\Controllers' => $config->application->controllersDir,
+    'Shariftube\Tasks' => $config->application->tasksDir,
 //    'Shariftube\Forms' => $config->application->formsDir,
     'Shariftube' => $config->application->libraryDir
 ));

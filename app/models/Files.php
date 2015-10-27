@@ -14,6 +14,7 @@ class Files extends BaseModel
     public $is_3d;
     public $fetched;
     public $status;
+    public $locked_at;
     public $deleted_at;
     public $modified_at;
     public $created_at;

@@ -121,7 +121,7 @@ class IndexController extends ControllerBase
                 $file->user_id = $this->auth->getIdentity()->getId();
                 $file->website_id = $website->getId();
                 $file->type = $params->type;
-                $file->name = '';
+                $file->name = md5($params->link).'.'.$params->type;
                 $file->label = $params->label;
                 $file->size = $params->size;
                 $file->link = $params->link;

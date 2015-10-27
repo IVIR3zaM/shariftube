@@ -11,7 +11,7 @@ use Phalcon\Session\Adapter\Files as SessionAdapter;
 use Shariftube\Auth\Auth;
 use Shariftube\Flash\Flash;
 use Shariftube\Mail\Mail;
-use \Shariftube\Curl\Curl;
+use Shariftube\Curl\Curl;
 
 
 $di = new FactoryDefault();

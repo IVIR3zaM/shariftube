@@ -23,6 +23,7 @@ return new \Phalcon\Config(array(
     ),
     'application' => array(
         'controllersDir' => APP_DIR . '/controllers/',
+        'tasksDir' => APP_DIR . '/tasks/',
         'modelsDir' => APP_DIR . '/models/',
 //        'formsDir' => APP_DIR . '/forms/',
         'viewsDir' => APP_DIR . '/views/',
@@ -32,5 +33,12 @@ return new \Phalcon\Config(array(
         'publicUrl' => 'shariftube.ir',
         'cryptSalt' => 'BNKxkQBU0OimPgXJY8xJvGpd',
         'affiliate_percentage' => '30',
+        'redis_server' => 'tcp://127.0.0.1:6379',
+    ),
+    'cli' => array(
+        'fetch_threads' => 1,
+        'fetch_delays' => 5,
+        'feed_threads' => 1, // must be always 1
+        'feed_delays' => 3,
     ),
 ));
