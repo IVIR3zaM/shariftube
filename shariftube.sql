@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2015 at 09:26 AM
+-- Generation Time: Oct 27, 2015 at 05:51 PM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.6.12-1+deb.sury.org~trusty+1
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `failed_logins` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_Id` (`user_Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `failed_logins`
@@ -43,7 +43,8 @@ INSERT INTO `failed_logins` (`id`, `user_Id`, `ip_address`, `created_at`) VALUES
 (1, NULL, '127.0.0.1', '2015-10-23 08:28:00'),
 (2, NULL, '127.0.0.1', '2015-10-23 08:54:27'),
 (3, NULL, '127.0.0.1', '2015-10-23 09:00:07'),
-(4, NULL, '192.168.1.122', '2015-10-25 08:02:57');
+(4, NULL, '192.168.1.122', '2015-10-25 08:02:57'),
+(5, NULL, '192.168.1.122', '2015-10-27 14:16:09');
 
 -- --------------------------------------------------------
 
@@ -80,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `files` (
 --
 
 INSERT INTO `files` (`id`, `user_id`, `server_id`, `website_id`, `name`, `type`, `label`, `size`, `link`, `quality`, `is_3d`, `fetched`, `status`, `locked_at`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 1, 1, 1, '1cb1c5c9823a9d3105ab4b109a028627.3gp', '3gp', 'Maz Jobrani - A Scholar in the Crowd (Stand Up Comedy)', 1642541, 'https://r1---sn-p5qlsnsd.googlevideo.com/videoplayback?ip=107.182.226.169&key=yt6&id=e544be0a47886e1d&mn=sn-p5qlsnsd&mm=31&mv=m&pl=25&mt=1445924862&ms=au&ipbits=0&signature=843E9E23D989E107206ADA8D8695F64401B3CF25.1BAAC6B5AD1A85DC34F3B825DAA05D8219284479&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Crequiressl%2Csource%2Cupn%2Cexpire&requiressl=yes&fexp=9405330%2C9407535%2C9408710%2C9410705%2C9414764%2C9414802%2C9415822%2C9416126%2C9416985%2C9417707%2C9418703%2C9420474%2C9421743%2C9421786%2C9422353%2C9423421&dur=159.753&mime=video%2F3gpp&itag=17&nh=IgpwZjAxLmlhZDI2KgwyMDkuNDguNDIuODU&expire=1445946566&upn=zvtM77zZYoc&initcwndbps=672500&lmt=1389303824916957&source=youtube&sver=3', '144p', 'No', 0, 'InProgress', '2015-10-27 05:52:17', '0000-00-00 00:00:00', '2015-10-27 05:52:17', '2015-10-27 05:52:14');
+(1, 1, 1, 1, '134791de2dfef5db4407033615191aea.3gp', '3gp', 'Mitsubishi Lancer EVO X - Destroyers of the system!', 578561, 'https://r3---sn-p5qlsu7d.googlevideo.com/videoplayback?ipbits=0&mime=video%2F3gpp&sparams=dur,expire,id,initcwndbps,ip,ipbits,itag,lmt,mime,mm,mn,ms,mv,nh,pl,requiressl,source,upn&key=cms1&signature=36BC75582269F63C08D8D56BFBC0747D2CD4D0C8.31EF5E0E72F3BE952FCB5D058B574DA949AFAC37&fexp=9408710%2C9414764%2C9416126%2C9417707&lmt=1434320172215471&source=youtube&dur=56.517&requiressl=yes&itag=17&sver=3&upn=gtlnrS7UEFw&expire=1445975509&id=bac519a88bb96118&pl=25&ip=107.182.226.171&redirect_counter=1&req_id=b9177803840f8f9e&cms_redirect=yes&mm=26&mn=sn-p5qlsu7d&ms=tsu&mt=1445954074&mv=m', '144p', 'No', 578560, 'Waiting', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2015-10-27 14:10:15', '2015-10-27 13:52:16');
 
 -- --------------------------------------------------------
 
@@ -172,7 +173,7 @@ CREATE TABLE IF NOT EXISTS `remember_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
 
 --
 -- Dumping data for table `remember_tokens`
@@ -189,7 +190,8 @@ INSERT INTO `remember_tokens` (`id`, `user_id`, `token`, `user_agent`, `created_
 (8, 1, 'a01a10408b0e7ba4351592aebb00aac7', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0 AlexaToolbar/alxf-2.21', '2015-10-25 05:14:06'),
 (9, 1, '552086d58b0a43161364673ea5569856', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0 AlexaToolbar/alxf-2.21', '2015-10-25 05:23:31'),
 (10, 3, '516671eaafe3ba0e096bd33f013ada09', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-25 07:25:00'),
-(11, 3, '56c8416fc38ae21ce6828c60b45d521b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-25 08:03:20');
+(11, 3, '56c8416fc38ae21ce6828c60b45d521b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-25 08:03:20'),
+(12, 3, '15121a6750f812280698000aedec7bd2', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-27 14:16:13');
 
 -- --------------------------------------------------------
 
@@ -234,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `servers` (
 --
 
 INSERT INTO `servers` (`id`, `hostname`, `username`, `password`, `quota`, `used`, `remain`, `enable`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, '127.0.0.1', '', '', 200000000, 72587779, 127412222, 'Yes', '0000-00-00 00:00:00', '2015-10-27 05:52:14', '0000-00-00 00:00:00');
+(1, '127.0.0.1', '', '', 200000000, 73166340, 126833661, 'Yes', '0000-00-00 00:00:00', '2015-10-27 13:52:16', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -249,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `success_logins` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
 
 --
 -- Dumping data for table `success_logins`
@@ -266,7 +268,8 @@ INSERT INTO `success_logins` (`id`, `user_id`, `ip_address`, `created_at`) VALUE
 (18, 1, '127.0.0.1', '2015-10-25 05:14:06'),
 (19, 1, '127.0.0.1', '2015-10-25 05:23:31'),
 (20, 3, '192.168.1.122', '2015-10-25 07:25:00'),
-(21, 3, '192.168.1.122', '2015-10-25 08:03:20');
+(21, 3, '192.168.1.122', '2015-10-25 08:03:20'),
+(22, 3, '192.168.1.122', '2015-10-27 14:16:13');
 
 -- --------------------------------------------------------
 
@@ -299,7 +302,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `name`, `referral_code`, `referral_id`, `quota`, `used`, `remain`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 104857600, 58256601, 46600999, '0000-00-00 00:00:00', '2015-10-27 05:52:14', '2015-10-23 08:25:20'),
+(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 104857600, 58835162, 46022438, '0000-00-00 00:00:00', '2015-10-27 13:52:16', '2015-10-23 08:25:20'),
 (2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'تکرار من', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18'),
 (3, 'farskid@gmail.com', '$2a$08$yHuEhc2kvmtVsknhkoUuU.4FJh7K4P.cTm81PDgrAxIDDPPMfARNS', 'farzad', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-25 07:25:00', '2015-10-25 07:25:00');
 

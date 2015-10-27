@@ -33,6 +33,11 @@ class Mail extends Component
         $this->phpmailer->Timeout = $this->config->mail->timeout;
         $this->phpmailer->CharSet = 'UTF-8';
     }
+    public function resetPHPMailer()
+    {
+        $this->phpmailer = null;
+        $this->createPHPMailer();
+    }
 
     public function __call($method, $args)
     {
@@ -109,9 +114,10 @@ class Mail extends Component
         $this->view->setRenderLevel($level);
 
         $ret = $this->phpmailer->send();
+        if ($ret) {
+            $this->resetPHPMailer();
+        }
         $this->ErrorInfo = $this->phpmailer->ErrorInfo;
-        $this->phpmailer = null;
-        $this->createPHPMailer();
         return $ret;
     }
 }

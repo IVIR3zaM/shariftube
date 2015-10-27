@@ -2,9 +2,11 @@
 namespace Shariftube\Websites;
 
 use Phalcon\Mvc\User\Component;
+use Shariftube\Models\Files;
 
 class Youtube extends Component implements Website
 {
+    private $limit = 1000000; // in bits
 
     public function getInfo($link = '')
     {
@@ -124,8 +126,47 @@ class Youtube extends Component implements Website
         }
         return ['records' => $videos, 'label' => $title];
     }*/
-    public function getVideo($link = '')
+    public function getVideo(Files $file)
     {
+        $endSize = ($file->size - 1);
+        if ($file->fetched >= $endSize) {
+            return true;
+        }
+        if (!$file->fetched) {
+            $change = false;
+            while(file_exists(APP_DIR. '/cache/files/'. $file->name)) {
+                $change = true;
+                $file->name = md5(mt_rand().uniqid()) . '.'. $file->type;
+            }
+            if ($change && !$file->save()) {
+                return false;
+            }
+        }
+        $fp = fopen(APP_DIR. '/cache/files/'. $file->name, 'a');
+        if (!$fp) {
+            return false;
+        }
+        do {
+            $start = $file->fetched;
+            $end = $start + $this->limit - 1;
+            if ($end > $endSize) {
+                $end = $endSize;
+            }
+            $content = $this->curl->get($file->link, 9999, 1, array('Range' => "bytes={$start}-{$end}"));
+            if (@substr($content['head']['http_code'], 0, 2) != '20') {
+                fclose($fp);
+                return false;
+            }
+            fwrite($fp, $content['content']);
 
+            $file->fetched = $end + 1;
+            $file->save();
+
+            if ($end == $endSize) {
+                break;
+            }
+        } while(1);
+        fclose($fp);
+        return true;
     }
 }

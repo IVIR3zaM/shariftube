@@ -78,6 +78,9 @@ class Curl
             }
             curl_setopt($ch, CURLOPT_HEADER, 1);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            if (isset($headers['Range'])) {
+                curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+            }
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);

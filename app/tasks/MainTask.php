@@ -3,6 +3,7 @@ namespace Shariftube\Tasks;
 
 use Phalcon\CLI\Task;
 use Shariftube\Models\Files;
+use Shariftube\Websites\Youtube;
 
 class MainTask extends Task
 {
@@ -23,7 +24,7 @@ class MainTask extends Task
 
     public function feedAction($params = array())
     {
-        if (!isset($params[0]) && !is_numeric($params[0])) {
+        if (!isset($params[0]) || !is_numeric($params[0])) {
             echo "Invalid fetch id\n";
             return;
         }
@@ -55,7 +56,7 @@ class MainTask extends Task
                     }
                 }
                 sleep($this->config->cli->feed_delays);
-            } while(count($files));
+            } while(!file_exists(APP_DIR . '/cache/locks/feed' . $id . '.shutdown') && count($files));
             sleep($this->config->cli->feed_delays);
         }
         unlink(APP_DIR . '/cache/locks/feed' . $id . '.shutdown');
@@ -65,7 +66,7 @@ class MainTask extends Task
 
     public function fetchAction($params = array())
     {
-        if (!isset($params[0]) && !is_numeric($params[0])) {
+        if (!isset($params[0]) || !is_numeric($params[0])) {
             echo "Invalid fetch id\n";
             return;
         }
@@ -77,7 +78,40 @@ class MainTask extends Task
         }
 
         while (!file_exists(APP_DIR . '/cache/locks/fetch' . $id . '.shutdown')) {
+            while (!file_exists(APP_DIR . '/cache/locks/fetch' . $id . '.shutdown') && ($fileId = $this->redis->srandmember('sharifFiles'))) {
+                $this->redis->smove('sharifFiles', 'sharifSelected', $fileId);
+                $file = unserialize($this->redis->get('sharifFile:' . $fileId));
+                set_time_limit(0);
+                $website = $file->getWebsite();
+                if (!$website || !class_exists('\\Shariftube\\Websites\\' . $website->name)) {
+                    if ($file->setFailed() && $file->save()) {
+                        $this->redis->del('sharifFile:' . $fileId);
+                        $this->redis->srem('sharifSelected', $fileId);
+                    } else {
+                        $this->redis->smove('sharifSelected', 'sharifFiles', $fileId);
+                    }
+                    continue;
+                }
 
+                $leecher = '\\Shariftube\\Websites\\' . $website->name;
+                $leecher = new $leecher;
+                if (!$leecher->getVideo($file)){
+                    if ($file->setFailed() && $file->save()) {
+                        $this->redis->del('sharifFile:' . $fileId);
+                        $this->redis->srem('sharifSelected', $fileId);
+                    } else {
+                        $this->redis->smove('sharifSelected', 'sharifFiles', $fileId);
+                    }
+                    continue;
+                }
+                $file->status = 'Success';
+                if ($file->save()) {
+                    $this->redis->del('sharifFile:' . $fileId);
+                    $this->redis->srem('sharifSelected', $fileId);
+                } else {
+                    $this->redis->smove('sharifSelected', 'sharifFiles', $fileId);
+                }
+            }
 
             sleep($this->config->cli->fetch_delays);
         }

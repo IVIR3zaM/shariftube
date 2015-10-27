@@ -7,6 +7,7 @@ class Files extends BaseModel
     public $server_id;
     public $website_id;
     public $name;
+    public $type;
     public $label;
     public $size;
     public $link;
@@ -18,6 +19,7 @@ class Files extends BaseModel
     public $deleted_at;
     public $modified_at;
     public $created_at;
+    protected $isFailed = false;
 
     public function initialize()
     {
@@ -49,6 +51,36 @@ class Files extends BaseModel
             $user->used += $this->size;
             $user->remain -= $this->size;
             $user->save();
+        }
+    }
+    public function setFailed()
+    {
+        if ($this->status != 'InProgress') {
+            return false;
+        }
+        $this->isFailed = true;
+        $this->status = 'Failed';
+        return true;
+    }
+    public function beforeUpdate()
+    {
+        if ($this->isFailed) {
+            $server = Servers::getServer($this->size);
+            if (!$server) {
+                return false;
+            }
+            $server->used -= $this->size;
+            $server->remain += $this->size;
+            $server->save();
+
+            $user = $this->getUser();
+            if (empty($user)) {
+                return false;
+            } else {
+                $user->used -= $this->size;
+                $user->remain += $this->size;
+                $user->save();
+            }
         }
     }
 }
