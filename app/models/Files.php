@@ -53,6 +53,34 @@ class Files extends BaseModel
             $user->save();
         }
     }
+    public function beforeCreate()
+    {
+        parent::beforeCreate();
+        while (Files::find([
+            'deleted_at = 0 AND name = :name:',
+            'bind' => [
+                'name' => $this->name,
+            ],
+        ])->count()) {
+            $this->name = md5(mt_rand() . uniqid()) . '.' . $this->type;
+        }
+        $server = $this->getServer();
+        if (!$server) {
+            return false;
+        }
+        $dir = date('Ymd', strtotime($this->created_at));
+        if (!file_exists(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir)) {
+            if (!file_exists(APP_DIR . '/cache/files/' . $server->getId())) {
+                mkdir(APP_DIR . '/cache/files/' . $server->getId(), 0755);
+                chmod(APP_DIR . '/cache/files/' . $server->getId(), 0755);
+            }
+            mkdir(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir, 0755);
+            chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir, 0755);
+//            if (!$file->getServer()->mkdir($dir)) {
+//                return false;
+//            }
+        }
+    }
     public function setFailed()
     {
         if (!in_array($this->status,['InProgress', 'Transfering'])) {

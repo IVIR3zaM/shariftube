@@ -49,7 +49,7 @@ class Servers extends BaseModel
             return false;
         }
         $password = preg_replace('/[\x00]+/', '', $this->getDI()->getCrypt()->decryptBase64($this->password));
-        $out = `sshpass -p "{$password}" ssh {$this->username}@{$this->hostname} -p {$this->port} "mkdir ~/{$dir}"`;
+        $out = `sshpass -p "{$password}" ssh {$this->username}@{$this->hostname} -p {$this->port} "mkdir ~/{$dir} && chmod 0755 ~/{$dir}"`;
         return ($out ? false : true);
     }
 
@@ -66,16 +66,16 @@ class Servers extends BaseModel
     public function transfer($source = '', $dir = '')
     {
         $result = array();
-        if (!is_numeric($dir)) {
+        if ($dir && !is_numeric($dir)) {
             return $result;
         }
         $password = preg_replace('/[\x00]+/', '', $this->getDI()->getCrypt()->decryptBase64($this->password));
-        $command = "sshpass -p '{$password}' rsync -ptrzv -e 'ssh -p {$this->port}' --progress --remove-source-files {$source} {$this->username}@{$this->hostname}:~/{$dir}/";
+        $command = "sshpass -p '{$password}' rsync -ptrzv -e 'ssh -p {$this->port}' --progress --remove-source-files {$source} {$this->username}@{$this->hostname}:~/{$dir}";
         $out = array();
         exec($command, $out);
         if (is_array($out)) {
             foreach ($out as $line) {
-                if (preg_match('/^(?P<file>[a-f0-9]{32}\.[a-z0-9]+)$/i', $line, $match)) {
+                if (preg_match('/\/?(?P<file>[a-f0-9]{32}\.[a-z0-9]+)$/i', $line, $match)) {
                     $result[] = $match['file'];
                 }
             }

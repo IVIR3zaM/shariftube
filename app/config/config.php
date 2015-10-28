@@ -40,5 +40,6 @@ return new \Phalcon\Config(array(
         'fetch_delays' => 5,
         'feed_threads' => 1, // must be always 1
         'feed_delays' => 3,
+        'transfer_delays' => 60,
     ),
 ));
