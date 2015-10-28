@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2015 at 05:51 PM
+-- Generation Time: Oct 28, 2015 at 09:36 AM
 -- Server version: 5.5.40-0ubuntu0.14.04.1
 -- PHP Version: 5.6.12-1+deb.sury.org~trusty+1
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `user_id` int(10) unsigned NOT NULL,
   `server_id` int(10) unsigned NOT NULL,
   `website_id` int(10) unsigned NOT NULL,
-  `name` varchar(150) NOT NULL,
+  `name` varchar(40) DEFAULT NULL,
   `type` enum('flv','mp4','webm','3gp') NOT NULL,
   `label` varchar(255) NOT NULL,
   `size` bigint(20) unsigned NOT NULL,
@@ -65,23 +65,27 @@ CREATE TABLE IF NOT EXISTS `files` (
   `quality` enum('144p','240p','270p','360p','480p','720p','1080p','2160p','3072p','4320p') NOT NULL,
   `is_3d` enum('No','Yes') NOT NULL DEFAULT 'No',
   `fetched` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `status` enum('Waiting','InProgress','Failed','Success') NOT NULL DEFAULT 'Waiting',
+  `status` enum('Waiting','InProgress','Transfering','Failed','Success') NOT NULL DEFAULT 'Waiting',
   `locked_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `deleted_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
   KEY `server_id` (`server_id`),
   KEY `website_id` (`website_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `files`
 --
 
 INSERT INTO `files` (`id`, `user_id`, `server_id`, `website_id`, `name`, `type`, `label`, `size`, `link`, `quality`, `is_3d`, `fetched`, `status`, `locked_at`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 1, 1, 1, '134791de2dfef5db4407033615191aea.3gp', '3gp', 'Mitsubishi Lancer EVO X - Destroyers of the system!', 578561, 'https://r3---sn-p5qlsu7d.googlevideo.com/videoplayback?ipbits=0&mime=video%2F3gpp&sparams=dur,expire,id,initcwndbps,ip,ipbits,itag,lmt,mime,mm,mn,ms,mv,nh,pl,requiressl,source,upn&key=cms1&signature=36BC75582269F63C08D8D56BFBC0747D2CD4D0C8.31EF5E0E72F3BE952FCB5D058B574DA949AFAC37&fexp=9408710%2C9414764%2C9416126%2C9417707&lmt=1434320172215471&source=youtube&dur=56.517&requiressl=yes&itag=17&sver=3&upn=gtlnrS7UEFw&expire=1445975509&id=bac519a88bb96118&pl=25&ip=107.182.226.171&redirect_counter=1&req_id=b9177803840f8f9e&cms_redirect=yes&mm=26&mn=sn-p5qlsu7d&ms=tsu&mt=1445954074&mv=m', '144p', 'No', 578560, 'Waiting', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2015-10-27 14:10:15', '2015-10-27 13:52:16');
+(1, 1, 1, 1, '134791de2dfef5db4407033615191aea.3gp', '3gp', 'Mitsubishi Lancer EVO X - Destroyers of the system!', 578561, 'https://r3---sn-p5qlsu7d.googlevideo.com/videoplayback?ipbits=0&mime=video%2F3gpp&sparams=dur,expire,id,initcwndbps,ip,ipbits,itag,lmt,mime,mm,mn,ms,mv,nh,pl,requiressl,source,upn&key=cms1&signature=36BC75582269F63C08D8D56BFBC0747D2CD4D0C8.31EF5E0E72F3BE952FCB5D058B574DA949AFAC37&fexp=9408710%2C9414764%2C9416126%2C9417707&lmt=1434320172215471&source=youtube&dur=56.517&requiressl=yes&itag=17&sver=3&upn=gtlnrS7UEFw&expire=1445975509&id=bac519a88bb96118&pl=25&ip=107.182.226.171&redirect_counter=1&req_id=b9177803840f8f9e&cms_redirect=yes&mm=26&mn=sn-p5qlsu7d&ms=tsu&mt=1445954074&mv=m', '144p', 'No', 578560, 'Waiting', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '2015-10-27 14:10:15', '2015-10-27 13:52:16'),
+(3, 1, 1, 1, '2035a4dc97e22adf77698709ec27c647.3gp', '3gp', 'Mitsubishi Galant 0 - 200 KM/H', 866804, 'https://r17---sn-ab5l6m7s.googlevideo.com/videoplayback?mn=sn-ab5l6m7s&ip=107.182.226.169&mm=31&sver=3&key=yt6&pl=25&id=34844245907f8986&mime=video%2F3gpp&mv=m&mt=1446007597&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Crequiressl%2Csource%2Cupn%2Cexpire&ms=au&requiressl=yes&signature=DD0AA2D93475E7436C49F18F36B3FF3C51C2F1AE.671559DB4B993EC9E325DFFE6476B5B853034FAD&itag=17&expire=1446029226&fexp=9408212%2C9408491%2C9408710%2C9409097%2C9409128%2C9409206%2C9414764%2C9416126%2C9416729%2C9417707%2C9418203%2C9419445%2C9419788%2C9419892%2C9420311%2C9421149%2C9421823%2C9423161%2C9423490&upn=rKJYNNPuxnM&nh=EAE&dur=83.406&initcwndbps=396250&source=youtube&lmt=1390815741552449&ipbits=0', '144p', 'No', 866804, 'Transfering', '2015-10-28 04:48:37', '0000-00-00 00:00:00', '2015-10-28 04:48:47', '2015-10-28 04:48:35'),
+(6, 1, 1, 1, '0ecc675e94e3f4975a3a431fde30679d.3gp', '3gp', 'Mitsubishi Galant 0 - 200 KM/H', 866804, 'https://r17---sn-ab5l6m7s.googlevideo.com/videoplayback?mn=sn-ab5l6m7s&ip=107.182.226.169&mm=31&sver=3&key=yt6&pl=25&id=34844245907f8986&mime=video%2F3gpp&mv=m&mt=1446007597&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Crequiressl%2Csource%2Cupn%2Cexpire&ms=au&requiressl=yes&signature=DD0AA2D93475E7436C49F18F36B3FF3C51C2F1AE.671559DB4B993EC9E325DFFE6476B5B853034FAD&itag=17&expire=1446029226&fexp=9408212%2C9408491%2C9408710%2C9409097%2C9409128%2C9409206%2C9414764%2C9416126%2C9416729%2C9417707%2C9418203%2C9419445%2C9419788%2C9419892%2C9420311%2C9421149%2C9421823%2C9423161%2C9423490&upn=rKJYNNPuxnM&nh=EAE&dur=83.406&initcwndbps=396250&source=youtube&lmt=1390815741552449&ipbits=0', '144p', 'No', 866804, 'Transfering', '2015-10-28 04:56:52', '0000-00-00 00:00:00', '2015-10-28 04:57:07', '2015-10-28 04:56:51'),
+(7, 1, 1, 1, '7241d90f0cefa66f26cd993693f02694.mp4', 'mp4', 'Mitsubishi Galant 0 - 200 KM/H', 14529618, 'https://r17---sn-ab5l6m7s.googlevideo.com/videoplayback?mn=sn-ab5l6m7s&ip=107.182.226.169&mm=31&sver=3&key=yt6&pl=25&id=34844245907f8986&mime=video%2Fmp4&mv=m&mt=1446007597&sparams=dur%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cnh%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cupn%2Cexpire&ms=au&requiressl=yes&signature=27E56A890536D95AE97EC2182412B249816CC40A.BD6C67858CFE248B8DA9347D16EE72F44C09BBFE&itag=22&expire=1446029226&fexp=9408212%2C9408491%2C9408710%2C9409097%2C9409128%2C9409206%2C9414764%2C9416126%2C9416729%2C9417707%2C9418203%2C9419445%2C9419788%2C9419892%2C9420311%2C9421149%2C9421823%2C9423161%2C9423490&lmt=1417283601982674&nh=EAE&dur=83.104&initcwndbps=396250&source=youtube&upn=rKJYNNPuxnM&ratebypass=yes&ipbits=0', '720p', 'No', 14529618, 'Transfering', '2015-10-28 04:57:34', '0000-00-00 00:00:00', '2015-10-28 04:59:37', '2015-10-28 04:57:33');
 
 -- --------------------------------------------------------
 
@@ -217,9 +221,11 @@ CREATE TABLE IF NOT EXISTS `reset_passwords` (
 
 CREATE TABLE IF NOT EXISTS `servers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `link` varchar(150) NOT NULL,
   `hostname` varchar(50) NOT NULL,
+  `port` int(10) unsigned NOT NULL DEFAULT '22',
   `username` varchar(50) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
+  `password` varchar(1024) DEFAULT NULL,
   `quota` bigint(20) unsigned NOT NULL,
   `used` bigint(20) unsigned NOT NULL,
   `remain` bigint(20) unsigned NOT NULL,
@@ -235,8 +241,8 @@ CREATE TABLE IF NOT EXISTS `servers` (
 -- Dumping data for table `servers`
 --
 
-INSERT INTO `servers` (`id`, `hostname`, `username`, `password`, `quota`, `used`, `remain`, `enable`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, '127.0.0.1', '', '', 200000000, 73166340, 126833661, 'Yes', '0000-00-00 00:00:00', '2015-10-27 13:52:16', '0000-00-00 00:00:00');
+INSERT INTO `servers` (`id`, `link`, `hostname`, `port`, `username`, `password`, `quota`, `used`, `remain`, `enable`, `deleted_at`, `modified_at`, `created_at`) VALUES
+(1, 'http://localhost/files/', 'localhost', 22, 'maghoul', 'BAaQ3VYvYE7PlbRwwbXe3g/0PTQAKRANHd8ch4siISXhakKokvhY4aJuG1EWEwKNBxAtWO0z/ongzqbt75T4KA==', 200000000, 92029978, 107970023, 'Yes', '0000-00-00 00:00:00', '2015-10-28 04:57:33', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -302,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `name`, `referral_code`, `referral_id`, `quota`, `used`, `remain`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 104857600, 58835162, 46022438, '0000-00-00 00:00:00', '2015-10-27 13:52:16', '2015-10-23 08:25:20'),
+(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'محمدرضا معقول', 'm69', NULL, 104857600, 77698800, 27158800, '0000-00-00 00:00:00', '2015-10-28 04:57:33', '2015-10-23 08:25:20'),
 (2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'تکرار من', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18'),
 (3, 'farskid@gmail.com', '$2a$08$yHuEhc2kvmtVsknhkoUuU.4FJh7K4P.cTm81PDgrAxIDDPPMfARNS', 'farzad', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-25 07:25:00', '2015-10-25 07:25:00');
 
