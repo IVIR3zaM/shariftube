@@ -5,6 +5,7 @@ class Users extends BaseModel
 {
     public $email;
     public $password;
+    public $role;
     public $name;
     public $referral_code;
     public $referral_id;
@@ -26,6 +27,7 @@ class Users extends BaseModel
         $this->hasMany('id', 'Shariftube\Models\PasswordChanges', 'user_id', ['alias' => 'PasswordChanges']);
         $this->hasMany('id', 'Shariftube\Models\RememberTokens', 'user_id', ['alias' => 'RememberTokens']);
         $this->hasMany('id', 'Shariftube\Models\ResetPasswords', 'user_id', ['alias' => 'ResetPasswords']);
+        $this->hasMany('id', 'Shariftube\Models\Tickets', 'user_id', ['alias' => 'Tickets']);
     }
 
     public function beforeValidationOnCreate()

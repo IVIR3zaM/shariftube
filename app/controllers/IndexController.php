@@ -3,13 +3,13 @@ namespace Shariftube\Controllers;
 
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
+use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 use PHPHtmlParser\Dom;
 use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
 use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Users;
 use Shariftube\Models\Websites;
-use Shariftube\Models\Servers;
 
 /**
  * Display the default index page.
@@ -125,14 +125,14 @@ class IndexController extends ControllerBase
                 $file->user_id = $this->auth->getIdentity()->getId();
                 $file->website_id = $website->getId();
                 $file->type = $params->type;
-                $file->name = md5($params->link).'.'.$params->type;
-                while(Files::find([
+                $file->name = md5($params->link) . '.' . $params->type;
+                while (Files::find([
                     'deleted_at = 0 AND name = :name:',
                     'bind' => [
                         'name' => $file->name,
                     ],
                 ])->count()) {
-                    $file->name = md5(mt_rand().uniqid()) . '.'. $file->type;
+                    $file->name = md5(mt_rand() . uniqid()) . '.' . $file->type;
                 }
                 $file->label = $params->label;
                 $file->size = $params->size;
@@ -148,7 +148,7 @@ class IndexController extends ControllerBase
                     }
                 } catch (\Exception $e) {
                     $messages = array(
-                        'LOW_BALANCE' => sprintf('شما اعتبار کافی برای دریافت این ویدئو ندارید. می توانید از %s حجم بیشتری خرید نمایید.', '<a href="'.$this->url->get(['for' => 'shop']).'">اینجا</a>'),
+                        'LOW_BALANCE' => sprintf('شما اعتبار کافی برای دریافت این ویدئو ندارید. می توانید از %s حجم بیشتری خرید نمایید.', '<a href="' . $this->url->get(['for' => 'shop']) . '">اینجا</a>'),
                         'NO_SERVER' => 'دریافت این فایل فعلا امکان پذیر نیست. لطفا لحطاتی بعد مجددا تلاش نمایید.',
                     );
                     $message = $e->getMessage();
@@ -357,6 +357,29 @@ class IndexController extends ControllerBase
         }
 
 
+    }
+
+    public function filesAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->title = 'لیست ویدئوها';
+
+        $currentPage = $this->dispatcher->getParam('page');
+        if ($currentPage<1) {
+            $currentPage = 1;
+        }
+        $files = $this->auth->getIdentity()->getFiles()->toArray();
+//        $paginator = new PaginatorModel([
+//            'data' => $files,
+//            'limit' => 10,
+//            'page' => $currentPage
+//        ]);
+        var_dump(count($files));exit;
+        $this->view->records = $paginator->getPaginate();
     }
 
     public function logoutAction()

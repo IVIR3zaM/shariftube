@@ -38,9 +38,10 @@ $router->add('/logout/', array(
     'action' => 'logout',
 ))->setName('logout');
 
-$router->add('/files/', array(
+$router->add('/files/([0-9]*)', array(
     'controller' => 'index',
     'action' => 'files',
+    'page' => 1,
 ))->setName('files');
 
 $router->add('/shop/', array(
@@ -52,6 +53,17 @@ $router->add('/purchases/', array(
     'controller' => 'index',
     'action' => 'purchases',
 ))->setName('purchases');
+
+$router->add('/support/', array(
+    'controller' => 'index',
+    'action' => 'tickets',
+))->setName('support');
+
+$router->add('/ticket/([0-9]*)', array(
+    'controller' => 'index',
+    'action' => 'ticket',
+    'id' => 1,
+))->setName('ticket');
 
 $router->add('/settings/', array(
     'controller' => 'index',
