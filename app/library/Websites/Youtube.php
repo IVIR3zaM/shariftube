@@ -6,7 +6,7 @@ use Shariftube\Models\Files;
 
 class Youtube extends Component implements Website
 {
-    private $limit = 1000000; // in bits
+    private $limit = 500000; // in bits
 
     public function getInfo($link = '')
     {
@@ -134,17 +134,41 @@ class Youtube extends Component implements Website
         }
         if (!$file->fetched) {
             $change = false;
-            while(file_exists(APP_DIR. '/cache/files/'. $file->name)) {
+            while (Files::find([
+                'deleted_at = 0 AND id != :id: AND name = :name:',
+                'bind' => [
+                    'id' => $file->getId(),
+                    'name' => $file->name,
+                ],
+            ])->count()) {
                 $change = true;
-                $file->name = md5(mt_rand().uniqid()) . '.'. $file->type;
+                $file->name = md5(mt_rand() . uniqid()) . '.' . $file->type;
             }
             if ($change && !$file->save()) {
                 return false;
             }
         }
-        $fp = fopen(APP_DIR. '/cache/files/'. $file->name, 'a');
+        $dir = date('Ymd', strtotime($file->created_at));
+        if (!file_exists(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir)) {
+            if (!file_exists(APP_DIR . '/cache/files/' . $this->getId())) {
+                mkdir(APP_DIR . '/cache/files/' . $this->getId(), 0755);
+                chmod(APP_DIR . '/cache/files/' . $this->getId(), 0755);
+            }
+            mkdir(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir, 0755);
+            chmod(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir, 0755);
+        }
+        if (file_exists(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir . '/' . $file->name)) {
+            $file->fetched = filesize(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir . '/' . $file->name);
+            if (!$file->save()) {
+                return false;
+            }
+        }
+        $fp = fopen(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir . '/' . $file->name, 'a');
         if (!$fp) {
             return false;
+        }
+        if (!flock($fp, LOCK_EX | LOCK_NB)) {
+            return null;
         }
         do {
             $start = $file->fetched;
@@ -165,8 +189,9 @@ class Youtube extends Component implements Website
             if ($end == $endSize) {
                 break;
             }
-        } while(1);
+        } while (1);
         fclose($fp);
+        chmod(APP_DIR . '/cache/files/' . $this->getId() . '/' . $dir . '/' . $file->name, 0644);
         return true;
     }
 }

@@ -9,6 +9,7 @@ use Shariftube\Models\Incomes;
 use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Users;
 use Shariftube\Models\Websites;
+use Shariftube\Models\Servers;
 
 /**
  * Display the default index page.
@@ -80,6 +81,9 @@ class IndexController extends ControllerBase
                     case 'InProgress':
                         $response['message'] = "{$response['percentage']}%";
                         break;
+                    case 'Transfering':
+                        $response['message'] = 'در حال آماده سازی فایل';
+                        break;
                     case 'Failed':
                         $response['completed'] = true;
                         $response['message'] = 'دریافت فایل با مشکل روبرو شد';
@@ -122,6 +126,14 @@ class IndexController extends ControllerBase
                 $file->website_id = $website->getId();
                 $file->type = $params->type;
                 $file->name = md5($params->link).'.'.$params->type;
+                while(Files::find([
+                    'deleted_at = 0 AND name = :name:',
+                    'bind' => [
+                        'name' => $file->name,
+                    ],
+                ])->count()) {
+                    $file->name = md5(mt_rand().uniqid()) . '.'. $file->type;
+                }
                 $file->label = $params->label;
                 $file->size = $params->size;
                 $file->link = $params->link;

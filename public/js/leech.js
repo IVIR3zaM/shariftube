@@ -35,9 +35,7 @@ jQuery(function ($) {
                 type: 'post',
                 data: 'progress=' + progress + '&index=' + current_index,
                 success: function(data) {
-                    console.log(last_index);
                     if (data.index > last_index){
-                        console.log(data);
                         $("#file-progress .bar").css('width', data.percentage + '%');
                         $("#file-progress .info").text(data.message);
                         last_index = data.index;

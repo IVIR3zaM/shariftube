@@ -95,7 +95,10 @@ class MainTask extends Task
 
                 $leecher = '\\Shariftube\\Websites\\' . $website->name;
                 $leecher = new $leecher;
-                if (!$leecher->getVideo($file)){
+                $result = $leecher->getVideo($file);
+                if ($result === null) {
+                    continue;
+                } elseif (!$result){
                     if ($file->setFailed() && $file->save()) {
                         $this->redis->del('sharifFile:' . $fileId);
                         $this->redis->srem('sharifSelected', $fileId);
@@ -104,7 +107,7 @@ class MainTask extends Task
                     }
                     continue;
                 }
-                $file->status = 'Success';
+                $file->status = 'Transfering';
                 if ($file->save()) {
                     $this->redis->del('sharifFile:' . $fileId);
                     $this->redis->srem('sharifSelected', $fileId);
