@@ -81,7 +81,7 @@ class IndexController extends ControllerBase
                     case 'InProgress':
                         $response['message'] = "{$response['percentage']}%";
                         break;
-                    case 'Transfering':
+                    case 'Transferring':
                         $response['message'] = 'در حال آماده سازی فایل';
                         break;
                     case 'Failed':

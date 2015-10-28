@@ -83,7 +83,7 @@ class Files extends BaseModel
     }
     public function setFailed()
     {
-        if (!in_array($this->status,['InProgress', 'Transfering'])) {
+        if (!in_array($this->status,['InProgress', 'Transferring'])) {
             return false;
         }
         $this->isFailed = true;

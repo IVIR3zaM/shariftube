@@ -25,7 +25,7 @@ class Servers extends BaseModel
     public function beforeSave()
     {
         parent::beforeSave();
-        if ($this->remain < 100 && $this->enable = 'Yes') {
+        if ($this->remain < ($this->getDI()->getConfig()->cli->pause_server_remain * 1024 * 1024) && $this->enable = 'Yes') {
             $this->enable = 'No';
         }
     }
@@ -61,6 +61,37 @@ class Servers extends BaseModel
         $password = preg_replace('/[\x00]+/', '', $this->getDI()->getCrypt()->decryptBase64($this->password));
         $out = `sshpass -p "{$password}" ssh {$this->username}@{$this->hostname} -p {$this->port} "rm -rf ~/{$dir}"`;
         return ($out ? false : true);
+    }
+
+    public function ls($dir = '')
+    {
+        $result = array();
+        if ($dir && !is_numeric($dir)) {
+            return $result;
+        }
+        $password = preg_replace('/[\x00]+/', '', $this->getDI()->getCrypt()->decryptBase64($this->password));
+        $command = "sshpass -p '{$password}' ssh {$this->username}@{$this->hostname} -p {$this->port} 'ls ~/{$dir}'";
+        $result = array();
+        exec($command, $result);
+        if (!is_array($result)) {
+            $result = array();
+        }
+        return $result;
+    }
+
+    public function du($dir = '')
+    {
+        if ($dir && !is_numeric($dir)) {
+            return false;
+        }
+        $password = preg_replace('/[\x00]+/', '', $this->getDI()->getCrypt()->decryptBase64($this->password));
+        $command = "sshpass -p '{$password}' ssh {$this->username}@{$this->hostname} -p {$this->port} 'du -s ~/{$dir}'";
+        $out = array();
+        exec($command, $out);
+        if (!is_array($out)) {
+            return false;
+        }
+        return intval($out[0] * 1024);
     }
 
     public function transfer($source = '', $dir = '')

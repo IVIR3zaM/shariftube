@@ -1,10 +1,11 @@
 <?php
 namespace Shariftube\Curl;
 
+use Phalcon\Mvc\User\Component;
 use Phalcon\Cache\Backend\File as BackFile;
 use Phalcon\Cache\Frontend\Output as FrontOutput;
 
-class Curl
+class Curl extends Component
 {
     private $frontCache;
     private $cache;
@@ -13,7 +14,7 @@ class Curl
     {
         $this->frontCache = new FrontOutput(
             array(
-                'lifetime' => 900
+                'lifetime' => $this->config->cli->curl_cache_lifetime,
             )
         );
         $this->cache = new BackFile(
@@ -68,7 +69,7 @@ class Curl
         }
         $valKey = $url . implode(',', $keyHeads) . ($onlyhead ? '1' : '0');
         $key = md5($valKey) . '.json';
-        $result = $this->cache->get($key, 900);
+        $result = $this->cache->get($key, $this->config->cli->curl_cache_lifetime);
         if ($result === null) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
