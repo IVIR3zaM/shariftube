@@ -111,4 +111,16 @@ class Files extends BaseModel
             }
         }
     }
+
+    public function getFinalLink()
+    {
+        if ($this->status != 'Success') {
+            return '#';
+        }
+        $server = Servers::getServer($this->size);
+        if (!$server) {
+            return '#';
+        }
+        return $server->link . date('Ymd', strtotime($this->created_at)) . '/' . $this->name;
+    }
 }

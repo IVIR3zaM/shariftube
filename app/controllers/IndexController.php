@@ -94,7 +94,7 @@ class IndexController extends ControllerBase
                     case 'Success':
                         $response['completed'] = true;
                         $response['success'] = true;
-                        $response['message'] = 'دریافت فایل به اتمام رسید';
+                        $response['message'] = 'دریافت فایل به اتمام رسید. <a href="' . $file->getFinalLink() . '">دانلود</a>';
                         break;
                 }
             } else {
@@ -495,7 +495,96 @@ class IndexController extends ControllerBase
         }
     }
 
-    
+    public function purchasesAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->title = 'لیست خریدهای گذشته';
+        $this->view->status = array(
+            'Waiting' => 'در انتظار پرداخت',
+            'Paid' => 'پرداخت شده',
+            'Success' => 'تکمیل شده',
+            'Cancelled' => 'کنسل شده',
+        );
+
+        $currentPage = $this->dispatcher->getParam('page');
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $purchases = Purchases::find([
+            "user_id = :user: AND deleted_at = 0",
+            'bind' => [
+                'user' => $this->auth->getIdentity()->getId(),
+            ],
+            'order' => 'created_at',
+        ]);
+
+
+        $paginator = new PaginatorModel([
+            'data' => $purchases,
+            'limit' => 4,
+            'page' => $currentPage
+        ]);
+        $this->view->page = $paginator->getPaginate();
+
+        $list = array();
+        $packages = Packages::find();
+        if ($packages) {
+            foreach ($packages as $package) {
+                $list[$package->getId()] = $package;
+            }
+        }
+        $this->view->packages = $list;
+        unset($list, $packages);
+    }
+
+    public function settingsAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->title = 'تنظیمات';
+        $this->view->user = $this->auth->getIdentity();
+
+        if ($this->request->getPost('apply')) {
+            $error = array();
+
+            $password = $this->request->getPost('new_password');
+            if (strlen($password) > 0 && strlen($password) < 6) {
+                $error[] = 'رمز عبور حداقل باید ۶ کاراکتر باشد.';
+            }
+
+            if (strlen($password) > 0 && $password != $this->request->getPost('confirm_password')) {
+                $error[] = 'رمز عبور و تکرار آن برابر نیستند.';
+            }
+
+            $name = $this->request->getPost('name');
+            if (mb_strlen($name, 'UTF-8') < 5) {
+                $error[] = 'لطفا نام خود را به صورت کامل وارد کنید.';
+            }
+
+            if (!$this->security->checkHash($this->request->getPost('password'), $this->auth->getIdentity()->password)) {
+                $error[] = 'پسورد فعلی خود را اشتباه وارد کرده اید.';
+            }
+            if (empty($error)) {
+                $this->auth->getIdentity()->name = $name;
+                if (strlen($password) > 0) {
+                    $this->auth->getIdentity()->password = $this->security->hash($password);
+                }
+                if ($this->auth->getIdentity()->save()) {
+                    $this->flash->success('تغییرات شما با موفقیت ذخیره شد.');
+                } else {
+                    $this->flash->error('تغییر شما ذخیره نشد. لطفا مجددا تلاش نمایید.');
+                }
+            }
+        }
+    }
 
     public function logoutAction()
     {

@@ -10,7 +10,7 @@ jQuery(function ($) {
                 success: function (data) {
                     if (data.index > last_index) {
                         $("#file-progress .bar").css('width', data.percentage + '%');
-                        $("#file-progress .info").text(data.message);
+                        $("#file-progress .info").html(data.message);
                         last_index = data.index;
                         if (data.completed) {
                             clearInterval(ProgressBar);

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 29, 2015 at 06:05 PM
+-- Generation Time: Oct 29, 2015 at 08:19 PM
 -- Server version: 5.5.35
 -- PHP Version: 5.4.45-2+deb.sury.org~precise+2
 
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
 INSERT INTO `purchases` (`id`, `user_id`, `package_id`, `amount`, `gateway`, `key`, `params`, `status`, `deleted_at`, `modified_at`, `created_at`) VALUES
 (1, 1, 1, 1000, 'Payline', '8227715', '', 'Cancelled', '0000-00-00 00:00:00', '2015-10-29 14:28:43', '2015-10-29 14:28:28'),
 (2, 1, 1, 1000, 'Payline', '8227724', '8660822', 'Success', '0000-00-00 00:00:00', '2015-10-29 14:29:32', '2015-10-29 14:28:56'),
-(3, 1, 1, 1000, 'Payline', '8227764', '', 'Cancelled', '0000-00-00 00:00:00', '2015-10-29 14:32:17', '2015-10-29 14:32:01'),
+(3, 1, 1, 1000, 'Payline', '8227764', '', 'Success', '0000-00-00 00:00:00', '2015-10-29 16:13:44', '2015-10-29 14:32:01'),
 (4, 1, 1, 1000, 'Payline', '8227790', '8660891', 'Success', '0000-00-00 00:00:00', '2015-10-29 14:34:00', '2015-10-29 14:33:30');
 
 -- --------------------------------------------------------
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `remember_tokens` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `remember_tokens`
@@ -213,7 +213,9 @@ INSERT INTO `remember_tokens` (`id`, `user_id`, `token`, `user_agent`, `created_
 (10, 3, '516671eaafe3ba0e096bd33f013ada09', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-25 07:25:00'),
 (11, 3, '56c8416fc38ae21ce6828c60b45d521b', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-25 08:03:20'),
 (12, 3, '15121a6750f812280698000aedec7bd2', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0', '2015-10-27 14:16:13'),
-(13, 1, 'c7b3b79c4cc48e6f84e001c4736d29bd', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-29 14:34:00');
+(13, 1, 'c7b3b79c4cc48e6f84e001c4736d29bd', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-29 14:34:00'),
+(14, 1, 'd4a611fba95ccfdc9d83647f71f21d85', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-29 16:33:13'),
+(15, 1, '7d7ee7ea08687e899384660cc15ddcbc', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0', '2015-10-29 16:40:34');
 
 -- --------------------------------------------------------
 
@@ -275,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `success_logins` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
 -- Dumping data for table `success_logins`
@@ -294,7 +296,9 @@ INSERT INTO `success_logins` (`id`, `user_id`, `ip_address`, `created_at`) VALUE
 (20, 3, '192.168.1.122', '2015-10-25 07:25:00'),
 (21, 3, '192.168.1.122', '2015-10-25 08:03:20'),
 (22, 3, '192.168.1.122', '2015-10-27 14:16:13'),
-(23, 1, '127.0.0.1', '2015-10-29 14:34:00');
+(23, 1, '127.0.0.1', '2015-10-29 14:34:00'),
+(24, 1, '127.0.0.1', '2015-10-29 16:33:13'),
+(25, 1, '127.0.0.1', '2015-10-29 16:40:34');
 
 -- --------------------------------------------------------
 
@@ -364,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `role`, `name`, `referral_code`, `referral_id`, `quota`, `used`, `remain`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 'm.reza.maghool@gmail.com', '$2a$08$MRGRM8Kch4v6RZ9iVQQOrOU9XoElC9bOxb4F9HQ4g9vV7Lf1e/KN.', 'User', 'محمدرضا معقول', 'm69', NULL, 30485760000, 4122401, 10481637599, '0000-00-00 00:00:00', '2015-10-29 14:34:00', '2015-10-23 08:25:20'),
+(1, 'm.reza.maghool@gmail.com', '$2a$08$j941zyDVtc6XJOhTIvwMDOj/GAbN350yaXyH1f76OdUjWwHw4KVhq', 'User', 'محمدرضا معقول2', 'm69', NULL, 40485760000, 4122401, 10481637599, '0000-00-00 00:00:00', '2015-10-29 16:40:21', '2015-10-23 08:25:20'),
 (2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'User', 'تکرار من', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18'),
 (3, 'farskid@gmail.com', '$2a$08$yHuEhc2kvmtVsknhkoUuU.4FJh7K4P.cTm81PDgrAxIDDPPMfARNS', 'User', 'farzad', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-25 07:25:00', '2015-10-25 07:25:00');
 

@@ -24,7 +24,7 @@
             <td>{{ date.date('Y-m-d H:i:s', record.created_at|strtotime)|e }}</td>
             <td>
                 {% if record.status == 'Success' and servers[record.server_id] is defined %}
-                <a href="{{ servers[record.server_id].link|e }}{{ date('Ymd', record.created_at|strtotime) }}/{{ record.name|e }}">دانلود</a>
+                <a href="{{ record.getFinalLink()|e }}">دانلود</a>
                 {% else %}
                 -
                 {% endif %}

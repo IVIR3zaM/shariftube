@@ -3,6 +3,7 @@ namespace Shariftube\Tasks;
 
 use Phalcon\CLI\Task;
 use Shariftube\Models\Files;
+use Shariftube\Models\Purchases;
 use Shariftube\Models\Servers;
 use Shariftube\Models\Users;
 
@@ -87,6 +88,21 @@ class MainTask extends Task
         echo "Running Server transfer Threads\n";
         exec(BASE_DIR . "/cli Main transfer &> /dev/null &");
         echo "Finnish\n";
+    }
+
+    public function paymentFresherAction()
+    {
+        $purchases = Purchases::find([
+            "status = 'Paid' AND modified_at < :time:",
+            'bind' => [
+                'time' => date('Y-m-d H:i:s', strtotime('-5 Minutes')),
+            ],
+        ]);
+        if ($purchases) {
+            foreach ($purchases as $purchase) {
+                $purchase->doPayment();
+            }
+        }
     }
 
     public function cleanOldCacheAction()

@@ -58,5 +58,6 @@ return new \Phalcon\Config(array(
         'transferFiles' => '*/2 * * * *',
         'userFresher' => '*/2 * * * *',
         'cleanOldCache' => '0 * * * *',
+        'paymentFresher' => '*/5 * * * *',
     ),
 ));

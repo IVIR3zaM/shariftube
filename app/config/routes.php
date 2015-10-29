@@ -50,9 +50,10 @@ $router->add('/shop/([\w]*)', array(
     'back' => 1,
 ))->setName('shop');
 
-$router->add('/purchases/', array(
+$router->add('/purchases/([0-9]*)', array(
     'controller' => 'index',
     'action' => 'purchases',
+    'page' => 1,
 ))->setName('purchases');
 
 $router->add('/support/', array(

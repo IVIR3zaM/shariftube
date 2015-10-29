@@ -10,16 +10,19 @@ a.disabled {
   color: gray;
   text-decoration: none;
 }
+.center {
+  text-align: center;
+}
 .status-waiting {
   color: #babd3c;
 }
 .status-inprogress {
   color: #b67b0b;
 }
-.status-transferring {
+.status-transferring,.status-paid {
   color: #293e80;
 }
-.status-failed {
+.status-failed,.status-cancelled {
   color: #802528;
 }
 .status-success {
@@ -45,7 +48,7 @@ a.disabled {
 }
 
 .alert-notice {
-  background-color: #38487e;
+  background-color: #837fb3;
   color: white;
 }
 
@@ -117,4 +120,15 @@ ul.results li img{
 #link {
   direction: ltr;
   text-align: left;
+}
+
+table.settings{
+  width: 50%;
+}
+table.settings input[type=text],table.settings input[type=password] {
+  width: 100%;
+}
+table.settings div {
+  margin: 0;
+  width: 100%;
 }
