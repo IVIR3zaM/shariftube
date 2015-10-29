@@ -44,6 +44,7 @@ $di->setShared('view', function () use ($di, $config) {
 
             $volt->getCompiler()->addFilter('md5', 'md5');
             $volt->getCompiler()->addFilter('intval', 'intval');
+            $volt->getCompiler()->addFilter('strtotime', 'strtotime');
             $volt->getCompiler()->addFunction('number_format', 'number_format');
             $volt->getCompiler()->addFunction('implode', 'implode');
 

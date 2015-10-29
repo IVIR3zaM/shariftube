@@ -13,6 +13,7 @@ class Purchases extends BaseModel
     public $deleted_at;
     public $modified_at;
     public $created_at;
+    protected $gatewayObj;
 
     public function initialize()
     {
@@ -22,10 +23,50 @@ class Purchases extends BaseModel
         $this->hasMany('id', 'Shariftube\Models\Incomes', 'purchase_id', ['alias' => 'Incomes']);
     }
 
+    private function initGateWay()
+    {
+        if (!$this->gatewayObj) {
+            $gateway = '\\Shariftube\\GateWays\\' . $this->gateway;
+            if (class_exists($gateway)) {
+                $this->gatewayObj = new $gateway;
+                if (!$this->gatewayObj) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function beforeValidationOnCreate()
+    {
+        if (!$this->initGateWay()) {
+            return false;
+        }
+        $result = $this->gatewayObj->getParams($this);
+        if (!$result) {
+            return false;
+        }
+        $this->key = $result['key'];
+        $this->params = $result['params'];
+    }
+
+    public function send()
+    {
+        if (!$this->initGateWay()) {
+            return false;
+        }
+        if (!$this->gatewayObj->send($this)) {
+            return false;
+        }
+        return true;
+    }
+
     public function doPayment()
     {
         if ($this->status != 'Paid') {
-            return null;
+            return false;
         }
         $package = $this->getPackage();
         $user = $this->getUser();

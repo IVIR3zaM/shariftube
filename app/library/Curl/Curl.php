@@ -1,9 +1,9 @@
 <?php
 namespace Shariftube\Curl;
 
-use Phalcon\Mvc\User\Component;
 use Phalcon\Cache\Backend\File as BackFile;
 use Phalcon\Cache\Frontend\Output as FrontOutput;
+use Phalcon\Mvc\User\Component;
 
 class Curl extends Component
 {
@@ -38,6 +38,22 @@ class Curl extends Component
         }
         if (!is_array($headers)) {
             $headers = array();
+        }
+        if (isset($headers['Post'])) {
+            if (is_array($headers['Post'])) {
+                $post = array();
+                foreach ($headers['Post'] as $i => $v) {
+                    $i = urlencode($i);
+                    $v = urlencode($v);
+                    $post[] = "{$i}={$v}";
+                }
+                $post = implode('&', $post);
+            } else {
+                $post = false;
+            }
+            unset($headers['Post']);
+        } else {
+            $post = false;
         }
         $org_header = $headers;
         if (!isset($headers['Host'])) {
@@ -82,6 +98,9 @@ class Curl extends Component
             if (isset($headers['Range'])) {
                 curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
             }
+            if ($post) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            }
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
@@ -91,9 +110,10 @@ class Curl extends Component
             $content = curl_exec($ch);
             $head = curl_getinfo($ch);
             curl_close($ch);
-            if ($onlyhead
-                || strpos($head['content_type'], 'text/html') !== false
-                || strpos($head['content_type'], 'image/') !== false
+            if (!$post && ($onlyhead
+                    || strpos($head['content_type'], 'text/html') !== false
+                    || strpos($head['content_type'], 'image/') !== false
+                )
             ) {
                 $this->cache->save($key, json_encode([
                     'content' => base64_encode($content),

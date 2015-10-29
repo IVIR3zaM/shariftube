@@ -7,9 +7,9 @@
     </div>
 </div>
 {% endif %}
-<form id="video-form" action="{{ url.get(['for':'home']) }}" method="get">
+<form class="params" action="{{ url.get(['for':'link']) }}" method="get">
     <label for="link">لینک ویدئو</label>
-    <input id="link" type="text" size="50" name="link" value="{{ link|e }}">
+    <input id="link" data-encrypt="base64" type="text" size="50" name="link" value="{{ link|e }}">
     <input type="submit" value="دریافت">
 </form>
 {% if records|length %}

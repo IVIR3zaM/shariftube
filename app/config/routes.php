@@ -38,15 +38,16 @@ $router->add('/logout/', array(
     'action' => 'logout',
 ))->setName('logout');
 
-$router->add('/files/([0-9]*)', array(
+$router->add('/files/:params', array(
     'controller' => 'index',
     'action' => 'files',
-    'page' => 1,
+    'params' => 1,
 ))->setName('files');
 
-$router->add('/shop/', array(
+$router->add('/shop/([\w]*)', array(
     'controller' => 'index',
     'action' => 'shop',
+    'back' => 1,
 ))->setName('shop');
 
 $router->add('/purchases/', array(

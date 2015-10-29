@@ -5,6 +5,27 @@ body {
   font-size: 12px;
 }
 
+
+a.disabled {
+  color: gray;
+  text-decoration: none;
+}
+.status-waiting {
+  color: #babd3c;
+}
+.status-inprogress {
+  color: #b67b0b;
+}
+.status-transferring {
+  color: #293e80;
+}
+.status-failed {
+  color: #802528;
+}
+.status-success {
+  color: #3d8027;
+}
+
 .alert {
   margin: 2px auto;
   padding: 5px;

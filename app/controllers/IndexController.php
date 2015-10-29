@@ -7,7 +7,10 @@ use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 use PHPHtmlParser\Dom;
 use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
+use Shariftube\Models\Packages;
+use Shariftube\Models\Purchases;
 use Shariftube\Models\ResetPasswords;
+use Shariftube\Models\Servers;
 use Shariftube\Models\Users;
 use Shariftube\Models\Websites;
 
@@ -38,11 +41,11 @@ class IndexController extends ControllerBase
                 'bind' => [
                     'user_id' => $this->auth->getIdentity()->getId(),
                     'start' => $date->date('Y-m-d H:i:s',
-                            $date->mktime(0, 0, 0, $date->date('n', $time, false), 1, $date->date('Y', $time, false)),
-                            false, false),
+                        $date->mktime(0, 0, 0, $date->date('n', $time, false), 1, $date->date('Y', $time, false)),
+                        false, false),
                     'end' => $date->date('Y-m-d H:i:s',
-                            $date->mktime(23, 59, 59, $date->date('n', $time, false), $date->date('t', $time, false),
-                                $date->date('Y', $time, false)), false, false),
+                        $date->mktime(23, 59, 59, $date->date('n', $time, false), $date->date('t', $time, false),
+                            $date->date('Y', $time, false)), false, false),
                 ],
             ]);
         }
@@ -148,7 +151,8 @@ class IndexController extends ControllerBase
                     }
                 } catch (\Exception $e) {
                     $messages = array(
-                        'LOW_BALANCE' => sprintf('شما اعتبار کافی برای دریافت این ویدئو ندارید. می توانید از %s حجم بیشتری خرید نمایید.', '<a href="' . $this->url->get(['for' => 'shop']) . '">اینجا</a>'),
+                        'LOW_BALANCE' => sprintf('شما اعتبار کافی برای دریافت این ویدئو ندارید. می توانید از %s حجم بیشتری خرید نمایید.',
+                            '<a href="' . $this->url->get(['for' => 'shop']) . '">اینجا</a>'),
                         'NO_SERVER' => 'دریافت این فایل فعلا امکان پذیر نیست. لطفا لحطاتی بعد مجددا تلاش نمایید.',
                     );
                     $message = $e->getMessage();
@@ -367,20 +371,131 @@ class IndexController extends ControllerBase
             return;
         }
         $this->view->title = 'لیست ویدئوها';
+        $this->view->status = array(
+            'Waiting' => 'در انتظار پردازش',
+            'InProgress' => 'در حال دریافت',
+            'Transferring' => 'آماده سازی فایل',
+            'Failed' => 'خطا',
+            'Success' => 'موفق',
+        );
 
-        $currentPage = $this->dispatcher->getParam('page');
-        if ($currentPage<1) {
+        $currentPage = $this->dispatcher->getParam(0);
+        if ($currentPage < 1) {
             $currentPage = 1;
         }
-        $files = $this->auth->getIdentity()->getFiles()->toArray();
-//        $paginator = new PaginatorModel([
-//            'data' => $files,
-//            'limit' => 10,
-//            'page' => $currentPage
-//        ]);
-        var_dump(count($files));exit;
-        $this->view->records = $paginator->getPaginate();
+        $name = preg_replace('/(\s+)/', '%', $this->dispatcher->getParam(1));
+        if ($name) {
+            $files = Files::find([
+                'user_id = :user: AND label LIKE :name:',
+                'bind' => [
+                    'user' => $this->auth->getIdentity()->getId(),
+                    'name' => '%' . $name . '%',
+                ],
+                'order' => 'created_at',
+            ]);
+        } else {
+            $files = Files::find([
+                'user_id = :user:',
+                'bind' => [
+                    'user' => $this->auth->getIdentity()->getId(),
+                ],
+                'order' => 'created_at',
+            ]);
+        }
+
+        $paginator = new PaginatorModel([
+            'data' => $files,
+            'limit' => 4,
+            'page' => $currentPage
+        ]);
+        $this->view->page = $paginator->getPaginate();
+
+        $list = array();
+        $servers = Servers::find(['deleted_at = 0']);
+        if ($servers) {
+            foreach ($servers as $server) {
+                $list[$server->getId()] = $server;
+            }
+        }
+        $this->view->servers = $list;
+        unset($list, $servers);
     }
+
+    public function shopAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->title = 'خرید';
+
+        $back = $this->dispatcher->getParam('back');
+        if ($back) {
+            $gateway = '\\Shariftube\\GateWays\\' . $back;
+            if (class_exists($gateway)) {
+                $gateway = new $gateway;
+                try {
+                    $purchase = $gateway->back();
+                    if ($purchase) {
+                        if ($purchase->doPayment()) {
+                            $this->auth->authUserById($this->auth->getIdentity()->getId());
+                            $this->flash->success('پرداخت شما با موفقیت انجام شد.');
+                        } else {
+                            $this->flash->error('پرداخت شما انجام شد. اما به دلیل خطایی در سرور تا لحظاتی دیگر حجم خریداری شده به حسابتان منظور خواهد شد.');
+                        }
+                    } else {
+                        $this->flash->error('خطای ناشناخته. لطفا با پشتیبانی تماس بگیرید.');
+                    }
+                } catch (\Exception $e) {
+                    $this->flash->error($e->getMessage());
+                }
+            } else {
+                $this->flash->error('پرداخت شما پردازش نشد. لطفا با پشتیبانی تماس بگیرید.');
+            }
+        }
+
+        $id = $this->request->getPost('id');
+        if (!$back && $id > 0) {
+            $package = Packages::findFirst([
+                "id = :id: AND status = 'Enable'",
+                'bind' => [
+                    'id' => $id,
+                ],
+            ]);
+            if ($package && $package->price >= 1000) {
+
+                $purchase = new Purchases();
+                $purchase->user_id = $this->auth->getIdentity()->getId();
+                $purchase->package_id = $package->getId();
+                $purchase->amount = $package->price;
+                $purchase->gateway = 'Payline';
+                $purchase->status = 'Waiting';
+                try {
+                    if ($purchase->save() && $purchase->send()) {
+                        $this->view->disable();
+                    } else {
+                        $this->flash->error('عملیان پرداخت با مشکل روبرو شد. لطفا مجددا تلاش نمایید..');
+                    }
+                } catch (\Exception $e) {
+                    $this->flash->error($e->getMessage());
+                }
+            } else {
+                $this->flash->error('پکیج مورد نظر شمادر سیستم یافت نشد.');
+            }
+        }
+
+
+        $this->view->records = Packages::find([
+            "status = 'Enable'",
+            'order' => 'price',
+        ]);
+        if (!$this->view->records) {
+            $this->flash->warning('در حال حاضر هیچ پکیجی برای خرید وجود ندارد.');
+        }
+    }
+
+    
 
     public function logoutAction()
     {
