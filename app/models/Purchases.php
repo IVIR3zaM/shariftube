@@ -73,8 +73,12 @@ class Purchases extends BaseModel
         if (empty($package) || empty($user)) {
             return false;
         }
+
+        $transaction = $this->getDI()->getTransaction()->get();
+        $user->setTransaction($transaction);
         $user->quota += $package->quota;
         if (!$user->save()) {
+            $transaction->rollback();
             return false;
         }
         $this->status = 'Success';
@@ -86,11 +90,19 @@ class Purchases extends BaseModel
             $income->purchase_id = $this->getId();
             $income->percentage = $percentage;
             $income->amount = intval(($this->amount * $percentage) / 100);
-            if (!$this->save()) {
+            $income->setTransaction($transaction);
+            if (!$income->save()) {
+                $transaction->rollback();
                 return false;
             }
         }
 
-        return $this->save();
+        if (!$this->save()) {
+            $transaction->rollback();
+            return false;
+        }
+        $transaction->commit();
+
+        return true;
     }
 }

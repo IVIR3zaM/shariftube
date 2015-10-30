@@ -13,6 +13,6 @@ class Tickets extends BaseModel
     {
         parent::initialize();
         $this->belongsTo('user_id', 'Shariftube\Models\Users', 'id', ['alias' => 'User']);
-        $this->hasMany('id', 'Shariftube\Models\TicketReplays', 'user_id', ['alias' => 'TicketReplays']);
+        $this->hasMany('id', 'Shariftube\Models\TicketReplays', 'ticket_id', ['alias' => 'Replays']);
     }
 }

@@ -8,6 +8,7 @@ use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Shariftube\Auth\Auth;
 use Shariftube\Flash\Flash;
 use Shariftube\Mail\Mail;
@@ -17,6 +18,10 @@ use Shariftube\Curl\Curl;
 $di = new FactoryDefault();
 
 $di->setShared('config', $config);
+
+$di->setShared('transaction', function () {
+    return new TransactionManager();
+});
 
 $di->setShared('curl', function () {
     return new Curl();

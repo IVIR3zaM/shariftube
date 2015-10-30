@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 30, 2015 at 03:46 PM
+-- Generation Time: Oct 30, 2015 at 09:03 PM
 -- Server version: 5.5.35
 -- PHP Version: 5.4.45-2+deb.sury.org~precise+2
 
@@ -19,6 +19,27 @@ SET time_zone = "+00:00";
 --
 -- Database: `shariftube`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `announcements`
+--
+
+CREATE TABLE IF NOT EXISTS `announcements` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `announcements`
+--
+
+INSERT INTO `announcements` (`id`, `title`, `content`, `created_at`) VALUES
+(1, 'تکمیل شدن شریف تیوب', 'وبسایت شریف تیوب با پشتیبانی ار یوتیوب و ویمئو افتتاح خواهد شد.\r\nبا تشکر از همراهی شما', '2015-10-30 05:57:26');
 
 -- --------------------------------------------------------
 
@@ -337,7 +358,14 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `tickets`
+--
+
+INSERT INTO `tickets` (`id`, `user_id`, `title`, `status`, `modified_at`, `created_at`) VALUES
+(1, 2, 'مشکل ویمئو', 'Replay', '2015-10-30 17:08:49', '2015-10-30 16:04:07');
 
 -- --------------------------------------------------------
 
@@ -355,7 +383,17 @@ CREATE TABLE IF NOT EXISTS `ticket_replays` (
   PRIMARY KEY (`id`),
   KEY `ticket_id` (`ticket_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `ticket_replays`
+--
+
+INSERT INTO `ticket_replays` (`id`, `ticket_id`, `user_id`, `content`, `modified_at`, `created_at`) VALUES
+(1, 1, 2, 'سلام\r\nتست\r\nتشکر', '2015-10-30 16:04:07', '2015-10-30 16:04:07'),
+(2, 1, 1, 'آقا جان این تست شده است\r\nبرو عمویی', '2015-10-30 17:06:45', '2015-10-30 17:06:45'),
+(3, 1, 1, 'جواب گرفتی دیگه', '2015-10-30 17:07:49', '2015-10-30 17:07:49'),
+(4, 1, 1, 'خوب اینم قسمت پشتیبانی\r\nخسته نباشی برادر', '2015-10-30 17:08:49', '2015-10-30 17:08:49');
 
 -- --------------------------------------------------------
 
@@ -389,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `role`, `name`, `referral_code`, `referral_id`, `quota`, `used`, `remain`, `deleted_at`, `modified_at`, `created_at`) VALUES
-(1, 'm.reza.maghool@gmail.com', '$2a$08$j941zyDVtc6XJOhTIvwMDOj/GAbN350yaXyH1f76OdUjWwHw4KVhq', 'User', 'محمدرضا معقول2', 'm69', NULL, 40485760000, 112419921, 40373340079, '0000-00-00 00:00:00', '2015-10-30 12:08:59', '2015-10-23 08:25:20'),
+(1, 'm.reza.maghool@gmail.com', '$2a$08$j941zyDVtc6XJOhTIvwMDOj/GAbN350yaXyH1f76OdUjWwHw4KVhq', 'Admin', 'محمدرضا معقول', 'm69', NULL, 40485760000, 112419921, 40373340079, '0000-00-00 00:00:00', '2015-10-30 12:08:59', '2015-10-23 08:25:20'),
 (2, 'mreza.maghoul@gmail.com', '$2a$08$7TNHjDrnbfPU33Vte5XPKeXUzs.5V7MH6g7dV2i5YqpTAsnKj6PxG', 'User', 'تکرار من', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-23 08:48:18', '2015-10-23 08:48:18'),
 (3, 'farskid@gmail.com', '$2a$08$yHuEhc2kvmtVsknhkoUuU.4FJh7K4P.cTm81PDgrAxIDDPPMfARNS', 'User', 'farzad', NULL, 1, 0, 0, 0, '0000-00-00 00:00:00', '2015-10-25 07:25:00', '2015-10-25 07:25:00');
 

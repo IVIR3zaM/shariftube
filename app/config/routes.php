@@ -56,9 +56,10 @@ $router->add('/purchases/([0-9]*)', array(
     'page' => 1,
 ))->setName('purchases');
 
-$router->add('/support/', array(
+$router->add('/support/:params', array(
     'controller' => 'index',
     'action' => 'tickets',
+    'params' => 1,
 ))->setName('support');
 
 $router->add('/ticket/([0-9]*)', array(

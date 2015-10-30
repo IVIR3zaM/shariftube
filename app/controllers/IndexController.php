@@ -5,12 +5,15 @@ use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 use PHPHtmlParser\Dom;
+use Shariftube\Models\Announcements;
 use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
 use Shariftube\Models\Packages;
 use Shariftube\Models\Purchases;
 use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Servers;
+use Shariftube\Models\TicketReplays;
+use Shariftube\Models\Tickets;
 use Shariftube\Models\Users;
 use Shariftube\Models\Websites;
 
@@ -25,6 +28,30 @@ class IndexController extends ControllerBase
         $this->view->date = $date;
         if ($this->auth->getIdentity()) {
             $time = time();
+
+            if ($this->auth->getIdentity()->role == 'Admin') {
+                $tickets = Tickets::find([
+                    'status IN ({status:array})',
+                    'bind' => [
+                        'status' => ['Open', 'Replay', 'InProgress'],
+                    ],
+                    'order' => 'modified_at DESC',
+                ])->count();
+            } else {
+                $tickets = Tickets::find([
+                    'user_id = :user: AND status IN ({status:array})',
+                    'bind' => [
+                        'user' => $this->auth->getIdentity()->getId(),
+                        'status' => ['Answered'],
+                    ],
+                    'order' => 'modified_at DESC',
+                ])->count();
+            }
+            $this->view->open_tickets = $tickets;
+            $this->view->announcements = Announcements::find([
+                'order' => 'created_at DESC',
+                'limit' => 4
+            ]);
 
             $this->view->referral_count = Users::findByReferralId($this->auth->getIdentity()->getId())->count();
             $this->view->total_incomes = Incomes::sum([
@@ -542,6 +569,217 @@ class IndexController extends ControllerBase
         unset($list, $packages);
     }
 
+    public function ticketsAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->admin = $admin = $this->auth->getIdentity()->role == 'Admin' ? true : false;
+        $this->view->title = 'پشتیبانی';
+        $this->view->status = array(
+            'Open' => 'باز',
+            'Answered' => 'پاسخ داده شده',
+            'Replay' => 'پاسخ کاربر',
+            'InProgress' => 'در حال انجام',
+            'Closed' => 'بسته شده',
+        );
+
+        $currentPage = $this->dispatcher->getParam(0);
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+        $status = strtolower($this->dispatcher->getParam(1));
+        if (!in_array($status, ['open', 'all', 'closed'])) {
+            if ($admin) {
+                $status = 'open';
+            } else {
+                $status = 'all';
+            }
+        }
+        $this->dispatcher->setParam(1, $status);
+
+        switch ($status) {
+            case 'open':
+                $status = ['Open', 'Replay', 'InProgress'];
+                break;
+            case 'closed':
+                $status = ['Answered', 'Closed'];
+                break;
+            default:
+                $status = ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'];
+                break;
+        }
+        if ($admin) {
+            $tickets = Tickets::find([
+                'status IN ({status:array})',
+                'bind' => [
+                    'status' => $status,
+                ],
+                'order' => 'modified_at DESC',
+            ]);
+        } else {
+            $tickets = Tickets::find([
+                'user_id = :user: AND status IN ({status:array})',
+                'bind' => [
+                    'user' => $this->auth->getIdentity()->getId(),
+                    'status' => $status,
+                ],
+                'order' => 'modified_at DESC',
+            ]);
+        }
+
+
+        $paginator = new PaginatorModel([
+            'data' => $tickets,
+            'limit' => 10,
+            'page' => $currentPage
+        ]);
+        $this->view->page = $paginator->getPaginate();
+    }
+
+    public function ticketAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->status = array(
+            'Open' => 'باز',
+            'Answered' => 'پاسخ داده شده',
+            'Replay' => 'پاسخ کاربر',
+            'InProgress' => 'در حال انجام',
+            'Closed' => 'بسته شده',
+        );
+        $this->view->admin = $admin = $this->auth->getIdentity()->role == 'Admin' ? true : false;
+        $this->view->id = $id = $this->dispatcher->getParam('id');
+        if ($id > 0) {
+            $this->view->title = 'مشاهده تیکت';
+            $ticket = Tickets::findFirst([
+                'id = :id:',
+                'bind' => [
+                    'id' => $id,
+                ],
+            ]);
+            if ($ticket->user_id != $this->auth->getIdentity()->getId() && !$admin) {
+                $this->view->disable();
+                $this->response->redirect(['for' => 'support']);
+                return;
+            }
+            $this->view->ticket = $ticket;
+
+            if ($this->request->getPost('save')){
+                $error = array();
+
+                if ($ticket->user_id == $this->auth->getIdentity()->getId()) {
+                    $status = 'Replay';
+                } else {
+                    $status = 'Answered';
+                }
+
+                if ($admin && in_array($this->request->getPost('status'), ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'])) {
+                    $status = $this->request->getPost('status');
+                }
+
+                $content = $this->request->getPost('content');
+                if (mb_strlen($content, 'UTF-8') < 10) {
+                    $error[] = 'متن تیکت را به صورت کامل وارد نمایید.';
+                } elseif (mb_strlen($content, 'UTF-8') > 1000) {
+                    $error[] = 'توضیحات شما نباید بیشتر از ۱۰۰۰ کاراکتر باشد.';
+                }
+
+                if (empty($error)) {
+                    $transaction = $this->transaction->get();
+                    $ticket->setTransaction($transaction);
+                    $ticket->status = $status;
+                    if (!$ticket->save()) {
+                        $transaction->rollback();
+                        $error[] = 'پاسخ شما ذخیره نشد. لطفا لحظاتی بعد تلاش کنید.';
+                    }
+                }
+                if (empty($error)) {
+                    $replay = new TicketReplays();
+                    $replay->setTransaction($transaction);
+                    $replay->content = $content;
+                    $replay->user_id = $this->auth->getIdentity()->getId();
+                    $replay->ticket_id = $ticket->getId();
+                    if (!$replay->save()) {
+                        $transaction->rollback();
+                        $error[] = 'پاسخ شما ذخیره نشد. لطفا لحظاتی بعد تلاش کنید.';
+                    } else {
+                        $transaction->commit();
+                        $this->flash->success('با تشکر از پاسخ شما.');
+                    }
+                }
+                if (!empty($error)) {
+                    foreach ($error as $message) {
+                        $this->flash->error($message);
+                    }
+                }
+            }
+        } else {
+            $this->view->title = 'ارسال تیکت جدید';
+            if ($admin) {
+                $this->view->disable();
+                $this->response->redirect(['for' => 'support']);
+                return;
+            }
+            if ($this->request->getPost('save')){
+                $error = array();
+
+                $title = $this->request->getPost('title');
+                if (mb_strlen($title, 'UTF-8') < 10) {
+                    $error[] = 'عنوان تیکت باید حداقل ۱۰ کاراکتر باشد.';
+                }
+
+                $content = $this->request->getPost('content');
+                if (mb_strlen($content, 'UTF-8') < 10) {
+                    $error[] = 'متن تیکت را به صورت کامل وارد نمایید.';
+                } elseif (mb_strlen($content, 'UTF-8') > 1000) {
+                    $error[] = 'توضیحات شما نباید بیشتر از ۱۰۰۰ کاراکتر باشد.';
+                }
+
+                if (empty($error)) {
+                    $transaction = $this->transaction->get();
+                    $ticket = new Tickets();
+                    $ticket->setTransaction($transaction);
+                    $ticket->title = $title;
+                    $ticket->user_id = $this->auth->getIdentity()->getId();
+                    $ticket->status = 'Open';
+                    if (!$ticket->save()) {
+                        $transaction->rollback();
+                        $error[] = 'تیکت جدید ایجاد نشد. لطفا لحظاتی بعد تلاش کنید.';
+                    }
+                }
+                if (empty($error)) {
+                    $replay = new TicketReplays();
+                    $replay->setTransaction($transaction);
+                    $replay->content = $content;
+                    $replay->user_id = $this->auth->getIdentity()->getId();
+                    $replay->ticket_id = $ticket->getId();
+                    if (!$replay->save()) {
+                        $transaction->rollback();
+                        $error[] = 'تیکت جدید ایجاد نشد. لطفا لحظاتی بعد تلاش کنید.';
+                    } else {
+                        $transaction->commit();
+                        $this->flash->success('تیکت شما با موفقیت ارسال شد و به زودی توسط اپراتورهای پشتیبانی پاسخ داده خواهد شد.');
+                        $this->view->id = $id = $ticket->getId();
+                        $this->view->ticket = $ticket;
+                        $this->dispatcher->setParam('id', $id);
+                    }
+                }
+                if (!empty($error)) {
+                    foreach ($error as $message) {
+                        $this->flash->error($message);
+                    }
+                }
+            }
+        }
+
+    }
+
     public function settingsAction()
     {
         if (!$this->auth->getIdentity()) {
@@ -569,7 +807,8 @@ class IndexController extends ControllerBase
                 $error[] = 'لطفا نام خود را به صورت کامل وارد کنید.';
             }
 
-            if (!$this->security->checkHash($this->request->getPost('password'), $this->auth->getIdentity()->password)) {
+            if (!$this->security->checkHash($this->request->getPost('password'), $this->auth->getIdentity()->password)
+            ) {
                 $error[] = 'پسورد فعلی خود را اشتباه وارد کرده اید.';
             }
             if (empty($error)) {

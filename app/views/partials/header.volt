@@ -35,7 +35,7 @@
         <a{% if dispatcher.getActionName() == 'purchases' %} class="active"{% endif %} href="{{ url.get(['for':'purchases']) }}">لیست خریدهای گذشته</a>
     </li>
     <li>
-        <a{% if dispatcher.getActionName() == 'support' %} class="active"{% endif %} href="{{ url.get(['for':'support']) }}">پشتیبانی</a>
+        <a{% if dispatcher.getActionName() == 'support' %} class="active"{% endif %} href="{{ url.get(['for':'support']) }}">پشتیبانی{% if open_tickets > 0 %}({{ open_tickets|e }}){% endif %}</a>
     </li>
     <li>
         <a{% if dispatcher.getActionName() == 'settings' %} class="active"{% endif %} href="{{ url.get(['for':'settings']) }}">تنظیمات</a>

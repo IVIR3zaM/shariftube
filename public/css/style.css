@@ -13,13 +13,16 @@ a.disabled {
 .center {
   text-align: center;
 }
-.status-waiting {
+.status-waiting, .status-open {
   color: #babd3c;
 }
 .status-inprogress {
   color: #b67b0b;
 }
-.status-transferring,.status-paid {
+.status-replay{
+  color: #803b63;
+}
+.status-transferring,.status-paid, .status-answered {
   color: #293e80;
 }
 .status-failed,.status-cancelled {
@@ -27,6 +30,9 @@ a.disabled {
 }
 .status-success {
   color: #3d8027;
+}
+.status-closed {
+  color: black;
 }
 
 .alert {
