@@ -72,21 +72,21 @@ class MainTask extends Task
             }
 
             echo "Running cron '{$cron}'\n";
-            exec(BASE_DIR . "/cli Main {$cron} &> /dev/null &");
+            exec(BASE_DIR . "/cli Main {$cron} > /dev/null &");
         }
 
         echo "Running Fetch Threads\n";
         for ($i = 1; $i <= $this->config->cli->fetch_threads; $i++) {
             echo "Running fetch thread #{$i}\n";
-            exec(BASE_DIR . "/cli Main fetch {$i} &> /dev/null &");
+            exec(BASE_DIR . "/cli Main fetch {$i} > /dev/null &");
         }
         echo "Running Feed Threads\n";
         for ($i = 1; $i <= $this->config->cli->feed_threads; $i++) {
             echo "Running feed thread #{$i}\n";
-            exec(BASE_DIR . "/cli Main feed {$i} &> /dev/null &");
+            exec(BASE_DIR . "/cli Main feed {$i} > /dev/null &");
         }
         echo "Running Server transfer Threads\n";
-        exec(BASE_DIR . "/cli Main transfer &> /dev/null &");
+        exec(BASE_DIR . "/cli Main transfer > /dev/null &");
         echo "Finnish\n";
     }
 
@@ -347,6 +347,8 @@ class MainTask extends Task
                 $leecher = new $leecher;
                 $result = $leecher->getVideo($file);
                 if ($result === null) {
+                    $this->redis->del('sharifFile:' . $fileId);
+                    $this->redis->srem('sharifSelected', $fileId);
                     continue;
                 } elseif (!$result) {
                     if ($file->setFailed() && $file->save()) {
@@ -365,7 +367,6 @@ class MainTask extends Task
                 } else {
                     $this->redis->smove('sharifSelected', 'sharifFiles', $fileId);
                 }
-                die('OK');
             }
 
             sleep($this->config->cli->fetch_delays);

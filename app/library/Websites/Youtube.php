@@ -6,7 +6,7 @@ use Shariftube\Models\Files;
 
 class Youtube extends Component implements Website
 {
-    private $limit = 500000; // in bits
+    private $limit = 50000; // in bits
 
     public function getInfo($link = '')
     {
@@ -130,7 +130,7 @@ class Youtube extends Component implements Website
     {
         $endSize = ($file->size - 1);
         if ($file->fetched >= $endSize) {
-            return true;
+            return null;
         }
         $dir = date('Ymd', strtotime($file->created_at));
         $server = $file->getServer();
@@ -138,13 +138,13 @@ class Youtube extends Component implements Website
             return false;
         }
 
-        if (file_exists(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name)) {
-            $file->fetched = filesize(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
+        if (file_exists(APP_DIR . '/cache/files/' . $file->name)) {
+            $file->fetched = filesize(APP_DIR . '/cache/files/' . $file->name);
             if (!$file->save()) {
                 return false;
             }
         }
-        $fp = fopen(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 'a');
+        $fp = fopen(APP_DIR . '/cache/files/' . $file->name, 'ab');
         if (!$fp) {
             return false;
         }
@@ -172,6 +172,8 @@ class Youtube extends Component implements Website
             }
         } while (1);
         fclose($fp);
+        rename(APP_DIR . '/cache/files/' . $file->name,
+            APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
         chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
         return true;
     }

@@ -110,7 +110,7 @@ class IndexController extends ControllerBase
         }
 
         $this->view->title = 'درخواست ویدئو';
-        $this->view->link = $link = @base64_decode($this->dispatcher->getParam('link'));
+        $this->view->link = $link = vinixhash_decode($this->dispatcher->getParam('link'));
         $this->view->records = array();
         $this->view->label = '';
         $this->view->file_id = 0;
@@ -321,7 +321,7 @@ class IndexController extends ControllerBase
                             if (!isset($parse['q'])) {
                                 continue;
                             }
-                            $item['link'] = base64_encode($parse['q']);
+                            $item['link'] = vinixhash_encode($parse['q']);
                             $item['title'] = $li->find('h3 a')->text;
                             $item['date'] = strtotime($li->find('.st .f .nobr')[0]->text);
                             $item['description'] = strip_tags(substr($li->find('.st')->innerHtml,
@@ -391,7 +391,7 @@ class IndexController extends ControllerBase
                     'user' => $this->auth->getIdentity()->getId(),
                     'name' => '%' . $name . '%',
                 ],
-                'order' => 'created_at',
+                'order' => 'created_at DESC',
             ]);
         } else {
             $files = Files::find([
@@ -399,13 +399,13 @@ class IndexController extends ControllerBase
                 'bind' => [
                     'user' => $this->auth->getIdentity()->getId(),
                 ],
-                'order' => 'created_at',
+                'order' => 'created_at DESC',
             ]);
         }
 
         $paginator = new PaginatorModel([
             'data' => $files,
-            'limit' => 4,
+            'limit' => 10,
             'page' => $currentPage
         ]);
         $this->view->page = $paginator->getPaginate();
@@ -520,13 +520,13 @@ class IndexController extends ControllerBase
             'bind' => [
                 'user' => $this->auth->getIdentity()->getId(),
             ],
-            'order' => 'created_at',
+            'order' => 'created_at DESC',
         ]);
 
 
         $paginator = new PaginatorModel([
             'data' => $purchases,
-            'limit' => 4,
+            'limit' => 10,
             'page' => $currentPage
         ]);
         $this->view->page = $paginator->getPaginate();

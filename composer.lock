@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "270b565f5fa9b3cb2a590ef557ea4dba",
+    "content-hash": "9ef5f9ab068eeb22ca8de7b2bb3ed4f5",
     "packages": [
         {
             "name": "paquettg/php-html-parser",
@@ -12,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/paquettg/php-html-parser.git",
-                "reference": "aecc9a0e4a896f57c84d10cdaac7f4cc7f73a76a"
+                "reference": "690095176e8b1af93d53cc96ade03a277b3b71f8"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/paquettg/php-html-parser/zipball/690095176e8b1af93d53cc96ade03a277b3b71f8",
-                "reference": "aecc9a0e4a896f57c84d10cdaac7f4cc7f73a76a",
+                "reference": "690095176e8b1af93d53cc96ade03a277b3b71f8",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +54,7 @@
                 "html",
                 "parser"
             ],
-            "time": "2015-10-21 18:39:11"
+            "time": "2015-10-26 19:50:04"
         },
         {
             "name": "paquettg/string-encode",

@@ -22,7 +22,7 @@ include APP_DIR . '/config/loader.php';
 
 $di->setShared('config', $config);
 $di->setShared('redis', function() use ($config) {
-    return new PredisClient($config->application->redis_server);
+    return new PredisClient((array) $config->application->redis_server);
 });
 
 $di->setShared('curl', function () {

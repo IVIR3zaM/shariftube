@@ -169,12 +169,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/paquettg/php-html-parser.git",
-            "reference": "aecc9a0e4a896f57c84d10cdaac7f4cc7f73a76a"
+            "reference": "690095176e8b1af93d53cc96ade03a277b3b71f8"
         },
         "dist": {
             "type": "zip",
             "url": "https://api.github.com/repos/paquettg/php-html-parser/zipball/690095176e8b1af93d53cc96ade03a277b3b71f8",
-            "reference": "aecc9a0e4a896f57c84d10cdaac7f4cc7f73a76a",
+            "reference": "690095176e8b1af93d53cc96ade03a277b3b71f8",
             "shasum": ""
         },
         "require": {
@@ -186,7 +186,7 @@
             "phpunit/phpunit": "~4.8.0",
             "satooshi/php-coveralls": "~0.6.0"
         },
-        "time": "2015-10-21 18:39:11",
+        "time": "2015-10-26 19:50:04",
         "type": "library",
         "installation-source": "source",
         "autoload": {

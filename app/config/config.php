@@ -33,10 +33,15 @@ return new \Phalcon\Config(array(
         'publicUrl' => 'shariftube.ir',
         'cryptSalt' => 'BNKxkQBU0OimPgXJY8xJvGpd',
         'affiliate_percentage' => '30',
-        'redis_server' => 'tcp://127.0.0.1:6379',
+        'redis_server' => [
+            'host' => '127.0.0.1',
+            'port' => 6379,
+            'database' => 0,
+            'read_write_timeout' => 0,
+        ],
     ),
-    'gateway' =>array(
-        'Payline' =>[
+    'gateway' => array(
+        'Payline' => [
             'api_key' => '19f23-1e934-9c396-5d0b4-91ad32625d9db06dd97f364e48ca',
             'send_url' => 'http://payline.ir/payment/gateway-send',
             'payment_url' => 'http://payline.ir/payment/gateway-:id_get:',

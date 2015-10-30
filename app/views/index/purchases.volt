@@ -13,6 +13,7 @@
         <td>{{ packages[record.package_id].label|e }}</td>
         <td>{{ number_format(packages[record.package_id].price/10, 0) }}</td>
         <td>{{ number_format(packages[record.package_id].quota/1024/1024/1024, 2) }}GB</td>
+        <td>{{ date.date('Y-m-d H:i:s', record.created_at|strtotime)|e }}</td>
         <td class="status-{{ record.status|lower|e }}">{{ status[record.status]|e }}</td>
     </tr>
     {% endfor %}
@@ -20,6 +21,6 @@
 {% endif %}
 <div>درحال نمایش صفحه {{ page.current }} از {{ page.total_pages }}</div>
 <a {% if page.current == 1 %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases']) }}">صفحه اول</a>
-<a {% if page.current == page.before %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases','params':page.before]) }}">صفحه قبل</a>
-<a {% if page.current == page.next %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases','params':page.next]) }}">صفحه بعد</a>
-<a {% if page.current == page.last %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases','params':page.last]) }}">صفحه آخر</a>
+<a {% if page.current == page.before %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases','page':page.before]) }}">صفحه قبل</a>
+<a {% if page.current == page.next %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases','page':page.next]) }}">صفحه بعد</a>
+<a {% if page.current == page.last %}class="disabled" {% endif %}href="{{ url.get(['for':'purchases','page':page.last]) }}">صفحه آخر</a>

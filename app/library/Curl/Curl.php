@@ -39,6 +39,12 @@ class Curl extends Component
         if (!is_array($headers)) {
             $headers = array();
         }
+        if (isset($headers['No-Cache'])) {
+            unset($headers['No-Cache']);
+            $cache = false;
+        } else {
+            $cache = true;
+        }
         if (isset($headers['Post'])) {
             if (is_array($headers['Post'])) {
                 $post = array();
@@ -48,6 +54,7 @@ class Curl extends Component
                     $post[] = "{$i}={$v}";
                 }
                 $post = implode('&', $post);
+                $cache = false;
             } else {
                 $post = false;
             }
@@ -107,10 +114,14 @@ class Curl extends Component
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 //    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 //    curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+            curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
+
             $content = curl_exec($ch);
             $head = curl_getinfo($ch);
             curl_close($ch);
-            if (!$post && ($onlyhead
+            if ($cache && ($onlyhead
                     || strpos($head['content_type'], 'text/html') !== false
                     || strpos($head['content_type'], 'image/') !== false
                 )
@@ -140,16 +151,22 @@ class Curl extends Component
         } else {
             $content = substr($content, $head['header_size']);
         }
-        if (preg_match('/google\.com/',
-                $url) && preg_match('/Set\-Cookie\s*:\s*(?P<name>[^\=]+)\=(?P<value>[^\s\;]+)/i',
+        if (preg_match('/Set\-Cookie\s*:\s*(?P<name>[^\=]+)\=(?P<value>[^\s\;]+)/i',
                 $true_head, $match)
         ) {
-            $cookie = @unserialize(file_get_contents(APP_DIR . '/cache/google.cookie'));
-            if (!is_array($cookie)) {
-                $cookie = array();
+            if (preg_match('/google\.com/', $url)) {
+                $head['cookie'] = @unserialize(file_get_contents(APP_DIR . '/cache/google.cookie'));
+                if (!is_array($head['cookie'])) {
+                    $head['cookie'] = array();
+                }
+            } else {
+                $head['cookie'] = array();
             }
-            $cookie[$match['name']] = $match['value'];
-            file_put_contents(APP_DIR . '/cache/google.cookie', serialize($cookie));
+
+            $head['cookie'][$match['name']] = $match['value'];
+            if (preg_match('/google\.com/', $url)) {
+                file_put_contents(APP_DIR . '/cache/google.cookie', serialize($head['cookie']));
+            }
         }
         if (isset($head['url'])) {
             $url = $head['url'];

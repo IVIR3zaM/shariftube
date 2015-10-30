@@ -33,6 +33,8 @@ jQuery(function ($) {
             }
             if ($(this).attr('data-encrypt') == 'base64') {
                 val = Base64.encode(val);
+            } else if ($(this).attr('data-encrypt') == 'vinixhash') {
+                val = VinixHash.encode(val);
             }
             if (typeof $(this).attr('data-index') != 'undefined') {
                 index = $(this).attr('data-index');
@@ -55,10 +57,84 @@ jQuery(function ($) {
         $(a).get(0).click();
         return false;
     });
-    $('a.disabled').click(function(e) {
+    $('a.disabled').click(function (e) {
         e.preventDefault();
     });
 });
+
+
+var VinixHash = {
+    _keyStr: "abcdefghijklmnopqrstuvwxyz", encode: function (e) {
+        var t = "";
+        var c, s, n, l = this._keyStr.length;
+        var f = 0;
+        e = this._utf8_encode(e);
+        while (f < e.length) {
+            c = e.charCodeAt(f++);
+            s = c % l;
+            n = parseInt(c / l);
+            if (isNaN(s)) {
+                s = 0;
+            }
+            t = t + this._keyStr.charAt(s) + n;
+        }
+        return t
+    }, decode: function (e) {
+        var t = "";
+        var c, s, n, l = this._keyStr.length;
+        var f = 0;
+        e = e.replace(/[^A-Za-z0-9]/g, "");
+        while (f < e.length) {
+            s = this._keyStr.indexOf(e.charAt(f++));
+            n = parseInt(e.charAt(f++));
+            if (isNaN(n)) {
+                n = 0
+            }
+            c = (n * l) + s;
+            t = t + String.fromCharCode(c);
+        }
+        t = Base64._utf8_decode(t);
+        return t
+    }, _utf8_encode: function (e) {
+        e = e.replace(/\r\n/g, "\n");
+        var t = "";
+        for (var n = 0; n < e.length; n++) {
+            var r = e.charCodeAt(n);
+            if (r < 128) {
+                t += String.fromCharCode(r)
+            } else if (r > 127 && r < 2048) {
+                t += String.fromCharCode(r >> 6 | 192);
+                t += String.fromCharCode(r & 63 | 128)
+            } else {
+                t += String.fromCharCode(r >> 12 | 224);
+                t += String.fromCharCode(r >> 6 & 63 | 128);
+                t += String.fromCharCode(r & 63 | 128)
+            }
+        }
+        return t
+    }, _utf8_decode: function (e) {
+        var t = "";
+        var n = 0;
+        var r = c1 = c2 = 0;
+        while (n < e.length) {
+            r = e.charCodeAt(n);
+            if (r < 128) {
+                t += String.fromCharCode(r);
+                n++
+            } else if (r > 191 && r < 224) {
+                c2 = e.charCodeAt(n + 1);
+                t += String.fromCharCode((r & 31) << 6 | c2 & 63);
+                n += 2
+            } else {
+                c2 = e.charCodeAt(n + 1);
+                c3 = e.charCodeAt(n + 2);
+                t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+                n += 3
+            }
+        }
+        return t
+    }
+};
 
 // Create Base64 Object
 var Base64 = {
