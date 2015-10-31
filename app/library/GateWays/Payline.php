@@ -20,6 +20,7 @@ class Payline extends Component implements GateWay
                     'back' => 'Payline',
                 ]),
             ],
+            'No-Cache' => 1,
         ));
         if (empty($content)) {
             return false;
@@ -105,6 +106,7 @@ class Payline extends Component implements GateWay
                 'id_get' => $id_get,
                 'trans_id' => $trans_id,
             ],
+            'No-Cache' => 1,
         ));
         if (empty($content)) {
             throw new \Exception('پرداخت شما تایید نشد. لطفا همین صفحه را رفرش کنید.');

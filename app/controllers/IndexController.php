@@ -166,6 +166,7 @@ class IndexController extends ControllerBase
                 }
                 $file->label = $params->label;
                 $file->size = $params->size;
+                $file->uri = $link;
                 $file->link = $params->link;
                 $file->quality = $params->quality;
                 $file->is_3d = $params->is_3d ? 'Yes' : 'No';

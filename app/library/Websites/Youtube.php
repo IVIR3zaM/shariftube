@@ -6,7 +6,12 @@ use Shariftube\Models\Files;
 
 class Youtube extends Component implements Website
 {
-    private $limit = 50000; // in bits
+    private $limit = 70000; // in bits
+
+    public function __construct()
+    {
+        $this->limit = $this->getDI()->getConfig()->website->Youtube->size_limit;
+    }
 
     public function getInfo($link = '')
     {

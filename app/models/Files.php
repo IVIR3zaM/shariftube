@@ -10,6 +10,7 @@ class Files extends BaseModel
     public $type;
     public $label;
     public $size;
+    public $uri;
     public $link;
     public $quality;
     public $is_3d;

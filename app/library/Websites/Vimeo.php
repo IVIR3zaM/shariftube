@@ -8,18 +8,26 @@ class Vimeo extends Component implements Website
 {
     private $limit = 50000; // in bits
 
+    public function __construct()
+    {
+        $this->limit = $this->getDI()->getConfig()->website->Vimeo->size_limit;
+    }
     public function getInfo($link = '')
     {
         if (!preg_match('/(?P<code>[\d]+)$/', $link, $match)) {
             return false;
         }
         $link = "https://vimeo.com/{$match['code']}";
-        $agent = $this->getUserAgent();
-//        $agent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0';
-        $data = $this->curl->get($link, 60, 1, array(
-            'User-Agent' => $agent,
-            'No-Cache' => 1,
-        ));
+        $i = 3;
+        do {
+            $agent = $this->getUserAgent();
+            $data = $this->curl->get($link, 60, 1, array(
+                'User-Agent' => $agent,
+                'No-Cache' => 1,
+            ));
+            $i--;
+        } while(@$data['head']['http_code'] != 200 && $i>0);
+
         if (!preg_match('/data\-config\-url\s*=\s*"(?P<url>[^\'"]+)/i', $data['content'], $m)) {
             return false;
         }
@@ -155,8 +163,6 @@ class Vimeo extends Component implements Website
             }
             if (@substr($content['head']['http_code'], 0, 2) != '20') {
                 fclose($fp);
-                var_export($content['head']);
-
                 return false;
             }
             fwrite($fp, $content['content']);
