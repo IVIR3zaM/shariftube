@@ -6,7 +6,7 @@ use Shariftube\Models\Files;
 
 class Youtube extends Component implements Website
 {
-    private $limit = 70000; // in bits
+    private $limit = 50000; // in bits
 
     public function __construct()
     {
@@ -15,19 +15,122 @@ class Youtube extends Component implements Website
 
     public function getInfo($link = '')
     {
+        $t = array (
+            'dur' => '287.834',
+            'expire' => '1446297223',
+            'fexp' => '9408710,9414764,9416126,9417707,9422596',
+            'id' => '222d1bbb23d15f8b',
+            'initcwndbps' => '288750',
+            'ip' => '107.182.226.168',
+            'ipbits' => '0',
+            'itag' => '22',
+            'key' => 'yt6',
+            'lmt' => '1387395680552619',
+            'mime' => 'video/mp4',
+            'mm' => '31',
+            'mn' => 'sn-a8au-naje',
+            'ms' => 'au',
+            'mt' => '1446275558',
+            'mv' => 'm',
+            'pcm2cms' => 'yes',
+            'pl' => '25',
+            'ratebypass' => 'yes',
+            'requiressl' => 'yes',
+            'signature' => '08CD02F798612D71D5DFC2404A2D283E845D6036.37010BB6391B44BA53B98D85FC29CDD94912364D',
+            'source' => 'youtube',
+            'sparams' => 'dur,id,initcwndbps,ip,ipbits,itag,lmt,mime,mm,mn,ms,mv,pcm2cms,pl,ratebypass,requiressl,source,upn,expire',
+            'sver' => '3',
+            'upn' => 'CrLrSXVowII',
+        );
+        $td = array (
+            'c' => 'web',
+            'clen' => '3950783',
+            'cpn' => 'IxNkMLXD-S6iJQMM',
+            'cver' => 'as3',
+            'gir' => 'yes',
+            'initcwndbps' => '92500',
+            'ip' => '107.182.226.168',
+            'ipbits' => '0',
+            'keepalive' => 'yes',
+            'nh' => 'IgpwcjA0Lm9yZDEyKg8xOTkuMjI5LjIzMS4yMzM',
+            'range' => '884736-1327103',
+        );
+        $t2 = array (
+            'c' => 'web',
+            'clen' => '3950783',
+            'cpn' => 'IxNkMLXD-S6iJQMM',
+            'cver' => 'as3',
+            'dur' => '287.662',
+            'expire' => '1446296547',
+            'fexp' => '9406001,9407053,9407155,9408509,9408710,9414764,9415435,9415521,9416126,9416729,9417707,9418356,9419789,9419966,9420933,9421145,9421647,9421912,9422150,9422358,9422491,9422596',
+            'gir' => 'yes',
+            'id' => '222d1bbb23d15f8b',
+            'initcwndbps' => '92500',
+            'ip' => '107.182.226.168',
+            'ipbits' => '0',
+            'itag' => '134',
+            'keepalive' => 'yes',
+            'key' => 'yt6',
+            'lmt' => '1387395661236878',
+            'mime' => 'video/mp4',
+            'mm' => '31',
+            'mn' => 'sn-vgqsenes',
+            'ms' => 'au',
+            'mt' => '1446274898',
+            'mv' => 'm',
+            'nh' => 'IgpwcjA0Lm9yZDEyKg8xOTkuMjI5LjIzMS4yMzM',
+            'pl' => '25',
+            'range' => '884736-1327103',
+            'ratebypass' => 'yes',
+            'requiressl' => 'yes',
+            'signature' => 'ADE3A62ADEDCEDD77B1F7BF1F4F67B7BB8E10E78.3B9D97293DA6D6A1C08254BFE8104433CD7ED174',
+            'source' => 'youtube',
+            'sparams' => 'clen,dur,gir,id,initcwndbps,ip,ipbits,itag,keepalive,lmt,mime,mm,mn,ms,mv,nh,pl,requiressl,source,upn,expire',
+            'sver' => '3',
+            'upn' => 'ScxkZjuSfpU',
+        );
+//        ksort($t);
+//        ksort($t2);
+////        var_export($t);exit;
+//        var_export($t2);exit;
         if (!preg_match('/v=(?P<code>[\w\-]+)/', $link, $match)) {
             return false;
         }
         $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code']);
         $data = $data['content'];
+        $pos = stripos($data, 'watch_as3.swf');
+        if ($pos === false){
+            return false;
+        }
+
+        $test = true;
+        $player = array();
+        do {
+            $char = substr($data, --$pos, 1);
+            if ($char == '"' && substr($data, $pos-1, 1) != '\\') {
+                $test = false;
+            } else {
+                $player[] = $char;
+            }
+        } while($test);
+        krsort($player);
+        $player = str_replace('\\/', '/', implode('', $player)) . 'watch_as3.swf';
+
         if (!preg_match('/"url_encoded_fmt_stream_map"\s*:\s*"(?P<map>[^"]+)"/i', $data, $match)) {
             return false;
         }
         $urls = explode(',', str_replace('\u0026', '&', $match['map']));
 
+
+//        if (!preg_match('/signature\=(?P<signature>[a-z0-9\.]+)/i', $data, $match)) {
+//            return false;
+//        }
+//        $signature = $match['signature'];
+
+
         $title = "YouTube Video";
         if (preg_match('/\<title\>(?P<title>[^\<]+)/i', $data, $match)) {
-            $title = preg_replace('/\s*\-\s*YouTube/i', '', $match['title']);
+            $title = html_entity_decode(preg_replace('/\s*\-\s*YouTube/i', '', $match['title']));
         }
 
         $data = array();
@@ -36,7 +139,7 @@ class Youtube extends Component implements Website
             if (!isset($match['url'], $match['itag'])) {
                 continue;
             }
-            $data[$match['itag']] = $match['url'];
+            $data[$match['itag']] = $match['url'].'&signature='.$match['s'];
         }
         $formats = array(
             5 => ['flv', '240p', 0],
@@ -55,10 +158,13 @@ class Youtube extends Component implements Website
         foreach ($data as $itag => $url) {
             if (isset($formats[$itag])) {
                 $size = 0;
-                $content = $this->curl->get($url, 20, 1, array(), true);
+                $content = $this->curl->get($url, 20, 1, array(
+                    'Referer' => $player
+                ), true);
                 if (isset($content['head']['download_content_length'])) {
                     $size = intval($content['head']['download_content_length']);
                 }
+                var_dump($content);exit;
                 $videos[] = array(
                     'type' => $formats[$itag][0],
                     'size' => $size,
