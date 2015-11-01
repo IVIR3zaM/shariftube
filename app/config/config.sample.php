@@ -48,8 +48,6 @@ return new \Phalcon\Config(array(
             'back_url' => 'http://payline.ir/payment/gateway-result-second',
         ],
     ),
-<<<<<<< HEAD
-=======
     'website' => array(
         'Youtube' =>[
             'size_limit' => 50000, // in bits
@@ -58,7 +56,6 @@ return new \Phalcon\Config(array(
             'size_limit' => 50000, // in bits
         ],
     ),
->>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
     'cli' => array(
         'fetch_threads' => 1,
         'fetch_delays' => 5, // seconds
