@@ -1,0 +1,220 @@
+@font-face {
+  font-family: 'yekan';
+  src: url("../fonts/Yekan.eot");
+  src: url("../fonts/Yekan.eot?#iefix") format("embedded-opentype"), url("../fonts/Yekan.woff") format("woff"), url("../fonts/Yekan.ttf") format("truetype"), url("../fonts/Yekan.svg#svgFontName") format("svg");
+}
+.clearfix::before,
+form .form-group.form-group-multi::before,
+.clearfix::after,
+form .form-group.form-group-multi::after {
+  display: table;
+  content: ' ';
+}
+.clearfix::after,
+form .form-group.form-group-multi::after {
+  clear: both;
+}
+input::-moz-inner-focus,
+button::-moz-inner-focus {
+  padding: 0;
+  border: 0;
+}
+.btn {
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+.btn:focus,
+.btn .focus {
+  outline: 0 none;
+}
+.btn-green {
+  background-color: #00b446;
+  border: 1px solid #00b446;
+}
+.btn-green:hover,
+.btn-green:focus {
+  background-color: #007e31;
+  border-color: #007e31;
+}
+.btn-red {
+  background-color: #f01e50;
+  border: 1px solid #f01e50;
+}
+.btn-red:hover,
+.btn-red:focus {
+  background-color: #b10c33;
+  border-color: #b10c33;
+}
+input,
+textarea {
+  -webkit-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+  padding-right: 1em;
+  padding-left: 1em;
+}
+input:focus,
+textarea:focus {
+  border: 1px solid #f01e50;
+  box-shadow: none;
+}
+.input-ltr {
+  direction: ltr;
+}
+.input-gray {
+  background-color: #e5e5e5;
+}
+::-webkit-input-placeholder {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+}
+:-moz-placeholder {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+}
+::-moz-placeholder {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+}
+:-ms-input-placeholder {
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+}
+.alert {
+  background-color: #08c;
+  border: 0.0725em solid #08c;
+  border-radius: 0.0725em;
+  color: #fff;
+  margin-bottom: 1.5625em;
+  padding: 0.25em 0.5em;
+  position: relative;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+.alert,
+.alert.alert-success,
+.alert.alert-green {
+  background-color: #00d553;
+  border-color: #00b446;
+}
+.alert.alert-danger,
+.alert.alert-red {
+  background-color: #f23561;
+  border-color: #f01e50;
+}
+.alert.alert-warning,
+.alert.alert-yellow {
+  background-color: #ffd21a;
+  border-color: #ffcd00;
+}
+body {
+  font-family: yekan, sans-serif;
+  font-size: 100%;
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: bidi-override;
+  background: #e5e5e5 none repeat scroll 0 0;
+}
+.top-logo {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+.top-logo > img {
+  max-width: 50%;
+}
+.center-item {
+  padding: 1.5em;
+  max-width: 500px;
+  margin: 0 auto;
+}
+@media only screen and (max-width: 31.25em) {
+  .center-item {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+.bg-white {
+  background-color: #fff;
+}
+.form-condensed {
+  padding-right: 5em;
+  padding-left: 5em;
+}
+@media only screen and (max-width: 31.25em) {
+  .form-condensed {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
+form {
+  margin-bottom: 0;
+  padding: 1.25em 2.5em;
+}
+form .btn {
+  margin-bottom: 0;
+}
+@media only screen and (max-width: 31.25em) {
+  form {
+    padding-right: 1em;
+    padding-left: 1em;
+  }
+}
+form .form-head {
+  font-size: 3em;
+  color: #808080;
+  margin-bottom: 1.5em;
+}
+form .form-group {
+  position: relative;
+  margin-bottom: 1.5em;
+}
+form .form-group.form-group-st label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #f01e50;
+  color: #fff;
+  margin: 0;
+  line-height: 2;
+  padding-left: 1em;
+  padding-right: 1em;
+  height: 100%;
+  max-height: 100%;
+  padding-right: 1.5em;
+  padding-left: 1.5em;
+}
+form .form-group.form-group-round label,
+form .form-group.form-group-round input,
+form .form-group.form-group-round textarea {
+  border-radius: 20px;
+}
+form .form-group.form-group-multi > .multi-larger {
+  width: 55%;
+}
+form .form-group.form-group-multi > .multi-larger.float-right {
+  margin-left: 5%;
+}
+form .form-group.form-group-multi > .multi-larger.float-left {
+  margin-right: 5%;
+}
+form .form-group.form-group-multi > .multi-smaller {
+  width: 40%;
+}
+[data-tab-holder] [data-tab-role] {
+  display: none;
+}
+[data-tab-holder] [data-tab-role].active {
+  display: block;
+}

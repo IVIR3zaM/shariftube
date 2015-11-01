@@ -1,0 +1,88 @@
+#!/usr/bin/php
+<?php
+use Phalcon\CLI\Console as ConsoleApp;
+use Phalcon\Crypt;
+use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use Phalcon\DI\FactoryDefault\CLI as CliDI;
+use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
+use Predis\Client as PredisClient;
+use Shariftube\Curl\Curl;
+
+define('VERSION', '1.0.0');
+
+// Using the CLI factory default services container
+$di = new CliDI();
+
+define('BASE_DIR', __DIR__);
+define('APP_DIR', BASE_DIR . '/app');
+
+$config = include APP_DIR . '/config/config.php';
+
+include APP_DIR . '/config/loader.php';
+
+$di->setShared('config', $config);
+$di->setShared('redis', function() use ($config) {
+    return new PredisClient((array) $config->application->redis_server);
+});
+
+$di->setShared('curl', function () {
+    return new Curl();
+});
+$di->setShared('db', function () use ($config) {
+    return new DbAdapter(array(
+        'host' => $config->database->host,
+        'username' => $config->database->username,
+        'password' => $config->database->password,
+        'dbname' => $config->database->dbname,
+        'charset' => $config->database->charset,
+//        'options' => (array) $config->database->options,
+    ));
+});
+
+$di->setShared('modelsMetadata', function () use ($config) {
+    return new MetaDataAdapter(array(
+        'metaDataDir' => $config->application->cacheDir . 'metaData/'
+    ));
+});
+
+$di->setShared('crypt', function () use ($config) {
+    $crypt = new Crypt();
+    $crypt->setKey($config->application->cryptSalt);
+    return $crypt;
+});
+
+// Create a console application
+$console = new ConsoleApp();
+
+$di->setShared('console', $console);
+
+$console->setDI($di);
+
+/**
+ * Process the console arguments
+ */
+$arguments = array();
+foreach ($argv as $k => $arg) {
+    if ($k == 1) {
+        $arguments['task'] = 'Shariftube\\Tasks\\' . $arg;
+    } elseif ($k == 2) {
+        $arguments['action'] = $arg;
+    } elseif ($k >= 3) {
+        $arguments['params'][] = $arg;
+    }
+}
+if (!isset($arguments['task'])) {
+    $arguments['task'] = 'Shariftube\\Tasks\\Main';
+}
+
+// Define global constants for the current task and action
+define('CURRENT_TASK', (isset($argv[1]) ? $argv[1] : null));
+define('CURRENT_ACTION', (isset($argv[2]) ? $argv[2] : null));
+
+try {
+    // Handle incoming arguments
+    $console->handle($arguments);
+} catch (\Phalcon\Exception $e) {
+    echo $e->getMessage();
+    exit(255);
+}

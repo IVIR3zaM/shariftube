@@ -1,0 +1,23 @@
+.alert
+	background-color $kk_blue
+	border 0.0725em solid $kk_blue
+	border-radius 0.0725em
+	color #fff
+	margin-bottom 1.5625em
+	padding 0.25em 0.5em
+	position relative
+	font-size 0.9em
+	cursor pointer
+	&
+	&.alert-success,
+	&.alert-green
+		background-color lighten($green, 10%)
+		border-color $green
+	&.alert-danger,
+	&.alert-red
+		background-color lighten($red, 10%)
+		border-color $red
+	&.alert-warning,
+	&.alert-yellow
+		background-color lighten($yellow, 10%)
+		border-color $yellow

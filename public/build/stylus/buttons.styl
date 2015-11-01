@@ -1,0 +1,25 @@
+// Removing inner outline for FF
+input,
+button
+	&::-moz-inner-focus
+		padding 0
+		border 0
+.btn
+	transition all 0.2s ease-out
+	&:focus,
+	.focus
+		outline 0 none
+.btn-green
+	background-color $green
+	border 1px solid $green
+	&:hover,
+	&:focus
+		background-color darken($green, 30%)
+		border-color darken($green, 30%)
+.btn-red
+	background-color $red
+	border 1px solid $red
+	&:hover,
+	&:focus
+		background-color darken($red, 30%)
+		border-color darken($red, 30%)

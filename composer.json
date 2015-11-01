@@ -1,0 +1,28 @@
+{
+  "name": "ivir3zam/shariftube",
+  "description": "Video leecher for Sharif University Students",
+  "minimum-stability": "stable",
+  "license": "private",
+  "authors": [
+    {
+      "name": "Mohammad Reza Maghoul",
+      "email": "m.reza.maghool@gmail.com"
+    },
+    {
+      "name": "Farzad Usefzadeh",
+      "email": "farskid@gmail.com"
+    },
+    {
+      "name": "Ehsan Fathian",
+      "email": "ehsanfathian@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "ext-phalcon": ">=2.0.6",
+    "sallar/jdatetime": "dev-master",
+    "phpmailer/phpmailer": "v5.2.13",
+    "paquettg/php-html-parser": "dev-master",
+    "predis/predis": "dev-master"
+  }
+}
