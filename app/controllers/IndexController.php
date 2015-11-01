@@ -823,6 +823,11 @@ class IndexController extends ControllerBase
                     $this->flash->error('تغییر شما ذخیره نشد. لطفا مجددا تلاش نمایید.');
                 }
             }
+            if (!empty($error)) {
+                foreach($error as $message) {
+                    $this->flash->error($message);
+                }
+            }
         }
     }
 
