@@ -8,13 +8,46 @@ class Youtube extends Component implements Website
 {
     private $limit = 50000; // in bits
 
+<<<<<<< HEAD
+=======
+    public function __construct()
+    {
+        $this->limit = $this->getDI()->getConfig()->website->Youtube->size_limit;
+    }
+
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
     public function getInfo($link = '')
     {
         if (!preg_match('/v=(?P<code>[\w\-]+)/', $link, $match)) {
             return false;
         }
+<<<<<<< HEAD
         $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code']);
         $data = $data['content'];
+=======
+        $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code'], 40,1, [
+            'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
+        ]);
+        $data = $data['content'];
+        $pos = stripos($data, 'watch_as3.swf');
+        if ($pos === false){
+            return false;
+        }
+
+        $test = true;
+        $player = array();
+        do {
+            $char = substr($data, --$pos, 1);
+            if ($char == '"' && substr($data, $pos-1, 1) != '\\') {
+                $test = false;
+            } else {
+                $player[] = $char;
+            }
+        } while($test);
+        krsort($player);
+        $player = str_replace('\\/', '/', implode('', $player)) . 'watch_as3.swf';
+
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
         if (!preg_match('/"url_encoded_fmt_stream_map"\s*:\s*"(?P<map>[^"]+)"/i', $data, $match)) {
             return false;
         }
@@ -22,7 +55,11 @@ class Youtube extends Component implements Website
 
         $title = "YouTube Video";
         if (preg_match('/\<title\>(?P<title>[^\<]+)/i', $data, $match)) {
+<<<<<<< HEAD
             $title = preg_replace('/\s*\-\s*YouTube/i', '', $match['title']);
+=======
+            $title = html_entity_decode(preg_replace('/\s*\-\s*YouTube/i', '', $match['title']), ENT_QUOTES, 'UTF-8');
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
         }
 
         $data = array();
@@ -50,7 +87,14 @@ class Youtube extends Component implements Website
         foreach ($data as $itag => $url) {
             if (isset($formats[$itag])) {
                 $size = 0;
+<<<<<<< HEAD
                 $content = $this->curl->get($url, 20, 1, array(), true);
+=======
+                $content = $this->curl->get($url, 20, 1, [
+                    'Referer' => $player,
+                    'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
+                ], true);
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
                 if (isset($content['head']['download_content_length'])) {
                     $size = intval($content['head']['download_content_length']);
                 }
@@ -157,7 +201,14 @@ class Youtube extends Component implements Website
             if ($end > $endSize) {
                 $end = $endSize;
             }
+<<<<<<< HEAD
             $content = $this->curl->get($file->link, 9999, 1, array('Range' => "bytes={$start}-{$end}"));
+=======
+            $content = $this->curl->get($file->link, 9999, 1, [
+                'Range' => "bytes={$start}-{$end}",
+                'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0',
+            ]);
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
             if (@substr($content['head']['http_code'], 0, 2) != '20') {
                 fclose($fp);
                 return false;

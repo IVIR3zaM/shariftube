@@ -166,6 +166,7 @@ class IndexController extends ControllerBase
                 }
                 $file->label = $params->label;
                 $file->size = $params->size;
+                $file->uri = $link;
                 $file->link = $params->link;
                 $file->quality = $params->quality;
                 $file->is_3d = $params->is_3d ? 'Yes' : 'No';
@@ -257,7 +258,7 @@ class IndexController extends ControllerBase
                     $websites[$domain] = $item->name;
                 }
             }
-            $link = 'http://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
+            $link = 'http://www.google.com/search?hl=en&q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
                     $websites) ? '+site%3A' . urlencode(array_search($this->view->website,
                         $websites)) : '') . '&num=50&tbm=vid';
             if ($this->view->start > 0) {
@@ -820,6 +821,11 @@ class IndexController extends ControllerBase
                     $this->flash->success('تغییرات شما با موفقیت ذخیره شد.');
                 } else {
                     $this->flash->error('تغییر شما ذخیره نشد. لطفا مجددا تلاش نمایید.');
+                }
+            }
+            if (!empty($error)) {
+                foreach($error as $message) {
+                    $this->flash->error($message);
                 }
             }
         }

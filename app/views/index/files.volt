@@ -13,7 +13,11 @@
             <th>کیفیت</th>
             <th>وضعیت</th>
             <th>تاریخ دریافت</th>
+<<<<<<< HEAD
             <th>دانلود</th>
+=======
+            <th>تنظیمات</th>
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
         </tr>
         {% for record in page.items %}
         <tr>
@@ -25,9 +29,14 @@
             <td>
                 {% if record.status == 'Success' and servers[record.server_id] is defined %}
                 <a href="{{ record.getFinalLink()|e }}">دانلود</a>
+<<<<<<< HEAD
                 {% else %}
                 -
                 {% endif %}
+=======
+                {% endif %}
+                <a href="{{ url.get(['for':'link','link':record.uri|vinixhash_encode]) }}">دریافت مجدد</a>
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
             </td>
         </tr>
         {% endfor %}

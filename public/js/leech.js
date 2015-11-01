@@ -48,7 +48,10 @@ jQuery(function ($) {
                 index++;
             }
         }
+<<<<<<< HEAD
         console.log(targetList);
+=======
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
         link = link + targetList.join('/');
         var a = $('<a>');
         $(a).attr('href', link);

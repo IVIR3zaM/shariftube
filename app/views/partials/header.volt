@@ -10,3 +10,4 @@
     <a href="{{ url.get(['for':'shop']) }}">خرید حجم</a>
     <a href="{{ url.get(['for':'logout']) }}">خروج</a>
 </div>
+</div>

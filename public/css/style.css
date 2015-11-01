@@ -34,11 +34,41 @@ a.disabled {
 .status-closed {
   color: black;
 }
+<<<<<<< HEAD
+=======
+
+.alert {
+  margin: 2px auto;
+  padding: 5px;
+  text-align: center;
+  width: 50%;
+  font-weight: bold;
+}
+
+.alert-danger {
+  background-color: #ff273c;
+  color: white;
+}
+
+.alert-success {
+  background-color: #287e39;
+  color: white;
+}
+
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
 .alert-notice {
   background-color: #837fb3;
   color: white;
 }
 
+<<<<<<< HEAD
+=======
+.alert-warning {
+  background-color: #9b5615;
+  color: white;
+}
+
+>>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
 .panel-right {
   float: right;
 }
