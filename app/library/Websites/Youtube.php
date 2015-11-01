@@ -47,7 +47,7 @@ class Youtube extends Component implements Website
 
         $title = "YouTube Video";
         if (preg_match('/\<title\>(?P<title>[^\<]+)/i', $data, $match)) {
-            $title = html_entity_decode(preg_replace('/\s*\-\s*YouTube/i', '', $match['title']));
+            $title = html_entity_decode(preg_replace('/\s*\-\s*YouTube/i', '', $match['title']), ENT_QUOTES, 'UTF-8');
         }
 
         $data = array();

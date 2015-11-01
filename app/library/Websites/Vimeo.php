@@ -47,8 +47,8 @@ class Vimeo extends Component implements Website
         $cookie = implode('; ', $list);
         unset($list);
         $title = 'Vimeo Video';
-        if (preg_match('/\<h4\>(?P<title>[^\<]+)/i', $data['content'], $m)) {
-            $title = preg_replace('/Download\s*/i', '', $m['title']);
+        if (preg_match('/\<title\>(?P<title>[^\<]+)/i', $data['content'], $m)) {
+            $title = html_entity_decode(preg_replace('/\s*(on)?\s*vimeo/i', '', $m['title']), ENT_QUOTES, 'UTF-8');
         }
         $data = $this->curl->get($url, 60, 1, array(
             'Referer' => $link,
