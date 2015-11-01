@@ -258,7 +258,7 @@ class IndexController extends ControllerBase
                     $websites[$domain] = $item->name;
                 }
             }
-            $link = 'http://www.google.com/search?q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
+            $link = 'http://www.google.com/search?hl=en&q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
                     $websites) ? '+site%3A' . urlencode(array_search($this->view->website,
                         $websites)) : '') . '&num=50&tbm=vid';
             if ($this->view->start > 0) {
