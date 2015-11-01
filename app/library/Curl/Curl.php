@@ -115,13 +115,8 @@ class Curl extends Component
 //    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 //    curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
 
-<<<<<<< HEAD
-            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-            curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
-=======
 //            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
 //            curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
->>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
 
             $content = curl_exec($ch);
             $head = curl_getinfo($ch);
@@ -178,8 +173,4 @@ class Curl extends Component
         }
         return array('head' => $head, 'content' => $content, 'url' => $url);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> a898a344184b82791430e9bcd7c8508a952025a0

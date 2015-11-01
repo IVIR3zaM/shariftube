@@ -77,10 +77,7 @@ class Purchases extends BaseModel
         $transaction = $this->getDI()->getTransaction()->get();
         $user->setTransaction($transaction);
         $user->quota += $package->quota;
-<<<<<<< HEAD
-=======
         $user->remain += $package->quota;
->>>>>>> a898a344184b82791430e9bcd7c8508a952025a0
         if (!$user->save()) {
             $transaction->rollback();
             return false;
