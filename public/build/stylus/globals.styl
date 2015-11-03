@@ -1,10 +1,18 @@
 body
 	font-family yekan, sans-serif
-	font-size 100%
+	font-size 120%
 	direction rtl
 	text-align right
 	unicode-bidi bidi-override
-	background $kk_light_gray none repeat scroll 0 0
+	background-color $kk_light_gray
+.flex
+	display flex
+	flex-direction row-reverse
+	flex-wrap wrap
+.text-en
+	font-family "Helvetica Neue",Helvetica,Arial,sans-serif
+.text-ltr
+	direction ltr
 .top-logo
 	font-size 2em
 	margin-bottom 20px
@@ -19,55 +27,311 @@ body
 		padding-right 0
 		padding-left 0
 .bg-white
-	background-color #FFFFFF
-.form-condensed
-	padding-right 5em
-	padding-left 5em
-	@media only screen and (max-width: (500 / 16em))
-		padding-left 1em
-		padding-right 1em
-form
+	background-color #fff
+// Images
+.img-block
+	max-width 100%
+	max-height 100%
+	display block
+.img-rounded
+	border-radius 50%
+// Badges
+.badge
+	display inline-block
+	padding .35em .75em
+	color $kk_light_gray
+	&.badge-red,
+	&.badge-danger
+		background-color $red
+		color #fff
+	&.badge-rounded
+			border-radius 50%
+	&.badge-support
+		padding-right .55em
+		padding-left .55em
+// Top Navbar
+.dashboard-state
+	padding-top 8em
+	@media (max-width: 670px)
+		padding-top 2em
+.navbar-top
+	background-color #fff
+	padding .5em 2em
 	margin-bottom 0
-	.btn
-		margin-bottom 0
-	padding 1.25em 2.5em
-	@media only screen and (max-width: (500 / 16em))
-		padding-right 1em
-		padding-left 1em
-	.form-head
-		font-size 3em
-		color $kk_gray
-		margin-bottom 1.5em
-	.form-group
-		position relative
-		margin-bottom 1.5em
-		&.form-group-st
-			label
+	@extend .flex
+	> *
+		height 80px
+		max-height 80px
+		@media (max-width: 560px)
+			max-height 500px
+			height auto
+	.logo-top-navbar
+		height 65px
+		height calc(80px - 1em)
+	.user-area-avatar,
+	.user-area-name,
+	.user-quota-progress,
+	.user-quota-buy
+		margin-right 10px
+		margin-left 10px
+		float right
+		@media (max-width: 860px)
+			margin-left 0
+		@media (max-width: 560px)
+			width 50%
+			margin-right 0 !important
+	.user-area-inner,
+	.user-quota-inner
+		float right
+	@media (max-width: 768px)
+		.user-area-inner
+			float right
+		.user-quota-inner
+			float left
+	@media (max-width: 560px)
+		.user-area-inner,
+		.user-quota-inner
+			float none
+			margin-bottom 20px
+	.user-quota
+		.user-quota-buy
+			margin-top 2em
+			@media (max-width: 560px)
+				text-align left
+				margin-top 0
+				> a
+					font-size 1em
+					position relative
+					top 5px
+		.user-quota-progress
+			margin-top 1.5em
+			height 40px
+			line-height 40px
+			text-align center
+			font-size 1.25em
+			padding 0
+			position relative
+			@media (max-width: 560px)
+				margin 0 auto
+			.bar
+				border 1px solid $kk_light_gray
 				position absolute
-				right 0
 				top 0
-				background-color $red
-				color #fff
-				margin 0
-				line-height 2
-				padding-left 1em
-				padding-right 1em
+				right 0
 				height 100%
-				max-height 100%
-				padding-right 1.5em
-				padding-left 1.5em
-		&.form-group-round
-			label,
-			input,
-			textarea
-				border-radius 20px
-		&.form-group-multi
-			@extend .clearfix
-			> .multi-larger
-				width 55%
-				&.float-right
-					margin-left 5%
-				&.float-left
-					margin-right 5%
-			> .multi-smaller
-				width 40%
+				background-color #fff;
+				transition all .5s ease-out
+				border-top-right-radius .5em
+				border-bottom-right-radius .5em
+			#info
+				position absolute
+				top 0
+				left 50%
+				transform translate3d(-50%,0,0)
+				color #272727
+				width 100%
+			.quota-progress-bar
+				position relative
+				width 210px
+				height 40px
+				@media (max-width: 860px)
+					width 160px
+				@media (max-width: 560px)
+					width 140px
+				.info
+					width 100%
+					height 40px
+					border-radius .5em
+	.user-area
+		.user-area-name
+			margin-top 1.75em
+			font-size 1.5em
+		.user-area-avatar
+			position relative
+			margin-top 1em
+			@media (max-width: 860px)
+				margin-right 0
+			@media (max-width: 560px)
+				text-align center
+			.user-area-logout
+				position absolute
+				top 0
+				right -10px
+				padding 5px 7px
+				@media (max-width: 560px)
+					right 50%
+					transform translate3d(40px,0,0)
+.logo
+	text-align left
+	@media (max-width: 768px)
+		text-align center
+		img
+			display inline
+	@media (max-width: 560px)
+		margin-bottom 20px
+.top-links
+	border-bottom 1px solid #fff
+	background-color rgba(255,255,255,0.5)
+	@media (max-width: 1120px)
+		> div
+			padding 0
+	.list-top-links
+		max-width 1020px
+		display block
+		margin 0 auto
+		padding-right 0
+		padding-left 0
+		padding-top 2em
+		padding-bottom 2em
+		text-align center
+		> li
+			width 14%
+			width calc(100% / 7)
+			text-align center
+			float right
+			@media (max-width: 1120px)
+				float none
+				display inline-block
+				width auto
+				margin-right 5px
+				margin-left 5px
+			@media (max-width: 560px)
+				margin-bottom 10px
+			> a,
+			.fake-link
+				text-decoration none
+				color $kk_gray
+				&:hover,
+				&:focus,
+				&.active
+					color $kk_blue
+					outline 0 none
+		&.is-referral
+			> li
+				width 12.5%
+				width calc(100% / 8)
+				@media (max-width: 1120px)
+					float none
+					display inline-block
+					width auto
+					margin-right 5px
+					margin-left 5px
+				@media (max-width: 560px)
+					margin-bottom 10px
+				.dropdown-menu
+					box-shadow none
+					left -50%
+					> li
+						cursor pointer
+						padding 0 .5em
+						text-align right
+.main-section
+	padding-right 20em
+	padding-left 20em
+	@media (max-width: 1200px)
+		padding-right 12em
+		padding-left 12em
+	@media (max-width: 1200px)
+		padding-right 6em
+		padding-left 6em
+	@media (max-width: 992px)
+		padding-left 15px
+		padding-right 15px
+.search-bar
+	.form-control
+		border-radius 0
+		font-weight 700
+	.input-group-btn
+		font-size inherit
+		.btn-search
+			background-color $red
+			padding-top 8.75px
+			padding-bottom 8.75px
+			min-width 125px
+			height 46px
+			@media (max-width: 500px)
+				min-width auto
+.input-lg
+	@media (max-width: 500px)
+		font-size 15px
+	
+.select-item
+	@media (max-width: 992px)
+		float none
+		width auto
+		display inline-block
+		margin 0 5px
+		padding-right 0
+		padding-left 0
+	@media (max-width: 670px)
+		width 310px
+		width calc(50% - 20px)
+		margin 0 10px 10px 0
+		float right
+.searchbar-item
+	@media (max-width: 992px)
+		padding-right 5px
+		padding-left 0
+.searchbar-select
+	appearance none
+	position relative
+	transition background-color 0.3s ease-out
+	cursor pointer
+	&:hover
+		background-color $kk_light_gray
+.list-records
+	padding 0
+	> li
+		padding-bottom 1em
+		margin-bottom 10px
+		.record
+			background-color #fff
+			height 200px
+			padding 1em
+			.record-title,
+			.record-desc
+				margin .25em auto
+			.record-link
+				font-size 1em
+.footer
+	position absolute
+	bottom 0
+	left 0
+	width 100%
+	@media (max-width: 800px)
+		position relative
+	.navbar-footer
+		@extend .flex
+		margin-bottom 0
+		align-items center
+		border-top 1px solid #fff
+		background-color rgba(255,255,255,0.3)
+		.copyright
+			@media (max-width: 768px)
+				margin-top 20px
+		.navbar-footer-support
+			ul
+				@extend .flex
+				margin 0
+				padding 0
+				font-size 1.5em
+				@media (max-width: 768px)
+					display block
+					padding-top 20px
+				> li
+					.support-item
+						border-radius 50%
+						background-color $kk_black
+						color #fff
+						width 40px
+						height 40px
+						display table-cell
+						vertical-align middle
+						text-align center
+		.carousel-control
+			color $kk_black
+		.carousel-inner
+			padding-right 0
+			margin 0
+			.item
+				text-align center

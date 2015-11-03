@@ -1,0 +1,57 @@
+.form-condensed
+	padding-right 5em
+	padding-left 5em
+	@media only screen and (max-width: (500 / 16em))
+		padding-left 1em
+		padding-right 1em
+form
+	margin-bottom 0
+	.btn
+		margin-bottom 0
+	padding 1.25em 2.5em
+	@media only screen and (max-width: (500 / 16em))
+		padding-right 1em
+		padding-left 1em
+	.form-head
+		font-size 4em
+		color $kk_gray
+		margin-bottom 1.5em
+	.form-group
+		position relative
+		margin-bottom 1.5em
+		input[type="text"]
+			width 100%
+			display inline-block
+		&.form-group-st
+			label
+				position absolute
+				right 0
+				top 0
+				background-color $red
+				color #fff
+				margin 0
+				line-height 2
+				padding-left 1em
+				padding-right 1em
+				height 100%
+				max-height 100%
+				padding-right 2em
+				padding-left 2em
+				font-size 1.25em
+		&.form-group-round
+			label,
+			input,
+			textarea
+				border-radius 20px
+		&.form-group-multi
+			@extend .clearfix
+			> .multi-larger
+				width 50%
+				height 40px
+				&.float-right
+					margin-left 5%
+				&.float-left
+					margin-right 5%
+			> .multi-smaller
+				width 40%
+				height 40px

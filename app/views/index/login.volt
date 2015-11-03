@@ -1,5 +1,5 @@
 <!-- Top Logo -->
-<div class="top-logo">
+<div class="top-logo text-center">
     <img src="{{ url.getBaseUri() }}images/logo.png" alt="SharifTube">
 </div>
 
@@ -51,7 +51,7 @@
         </div>
         {{ flash.output() }}
         <div class="form-group">
-            <input class="btn btn-green fa" type="submit" name="signup" value="&#xf00c">
+            <input class="btn btn-green btn-block fa" type="submit" name="signup" value="&#xf00c">
         </div>
         <div class="form-group text-left">
             <a data-tab-trigger="#login" href="#" type="button">بازگشت</a>
@@ -66,7 +66,7 @@
             <input class="form-control input-ltr input-gray" type="text" name="email">
         </div>
         <div class="form-group">
-            <input class="btn btn-green fa" type="submit" name="forgot" value="&#xf00c">
+            <input class="btn btn-green btn-block fa" type="submit" name="forgot" value="&#xf00c">
         </div>
         {{ flash.output() }}
         <div class="form-group text-left">
