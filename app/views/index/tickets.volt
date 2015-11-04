@@ -1,20 +1,38 @@
-{{ flash.output() }}
-<ul>
-    {% if !admin %}<li><a href="{{ url.get(['for':'ticket']) }}">ارسال تیکت جدید</a></li>{% endif %}
-    <li><a href="{{ url.get(['for':'support','params':'1/open']) }}">تمامی تیکت های باز</a></li>
-    <li><a href="{{ url.get(['for':'support','params':'1/all']) }}">تمامی تیکت ها</a></li>
-    <li><a href="{{ url.get(['for':'support','params':'1/closed']) }}">تمامی تیکت های بسته شده</a></li>
-</ul>
-<div>تعداد {{ page.total_items }} مورد موجود است.</div>
+<div class="main-section">
+    {% if (flash.output()) %}
+    <div class="row">
+        <div class="col-xs-6 col-xs-offset-3">
+            <p class="alert alert-lg">{{ flash.output() }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row text-center form-group">
+        <ul class="list-unstyled list-inline">
+            {% if !admin %}
+            <!-- Should not be present when not admin -->
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'ticket']) }}">ارسال تیکت جدید</a></li>
+            <!-- // -->
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'support','params':'1/open']) }}">تمامی تیکت های باز</a></li>
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'support','params':'1/all']) }}">تمامی تیکت ها</a></li>
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'support','params':'1/closed']) }}">تمامی تیکت های بسته شده</a></li>
+            {% else %}
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'support','params':'1/open']) }}">تمامی تیکت های باز</a></li>
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'support','params':'1/all']) }}">تمامی تیکت ها</a></li>
+            <li><a class="btn btn-success btn-sm" href="{{ url.get(['for':'support','params':'1/closed']) }}">تمامی تیکت های بسته شده</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+<div class="form-group text-center">تعداد {{ page.total_items }} مورد موجود است.</div>
 {% if page.items|length %}
-<table>
+<table class="table table-striped table-hover text-center">
     <tr>
-        <th>عنوان</th>
+        <th class="text-center">عنوان</th>
         {% if admin %}
-        <th>کاربر</th>
+        <th class="text-center">کاربر</th>
         {% endif %}
-        <th>وضعیت</th>
-        <th>آخرین جواب</th>
+        <th class="text-center">وضعیت</th>
+        <th class="text-center">آخرین جواب</th>
     </tr>
     {% for record in page.items %}
     <tr>
@@ -34,8 +52,10 @@
     {% endfor %}
 </table>
 {% endif %}
-<div>درحال نمایش صفحه {{ page.current }} از {{ page.total_pages }}</div>
-<a {% if page.current == 1 %}class="disabled" {% endif %}href="{{ url.get(['for':'support']) }}">صفحه اول</a>
-<a {% if page.current == page.before %}class="disabled" {% endif %}href="{{ url.get(['for':'support','params':implode('/',[page.before, dispatcher.getParam(1)|url_encode])]) }}">صفحه قبل</a>
-<a {% if page.current == page.next %}class="disabled" {% endif %}href="{{ url.get(['for':'support','params':implode('/',[page.next, dispatcher.getParam(1)|url_encode])]) }}">صفحه بعد</a>
-<a {% if page.current == page.last %}class="disabled" {% endif %}href="{{ url.get(['for':'support','params':implode('/',[page.last, dispatcher.getParam(1)|url_encode])]) }}">صفحه آخر</a>
+<div class="form-group text-center">درحال نمایش صفحه {{ page.current }} از {{ page.total_pages }}</div>
+<div class="form-group btn-group-st row text-center">
+    <a class="btn btn-info btn-sm {% if page.current == 1 %}disabled" {% endif %}href="{{ url.get(['for':'support']) }}">صفحه اول</a>
+    <a class="btn btn-info btn-sm {% if page.current == page.before %}disabled" {% endif %}href="{{ url.get(['for':'support','params':implode('/',[page.before, dispatcher.getParam(1)|url_encode])]) }}"><i class="fa fa-chevron-right"></i> صفحه قبل</a>
+    <a class="btn btn-info btn-sm {% if page.current == page.next %}disabled" {% endif %}href="{{ url.get(['for':'support','params':implode('/',[page.next, dispatcher.getParam(1)|url_encode])]) }}">صفحه بعد <i class="fa fa-chevron-left"></i></a>
+    <a class="btn btn-info btn-sm {% if page.current == page.last %}disabled" {% endif %}href="{{ url.get(['for':'support','params':implode('/',[page.last, dispatcher.getParam(1)|url_encode])]) }}">صفحه آخر</a>
+</div>

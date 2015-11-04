@@ -21,7 +21,7 @@
                 </div>
             </div>
             <!-- Main -->
-            <div class="container">
+            <div class="container main-container">
                 {% if dispatcher.getActionName() in ['login', 'route404'] %}
                     {{ '<div class="row center-item">' }}
                 {% else %}
@@ -30,9 +30,11 @@
                 <div class="col-xs-12">
                     {{ content() }}
                 </div>
+                <!-- Cloding the in condition DIV -->
+                </div>
             </div>
             <!-- Footer -->
-	        <div class="footer clearfix">
+	        <div class="footer row">
 	            <div class="col-xs-12">
 	                {% if dispatcher.getActionName() not in ['login', 'route404']%}
 	                {{ partial("partials/footer") }}

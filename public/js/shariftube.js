@@ -47,6 +47,7 @@ var collapseHandler = function(config_obj) {
 // Alert
 var alertHandler = function() {
 	$('.alert').click(function() {
+		var self = $(this);
 		if (!self.hasClass('no-hide')) {
 			self.fadeOut(200);
 		}

@@ -23,3 +23,8 @@ button
 	&:focus
 		background-color darken($red, 30%)
 		border-color darken($red, 30%)
+.btn-group-st
+	@media (max-width: 500px)
+		> *
+			width calc(50% - 10px)
+			margin 5px 2.5px

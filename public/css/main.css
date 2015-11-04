@@ -41,6 +41,10 @@ a,
   background: none !important;
   text-shadow: none !important;
 }
+ol,
+ul {
+  padding: 0;
+}
 input::-moz-inner-focus,
 button::-moz-inner-focus {
   padding: 0;
@@ -71,6 +75,12 @@ button::-moz-inner-focus {
 .btn-red:focus {
   background-color: #b10c33;
   border-color: #b10c33;
+}
+@media (max-width: 500px) {
+  .btn-group-st > * {
+    width: calc(50% - 10px);
+    margin: 5px 2.5px;
+  }
 }
 input,
 textarea,
@@ -147,8 +157,16 @@ textarea:focus,
   background-color: #ffd21a;
   border-color: #ffcd00;
 }
-.alert.alert-lg {
+.alert-lg {
   font-size: 1.25em;
+}
+.table {
+  font-size: 120%;
+}
+@media (max-width: 500px) {
+  .table {
+    font-size: 100%;
+  }
 }
 .form-condensed {
   padding-right: 5em;
@@ -221,6 +239,31 @@ form .form-group.form-group-multi > .multi-smaller {
   width: 40%;
   height: 40px;
 }
+.status-waiting,
+.status-open {
+  color: #babd3c;
+}
+.status-inprogress {
+  color: #b67b0b;
+}
+.status-replay {
+  color: #803b63;
+}
+.status-transferring,
+.status-paid,
+.status-answered {
+  color: #293e80;
+}
+.status-failed,
+.status-cancelled {
+  color: #802528;
+}
+.status-success {
+  color: #3d8027;
+}
+.status-closed {
+  color: #000;
+}
 body {
   font-family: yekan, sans-serif;
   font-size: 120%;
@@ -231,6 +274,8 @@ body {
 }
 .flex,
 .navbar-top,
+.list-records,
+.list-records > li .record,
 .footer .navbar-footer,
 .footer .navbar-footer .navbar-footer-support ul {
   display: -webkit-box;
@@ -298,6 +343,9 @@ body {
 .badge.badge-support {
   padding-right: 0.55em;
   padding-left: 0.55em;
+}
+.main-container {
+  min-height: calc(100vh - 267px);
 }
 .dashboard-state {
   padding-top: 8em;
@@ -566,24 +614,24 @@ body {
   padding: 0 0.5em;
   text-align: right;
 }
-.main-section {
+.main-section > * {
   padding-right: 20em;
   padding-left: 20em;
 }
 @media (max-width: 1200px) {
-  .main-section {
+  .main-section > * {
     padding-right: 12em;
     padding-left: 12em;
   }
 }
 @media (max-width: 1200px) {
-  .main-section {
+  .main-section > * {
     padding-right: 6em;
     padding-left: 6em;
   }
 }
 @media (max-width: 992px) {
-  .main-section {
+  .main-section > * {
     padding-left: 15px;
     padding-right: 15px;
   }
@@ -655,23 +703,82 @@ body {
   padding-bottom: 1em;
   margin-bottom: 10px;
 }
+@media (max-width: 992px) {
+  .list-records > li {
+    width: 100%;
+  }
+}
+@media (max-width: 500px) {
+  .list-records > li {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
 .list-records > li .record {
   background-color: #fff;
-  height: 200px;
   padding: 1em;
+  height: 100%;
 }
-.list-records > li .record .record-title,
-.list-records > li .record .record-desc {
-  margin: 0.25em auto;
+@media (max-width: 992px) {
+  .list-records > li .record {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+    -webkit-flex-direction: column-reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+  }
 }
-.list-records > li .record .record-link {
+.list-records > li .record .record-details {
+  padding: 0 0.5em;
+  width: 66.666666667%;
+  width: calc((100% / 12) * 8);
+}
+@media (max-width: 992px) {
+  .list-records > li .record .record-details {
+    width: 100%;
+    padding-right: 1em;
+    padding-left: 1em;
+  }
+}
+.list-records > li .record .record-details .record-title {
+  font-size: 1.5em;
+}
+.list-records > li .record .record-details .record-title,
+.list-records > li .record .record-details .record-desc {
+  margin: 0.5em auto;
+}
+.list-records > li .record .record-details .record-link {
   font-size: 1em;
-}
-.footer {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  bottom: 2em;
+  left: 2em;
+}
+.list-records > li .record .record-thumb {
+  padding: 0 0.5em;
+  width: 33.333333333%;
+  width: calc((100% / 12) * 4);
+}
+@media (max-width: 992px) {
+  .list-records > li .record .record-thumb {
+    width: 100%;
+  }
+}
+.list-records > li .record .record-thumb img {
+  margin-top: 0.5em;
+  width: 145px;
+  max-width: 100%;
+  height: auto;
+  max-height: 145px;
+  display: block;
+  float: right;
+}
+@media (max-width: 992px) {
+  .list-records > li .record .record-thumb img {
+    float: none;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.5em;
+  }
 }
 @media (max-width: 800px) {
   .footer {
