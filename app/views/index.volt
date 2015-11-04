@@ -31,14 +31,14 @@
                     {{ content() }}
                 </div>
             </div>
-        </div>
-        <!-- Footer : Came out of container to be always at the bottom of body no matter how .container-fluid stretches -->
-        <div class="footer clearfix">
-            <div class="col-xs-12">
-                {% if dispatcher.getActionName() not in ['login', 'route404']%}
-                {{ partial("partials/footer") }}
-                {% endif %}
-            </div>
+            <!-- Footer -->
+	        <div class="footer clearfix">
+	            <div class="col-xs-12">
+	                {% if dispatcher.getActionName() not in ['login', 'route404']%}
+	                {{ partial("partials/footer") }}
+	                {% endif %}
+	            </div>
+	        </div>
         </div>
         <script src="{{ url.getBaseUri() }}js/jquery.min.js"></script>
         <script src="{{ url.getBaseUri() }}js/leech.js"></script>
