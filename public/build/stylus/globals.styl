@@ -374,3 +374,62 @@ body
 			margin 0
 			.item
 				text-align center
+.list-ticket
+	margin-top 2em
+	@extend .flex
+	@media (max-width: 500px)
+		flex-direction column
+	> li
+		padding 1em
+		margin-bottom 1em
+		font-size 1.25em
+		width 50%
+		@media (max-width: 500px)
+			width 100%
+		> div
+			background-color #fff
+			height 100%
+			padding 1em
+// 404
+.error-page
+	@extend .flex
+	justify-content center
+	align-items center
+	height 100vh
+// policy
+#policy-content
+	position absolute
+	top -10em
+	right -15em
+	background-color lighten($kk_light_gray, 30%)
+	color $$kk_black
+	padding 1.5em
+	display none
+	.close
+		color $kk_black
+		position absolute
+		top .25em
+		left .25em
+		font-size 1em
+	@media (max-width: 700px)
+		position fixed
+		top 0
+		left 0
+		width 100%
+		height 100%
+		z-index 2
+		@extend .flex
+		justify-content center
+		align-items center
+		.close
+			font-size 2em
+#policy-trigger
+	position absolute
+	top -.5em
+	right -2em
+	> button
+		border-radius 50%
+		background-color rgba(0,0,0,0.5)
+		color #fff
+		border none
+		padding 0.25em 0.75em

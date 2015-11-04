@@ -7,7 +7,7 @@
 
     <!-- Login -->
     <form data-tab-role="#login" class="form-condensed clearfix active" action="{{ url.get(['for' : 'login']) }}" method="post">
-        <h2 class="form-head">ورود</h2>
+        <h2 class="form-head text-center">ورود</h2>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>
             <input class="form-control input-ltr input-gray" type="text" name="email">
@@ -28,7 +28,7 @@
 
     <!-- Register -->
     <form data-tab-role="#register" class="form-condensed clearfix" action="{{ url.get(['for' : 'login']) }}" method="post">
-        <h2 class="form-head">ثبت نام</h2>
+        <h2 class="form-head text-center">ثبت نام</h2>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>
             <input class="form-control input-ltr input-gray" type="text" name="email" value="{{ request.getPost('email')|e }}">
@@ -49,10 +49,24 @@
             <label for="password">رمز عبور</label>
             <input class="form-control input-ltr input-gray" type="password" name="password">
         </div>
-        {{ flash.output() }}
-        <div class="form-group">
-            <input class="btn btn-green btn-block fa" type="submit" name="signup" value="&#xf00c">
+        <div class="form-group clearfix checkbox-control">
+            <div id="policy-content">
+                <p><span class="close"><i class="fa fa-times"></i></span>قوانین شریف تیوب</p>
+            </div>
+            <div id="policy-trigger">
+                <button type="button">?</button>
+            </div>
+            <div class="col-xs-8">
+                <label style="margin-bottom:0" for="policy">قوانین این وب سایت را می پذیرم</label>
+            </div>
+            <div class="col-xs-4">
+                <input style="margin-top:0" type="checkbox" id="policy">
+            </div>
         </div>
+        <div class="form-group submit-register">
+            <input disabled class="btn btn-green btn-block fa" type="submit" name="signup" value="&#xf00c">
+        </div>
+        {{ flash.output() }}
         <div class="form-group text-left">
             <a data-tab-trigger="#login" href="#" type="button">بازگشت</a>
         </div>
@@ -60,7 +74,7 @@
 
     <!-- Forgot Password -->
     <form data-tab-role="#forgot_password" class="form-condensed clearfix" action="{{ url.get(['for' : 'login']) }}" method="post">
-        <h3 class="form-head"><small>فراموشی رمز عبور:</small></h3>
+        <h3 class="form-head text-center"><small>فراموشی رمز عبور</small></h3>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>
             <input class="form-control input-ltr input-gray" type="text" name="email">

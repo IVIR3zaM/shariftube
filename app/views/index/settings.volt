@@ -1,6 +1,14 @@
-{{ flash.output() }}
-<form method="post" action="{{ url.get(['for':'settings']) }}">
-    <table class="settings">
+<div class="main-section">
+    {% if (flash.output()) %}
+    <div class="row">
+        <div class="col-xs-6 col-xs-offset-3">
+            <p class="alert alert-lg">{{ flash.output() }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<form method="post" class="form-condensed search-bar" action="{{ url.get(['for':'settings']) }}">
+    <table class="table table-striped text-center">
         {% if user.getReferral() %}
         <tr>
             <td>معرف: </td>
@@ -11,7 +19,7 @@
             <td>ایمیل: </td>
             <td>
                 {{ user.email|e }}
-                <div class="alert alert-notice">
+                <div class="text-danger no-hide">
                     برای تغییر ایمیل با پشتیبانی تماس بگیرید
                 </div>
             </td>
@@ -19,8 +27,8 @@
         <tr>
             <td>رمز عبور جدید: </td>
             <td>
-                <input type="password" name="new_password">
-                <div class="alert alert-notice">
+                <input class="form-group" type="password" name="new_password">
+                <div class="text-danger no-hide">
                     در صورتی که مایل به تغییر نیستید این گزینه را خالی رها کنید
                 </div>
             </td>
@@ -44,8 +52,9 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="center">
-                <input type="submit" name="apply" value="ذخیره">
+            <td></td>
+            <td class="center">
+                <input class="btn btn-success btn-sm" type="submit" name="apply" value="ذخیره">
             </td>
         </tr>
     </table>

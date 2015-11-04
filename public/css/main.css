@@ -45,6 +45,11 @@ ol,
 ul {
   padding: 0;
 }
+select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
 input::-moz-inner-focus,
 button::-moz-inner-focus {
   padding: 0;
@@ -89,6 +94,10 @@ textarea,
           transition: all 0.2s ease-out;
   padding-right: 1em;
   padding-left: 1em;
+  border: 1px solid #808080;
+  resize: none;
+  border-radius: 0;
+  display: inline-block;
 }
 input:focus,
 textarea:focus,
@@ -277,7 +286,10 @@ body {
 .list-records,
 .list-records > li .record,
 .footer .navbar-footer,
-.footer .navbar-footer .navbar-footer-support ul {
+.footer .navbar-footer .navbar-footer-support ul,
+.list-ticket,
+.error-page,
+#policy-content {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -829,6 +841,94 @@ body {
 }
 .footer .navbar-footer .carousel-inner .item {
   text-align: center;
+}
+.list-ticket {
+  margin-top: 2em;
+}
+@media (max-width: 500px) {
+  .list-ticket {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+}
+.list-ticket > li {
+  padding: 1em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  width: 50%;
+}
+@media (max-width: 500px) {
+  .list-ticket > li {
+    width: 100%;
+  }
+}
+.list-ticket > li > div {
+  background-color: #fff;
+  height: 100%;
+  padding: 1em;
+}
+.error-page {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100vh;
+}
+#policy-content {
+  position: absolute;
+  top: -10em;
+  right: -15em;
+  background-color: #ededed;
+  color: $$kk_black;
+  padding: 1.5em;
+  display: none;
+}
+#policy-content .close {
+  color: #272727;
+  position: absolute;
+  top: 0.25em;
+  left: 0.25em;
+  font-size: 1em;
+}
+@media (max-width: 700px) {
+  #policy-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+  #policy-content .close {
+    font-size: 2em;
+  }
+}
+#policy-trigger {
+  position: absolute;
+  top: -0.5em;
+  right: -2em;
+}
+#policy-trigger > button {
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  padding: 0.25em 0.75em;
 }
 [data-tab-holder] [data-tab-role] {
   display: none;

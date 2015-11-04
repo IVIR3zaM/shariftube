@@ -71,5 +71,21 @@ $(document).ready(function() {
 	alertHandler();
 	// Quota animation
 	widthAnimator('.quota-progress-bar .bar');
+	// Footer Carousel
 	$('.carousel').carousel();
+	// Policy
+	$('#policy').on('click', function() {
+		if ($(this).is(':checked')) {
+			$('.submit-register > input').prop('disabled', false);
+		}
+		else {
+			$('.submit-register > input').prop('disabled', true);
+		}
+	});
+	$('#policy-trigger').click(function(e) {
+		$('#policy-content').fadeToggle(200);
+	});
+	$('#policy-content .close').click(function() {
+		$('#policy-content').fadeOut(200);
+	})
 });
