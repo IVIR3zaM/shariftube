@@ -50,20 +50,20 @@
     <div class="col-xs-12">
         <ul class="list-unstyled list-top-links clearfix {% if auth.getIdentity().referral_code %} is-referral {% endif %}">
             {% if auth.getIdentity().referral_code %}
-                <li class="dropdown">
-                    <span class="fake-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">اطلاعات درآمد شما <span class="caret"></span></span>
-                    <ul class="dropdown-menu">
-                        <li>
-                            تعداد افراد معرفی شده: {{ number_format(referral_count, 0) }}
-                        </li>
-                        <li>
-                            درآمد این ماه: {{ number_format(month_incomes, 0) }} ریال
-                        </li>
-                        <li>
-                            درآمد کل: {{ number_format(total_incomes, 0) }} ریال
-                        </li>
-                    </ul>
-                </li>
+            <li class="dropdown">
+                <span class="fake-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">اطلاعات درآمد شما <span class="caret"></span></span>
+                <ul class="dropdown-menu">
+                     <li>
+                          تعداد افراد معرفی شده: {{ number_format(referral_count, 0) }}
+                    </li>
+                     <li>
+                        درآمد این ماه: {{ number_format(month_incomes, 0) }} ریال
+                     </li>
+                    <li>
+                      درآمد کل: {{ number_format(total_incomes, 0) }} ریال
+                    </li>
+                </ul>
+            </li>
             {% endif %}
             <li>
                 <a{% if dispatcher.getActionName() == 'search' %} class="active"{% endif %} href="{{ url.get(['for':'search']) }}">جست و جوی ویدئو</a>
