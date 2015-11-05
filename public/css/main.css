@@ -752,6 +752,7 @@ body {
   background-color: #fff;
   padding: 1em;
   height: 100%;
+  min-height: 200px;
 }
 @media (max-width: 992px) {
   .list-records > li .record {
@@ -760,6 +761,8 @@ body {
     -webkit-flex-direction: column-reverse;
         -ms-flex-direction: column-reverse;
             flex-direction: column-reverse;
+    height: auto;
+    min-height: 10px;
   }
 }
 .list-records > li .record .record-details {
