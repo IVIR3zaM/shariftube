@@ -9,7 +9,7 @@
 </div>
 {% if records|length %}
 <div class="row">
-    <ul class="list-unstyled row flex">
+    <ul class="list-unstyled row flex flex-reverse list-shop">
         {% for record in records %}
         <li class="col-md-3 col-sm-6 col-xs-12">
             <form class="bg-white text-center" action="{{ url.get(['for':'shop'])|e }}" method="post">

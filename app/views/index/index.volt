@@ -7,10 +7,12 @@
         </div>
     </div>
     {% if file_id > 0 %}
-    <div id="file-progress" rel="{{ file_id }}" class="progress-bar">
-        <div class="bar" style="width: 0%;"></div>
-        <div class="info">
-            در انتظار دریافت فایل
+    <div class="row">
+        <div id="file-progress" rel="{{ file_id }}" class="col-xs-6 col-xs-offset-3">
+            <div class="bar" style="width: 0%;"></div>
+            <div class="info">
+                در انتظار دریافت فایل
+            </div>
         </div>
     </div>
     {% endif %}

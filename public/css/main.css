@@ -310,6 +310,21 @@ body {
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
 }
+.flex.flex-reverse,
+.navbar-top.flex-reverse,
+.list-records.flex-reverse,
+.list-records > li .record.flex-reverse,
+.footer .navbar-footer.flex-reverse,
+.footer .navbar-footer .navbar-footer-support ul.flex-reverse,
+.list-ticket.flex-reverse,
+.error-page.flex-reverse,
+#policy-content.flex-reverse {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
 .text-en {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -938,6 +953,15 @@ body {
   color: #fff;
   border: none;
   padding: 0.25em 0.75em;
+}
+@media (max-width: 768px) {
+  .list-shop li {
+    margin-bottom: 0.5em;
+  }
+}
+#file-progress {
+  -webkit-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out;
 }
 [data-tab-holder] [data-tab-role] {
   display: none;
