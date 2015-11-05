@@ -54,7 +54,7 @@ select {
 .table > tbody > tr > th,
 .table > tbody > tr > tfoot > tr,
 .table > tbody > tr > thead > tr {
-  vertical-align: center;
+  vertical-align: middle;
   text-align: center;
 }
 input::-moz-inner-focus,
