@@ -50,6 +50,13 @@ select {
      -moz-appearance: none;
           appearance: none;
 }
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tbody > tr > tfoot > tr,
+.table > tbody > tr > thead > tr {
+  vertical-align: center;
+  text-align: center;
+}
 input::-moz-inner-focus,
 button::-moz-inner-focus {
   padding: 0;

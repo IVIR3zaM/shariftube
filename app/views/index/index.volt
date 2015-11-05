@@ -48,7 +48,7 @@
                 <td>
                     <form method="post" action="{{ url.get(['for':'link', 'link':dispatcher.getParam('link')])|e }}">
                         <input type="hidden" name="params" value="{{ record.params|e }}">
-                        <input type="submit" name="get" value="دریافت">
+                        <input class="btn btn-primary btn-sm" type="submit" name="get" value="دریافت">
                     </form>
                 </td>
             </tr>
