@@ -320,7 +320,8 @@ class IndexController extends ControllerBase
                     $hidden['action'] = $this->crypt->encryptBase64($action);
                     $hidden['referer'] = $this->crypt->encryptBase64($url);
                     foreach ($dom->find('form input[type=hidden]') as $tag) {
-                        $hidden[$tag->getAttribute('name')] = $this->crypt->encryptBase64($tag->getAttribute('value'));
+                        $hidden[$tag->getAttribute('name')] = $this->crypt->
+encryptBase64($tag->getAttribute('value'));
                     }
                     $this->view->hidden_items = $hidden;
 

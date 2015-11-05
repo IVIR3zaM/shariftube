@@ -29,5 +29,6 @@ class ResetPasswords extends BaseModel
             ],
         ])->count());
         $this->code = $code;
+	$this->created_at = date('Y-m-d H:i:s');
     }
 }
