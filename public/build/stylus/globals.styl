@@ -383,16 +383,11 @@ body
 				text-align center
 .list-ticket
 	margin-top 2em
-	@extend .flex
-	@media (max-width: 500px)
-		flex-direction column
 	> li
+		width 100%
+		display block
 		padding 1em
-		margin-bottom 1em
 		font-size 1.25em
-		width 50%
-		@media (max-width: 500px)
-			width 100%
 		> div
 			background-color #fff
 			height 100%

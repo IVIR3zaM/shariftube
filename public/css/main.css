@@ -294,7 +294,6 @@ body {
 .list-records > li .record,
 .footer .navbar-footer,
 .footer .navbar-footer .navbar-footer-support ul,
-.list-ticket,
 .error-page,
 #policy-content {
   display: -webkit-box;
@@ -316,7 +315,6 @@ body {
 .list-records > li .record.flex-reverse,
 .footer .navbar-footer.flex-reverse,
 .footer .navbar-footer .navbar-footer-support ul.flex-reverse,
-.list-ticket.flex-reverse,
 .error-page.flex-reverse,
 #policy-content.flex-reverse {
   -webkit-box-orient: horizontal;
@@ -872,25 +870,11 @@ body {
 .list-ticket {
   margin-top: 2em;
 }
-@media (max-width: 500px) {
-  .list-ticket {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-        -ms-flex-direction: column;
-            flex-direction: column;
-  }
-}
 .list-ticket > li {
+  width: 100%;
+  display: block;
   padding: 1em;
-  margin-bottom: 1em;
   font-size: 1.25em;
-  width: 50%;
-}
-@media (max-width: 500px) {
-  .list-ticket > li {
-    width: 100%;
-  }
 }
 .list-ticket > li > div {
   background-color: #fff;

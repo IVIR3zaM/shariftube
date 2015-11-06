@@ -1,0 +1,92 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'grunt-cssmin' ]
+2 info using npm@2.11.3
+3 info using node@v0.12.7
+4 verbose install initial load of /var/www/shariftube/public/package.json
+5 verbose installManyTop reading scoped package data from /var/www/shariftube/public/node_modules/grunt/package.json
+6 verbose installManyTop reading scoped package data from /var/www/shariftube/public/node_modules/grunt-autoprefixer/package.json
+7 verbose installManyTop reading scoped package data from /var/www/shariftube/public/node_modules/grunt-contrib-stylus/package.json
+8 verbose installManyTop reading scoped package data from /var/www/shariftube/public/node_modules/grunt-contrib-watch/package.json
+9 info package.json grunt@0.4.5 No license field.
+10 info package.json grunt-contrib-watch@0.6.1 No license field.
+11 verbose readDependencies loading dependencies from /var/www/shariftube/public/package.json
+12 silly cache add args [ 'grunt-cssmin', null ]
+13 verbose cache add spec grunt-cssmin
+14 silly cache add parsed spec { raw: 'grunt-cssmin',
+14 silly cache add   scope: null,
+14 silly cache add   name: 'grunt-cssmin',
+14 silly cache add   rawSpec: '',
+14 silly cache add   spec: '*',
+14 silly cache add   type: 'range' }
+15 silly addNamed grunt-cssmin@*
+16 verbose addNamed "*" is a valid semver range for grunt-cssmin
+17 silly addNameRange { name: 'grunt-cssmin', range: '*', hasData: false }
+18 silly mapToRegistry name grunt-cssmin
+19 silly mapToRegistry using default registry
+20 silly mapToRegistry registry https://registry.npmjs.org/
+21 silly mapToRegistry uri https://registry.npmjs.org/grunt-cssmin
+22 verbose addNameRange registry:https://registry.npmjs.org/grunt-cssmin not in flight; fetching
+23 verbose request uri https://registry.npmjs.org/grunt-cssmin
+24 verbose request no auth needed
+25 info attempt registry request try #1 at 10:02:46 PM
+26 verbose request id 08bd4011e570b8df
+27 http request GET https://registry.npmjs.org/grunt-cssmin
+28 info retry will retry, error on last attempt: Error: getaddrinfo ENOTFOUND registry.npmjs.org
+29 info attempt registry request try #2 at 10:03:16 PM
+30 http request GET https://registry.npmjs.org/grunt-cssmin
+31 http 404 https://registry.npmjs.org/grunt-cssmin
+32 verbose headers { 'content-type': 'application/json',
+32 verbose headers   'cache-control': 'max-age=0',
+32 verbose headers   'content-length': '2',
+32 verbose headers   'accept-ranges': 'bytes',
+32 verbose headers   date: 'Thu, 05 Nov 2015 18:33:28 GMT',
+32 verbose headers   via: '1.1 varnish',
+32 verbose headers   age: '0',
+32 verbose headers   connection: 'keep-alive',
+32 verbose headers   'x-served-by': 'cache-lhr6329-LHR',
+32 verbose headers   'x-cache': 'MISS',
+32 verbose headers   'x-cache-hits': '0',
+32 verbose headers   'x-timer': 'S1446748408.285617,VS0,VE179' }
+33 silly get cb [ 404,
+33 silly get   { 'content-type': 'application/json',
+33 silly get     'cache-control': 'max-age=0',
+33 silly get     'content-length': '2',
+33 silly get     'accept-ranges': 'bytes',
+33 silly get     date: 'Thu, 05 Nov 2015 18:33:28 GMT',
+33 silly get     via: '1.1 varnish',
+33 silly get     age: '0',
+33 silly get     connection: 'keep-alive',
+33 silly get     'x-served-by': 'cache-lhr6329-LHR',
+33 silly get     'x-cache': 'MISS',
+33 silly get     'x-cache-hits': '0',
+33 silly get     'x-timer': 'S1446748408.285617,VS0,VE179' } ]
+34 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/grunt-cssmin
+34 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:239:14)
+34 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:170:14)
+34 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:354:22)
+34 verbose stack     at Request.emit (events.js:110:17)
+34 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1207:14)
+34 verbose stack     at Request.emit (events.js:129:20)
+34 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1153:12)
+34 verbose stack     at IncomingMessage.emit (events.js:129:20)
+34 verbose stack     at _stream_readable.js:908:16
+34 verbose stack     at process._tickCallback (node.js:355:11)
+35 verbose statusCode 404
+36 verbose pkgid grunt-cssmin
+37 verbose cwd /var/www/shariftube/public/css
+38 error Linux 3.13.0-32-generic
+39 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "grunt-cssmin"
+40 error node v0.12.7
+41 error npm  v2.11.3
+42 error code E404
+43 error 404 Registry returned 404 for GET on https://registry.npmjs.org/grunt-cssmin
+43 error 404
+43 error 404 'grunt-cssmin' is not in the npm registry.
+43 error 404 You should bug the author to publish it (or use the name yourself!)
+43 error 404
+43 error 404 Note that you can also install from a
+43 error 404 tarball, folder, http url, or git url.
+44 verbose exit [ 1, true ]
