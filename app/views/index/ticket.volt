@@ -38,7 +38,7 @@
     <form class="search-bar form-horizontal" action="{{ url.get(['for':'ticket','id':id]) }}" method="post">
         {% if id > 0 and admin %}
         <p class="form-group">
-            <label for="status" class="control-label">عنوان: </label>
+            <label for="status" class="control-label">وضعیت تیکت: </label>
             <select class="form-control" style="display: inline" id="status" name="status">
                 <option value=""> انتخاب عنوان </option>
                 <option value="Open">باز</option>
@@ -61,6 +61,7 @@
         </p>
         <p class="form-group">
             <input class="btn btn-primary btn-block" type="submit" name="save" value="ثبت">
+            <input class="btn btn-danger btn-block" type="submit" name="close" value="بستن تیکت">
         </p>
     </form>
 </div>

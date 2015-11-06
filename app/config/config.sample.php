@@ -1,4 +1,6 @@
 <?php
+error_reporting(0);
+\Phalcon\Mvc\Model::setup(['exceptionOnFailedSave' => true]);
 return new \Phalcon\Config(array(
     'mail' => array(
         'host' => 'smtp.mandrillapp.com',

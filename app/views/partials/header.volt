@@ -59,6 +59,7 @@
                 <!-- Buy -->
                 <div class="user-quota-buy">
                     <a class="btn btn-primary" href="{{ url.get(['for':'shop']) }}"><i class="fa fa-dollar"></i> خرید حجم</a>
+                    <a class="btn btn-danger" href="{{ url.get(['for':'logout']) }}"><i class="fa"></i>خروج</a>
                 </div>
             </div>
         </div>

@@ -1,9 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-\Phalcon\Mvc\Model::setup(['exceptionOnFailedSave' => true]);
-//phpinfo();exit;
-
 try {
     define('BASE_DIR', dirname(__DIR__));
     define('APP_DIR', BASE_DIR . '/app');

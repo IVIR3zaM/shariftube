@@ -9,6 +9,7 @@ use Shariftube\Models\Announcements;
 use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
 use Shariftube\Models\Packages;
+use Shariftube\Models\PasswordChanges;
 use Shariftube\Models\Purchases;
 use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Servers;
@@ -672,7 +673,7 @@ encryptBase64($tag->getAttribute('value'));
             }
             $this->view->ticket = $ticket;
 
-            if ($this->request->getPost('save')){
+            if ($this->request->getPost('save') || $this->request->getPost('close')){
                 $error = array();
 
                 if ($ticket->user_id == $this->auth->getIdentity()->getId()) {
@@ -683,6 +684,10 @@ encryptBase64($tag->getAttribute('value'));
 
                 if ($admin && in_array($this->request->getPost('status'), ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'])) {
                     $status = $this->request->getPost('status');
+                }
+
+                if ($this->request->getPost('close')) {
+                    $status = 'Closed';
                 }
 
                 $content = $this->request->getPost('content');
@@ -815,10 +820,19 @@ encryptBase64($tag->getAttribute('value'));
             }
             if (empty($error)) {
                 $this->auth->getIdentity()->name = $name;
+                $password_change = false;
                 if (strlen($password) > 0) {
                     $this->auth->getIdentity()->password = $this->security->hash($password);
+                    $password_change = true;
                 }
                 if ($this->auth->getIdentity()->save()) {
+                    if ($password_change){
+                        $password_change = new PasswordChanges();
+                        $password_change->user_id = $this->auth->getIdentity()->getId();
+                        $password_change->ip_address = $this->request->getClientAddress();
+                        $password_change->user_agent = $this->request->getUserAgent();
+                        $password_change->save();
+                    }
                     $this->flash->success('تغییرات شما با موفقیت ذخیره شد.');
                 } else {
                     $this->flash->error('تغییر شما ذخیره نشد. لطفا مجددا تلاش نمایید.');
@@ -860,6 +874,12 @@ encryptBase64($tag->getAttribute('value'));
                 if (!$user->save()) {
                     $this->flash->error('تغییر رمز عبور انجام نشد. لطفا مجددا تلاش نمایید.');
                 } else {
+                    $password_change = new PasswordChanges();
+                    $password_change->user_id = $user->getId();
+                    $password_change->ip_address = $this->request->getClientAddress();
+                    $password_change->user_agent = $this->request->getUserAgent();
+                    $password_change->save();
+
                     $this->mail->setTemplate('password');
                     $this->mail->setVar('password', $password);
                     $this->mail->setVar('user', $user);
