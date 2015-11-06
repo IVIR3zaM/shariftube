@@ -956,7 +956,9 @@ body {
   -webkit-transition: width 0.3s ease-out;
           transition: width 0.3s ease-out;
   height: 30px;
-  background-color: #08c;
+  border: 1px solid #808080;
+  padding: 0.2em;
+  background-color: #dadada;
 }
 #file-progress .info {
   color: #fff;
@@ -970,10 +972,11 @@ body {
 #file-progress .info > a {
   display: block;
   position: absolute;
-  top: -3px;
+  top: -2px;
   left: -75px;
   padding: 0 0.5em;
   text-decoration: none;
+  color: #f01e50;
 }
 [data-tab-holder] [data-tab-role] {
   display: none;
