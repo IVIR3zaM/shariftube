@@ -27,6 +27,8 @@ class Mail extends Component
             $this->phpmailer->Password = $this->config->mail->password;
 
         }
+	$this->phpmailer->SMTPDebug = 2;
+	$this->phpmailer->SMTPAutoTLS = false;
         $this->phpmailer->SMTPSecure = $this->config->mail->security;
         $this->phpmailer->Port = $this->config->mail->port;
         $this->phpmailer->setFrom($this->config->mail->from, $this->config->mail->fromname);
@@ -117,6 +119,7 @@ class Mail extends Component
         if ($ret) {
             $this->resetPHPMailer();
         }
+
         $this->ErrorInfo = $this->phpmailer->ErrorInfo;
         return $ret;
     }
