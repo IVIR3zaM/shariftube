@@ -101,7 +101,7 @@ class Servers extends BaseModel
             return $result;
         }
         $password = preg_replace('/[\x00]+/', '', $this->getDI()->getCrypt()->decryptBase64($this->password));
-        $command = "sshpass -p '{$password}' rsync -ptrzv -e 'ssh -p {$this->port}' --progress --remove-source-files {$source} {$this->username}@{$this->hostname}:~/{$dir}";
+        $command = "sshpass -p '{$password}' rsync -ptrzv -e 'ssh -p {$this->port}' --progress {$source} {$this->username}@{$this->hostname}:~/{$dir}";
         $out = array();
         exec($command, $out);
         if (is_array($out)) {

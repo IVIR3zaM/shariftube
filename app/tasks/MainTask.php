@@ -146,8 +146,8 @@ class MainTask extends Task
         if ($files) {
             foreach ($files as $file) {
                 $dir = date('Ymd', strtotime($file->created_at));
-                if (file_exists(APP_DIR . '/cache/files/' . $file->getId() . '/' . $dir)
-                    && !file_exists(APP_DIR . '/cache/files/' . $file->getId() . '/' . $dir . '/' . $file->name)
+                if (file_exists(APP_DIR . '/cache/files/' . $file->getServer()->getId() . '/' . $dir)
+                    && !file_exists(APP_DIR . '/cache/files/' . $file->getServer()->getId() . '/' . $dir . '/' . $file->name)
                 ) {
                     $file->status = 'Success';
                     $file->save();
@@ -246,6 +246,7 @@ class MainTask extends Task
 
                         if ($files) {
                             foreach ($files as $file) {
+                                unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
                                 $file->status = 'Success';
                                 $file->save();
                             }
