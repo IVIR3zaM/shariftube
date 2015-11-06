@@ -968,6 +968,13 @@ body {
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0);
   font-size: 1.25em;
+  width: 100%;
+  text-align: center;
+}
+@media (max-width: 500px) {
+  #file-progress .info {
+    font-size: 1em;
+  }
 }
 #file-progress .info > a {
   display: block;
