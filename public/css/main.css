@@ -965,6 +965,14 @@ body {
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0);
 }
+#file-progress .info > a {
+  display: block;
+  position: absolute;
+  top: -3px;
+  left: -75px;
+  padding: 0 0.5em;
+  text-decoration: none;
+}
 [data-tab-holder] [data-tab-role] {
   display: none;
 }
