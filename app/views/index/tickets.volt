@@ -25,7 +25,7 @@
 </div>
 <div class="form-group text-center">تعداد {{ page.total_items }} مورد موجود است.</div>
 {% if page.items|length %}
-<table class="table table-striped table-hover text-center">
+<table class="table table-hover text-center">
     <tr>
         <th class="text-center">عنوان</th>
         {% if admin %}

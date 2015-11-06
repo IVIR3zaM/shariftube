@@ -33,7 +33,7 @@
     {% if records|length %}
     <div class="row">
         <h3>{{ label|e }}</h3>
-        <table class="table table-striped table-hover">
+        <table class="table table-hover">
             <tr>
                 <th>کیفیت</th>
                 <th>نوع</th>

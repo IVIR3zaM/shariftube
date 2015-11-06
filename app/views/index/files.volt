@@ -12,7 +12,7 @@
     </form>
     <div class="text-center form-group">تعداد {{ page.total_items }} مورد موجود است.</div>
     {% if page.items|length %}
-        <table class="table table-striped text-hover">
+        <table class="table text-hover">
             <tr>
                 <th>نام فایل</th>
                 <th>ظرفیت</th>
