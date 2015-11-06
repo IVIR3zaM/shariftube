@@ -444,13 +444,13 @@ body
 #file-progress
 	transition all .3s ease-out
 	position relative
-	background-color $kk_gray
+	background-color darken($kk_light_gray, 5%)
+	border 1px solid $kk_gray
+	padding .2em
 	.bar
 		transition width 0.3s ease-out
 		height 30px
-		border 1px solid $kk_gray
-		padding .2em
-		background-color darken($kk_light_gray, 5%)
+		background-color $kk_blue
 	.info
 		color #fff
 		position absolute
