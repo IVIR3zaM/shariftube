@@ -443,7 +443,14 @@ body
 // #file-progress easing
 #file-progress
 	transition all .3s ease-out
+	position relative
 	.bar
 		transition width 0.3s ease-out
 		height 30px
 		background-color $kk_blue
+	.info
+		color #fff
+		position absolute
+		top 50%
+		left 50%
+		transform translate3d(-50%,-50%,0)

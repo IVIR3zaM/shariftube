@@ -949,12 +949,21 @@ body {
 #file-progress {
   -webkit-transition: all 0.3s ease-out;
           transition: all 0.3s ease-out;
+  position: relative;
 }
 #file-progress .bar {
   -webkit-transition: width 0.3s ease-out;
           transition: width 0.3s ease-out;
   height: 30px;
   background-color: #08c;
+}
+#file-progress .info {
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+          transform: translate3d(-50%, -50%, 0);
 }
 [data-tab-holder] [data-tab-role] {
   display: none;
