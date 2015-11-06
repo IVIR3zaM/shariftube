@@ -950,7 +950,7 @@ body {
   -webkit-transition: all 0.3s ease-out;
           transition: all 0.3s ease-out;
   position: relative;
-  background-color: #e5e5e5;
+  background-color: #808080;
 }
 #file-progress .bar {
   -webkit-transition: width 0.3s ease-out;
