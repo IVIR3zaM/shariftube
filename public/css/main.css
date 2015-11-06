@@ -950,6 +950,12 @@ body {
   -webkit-transition: all 0.3s ease-out;
           transition: all 0.3s ease-out;
 }
+#file-progress .bar {
+  -webkit-transition: width 0.3s ease-out;
+          transition: width 0.3s ease-out;
+  height: 30px;
+  background-color: #08c;
+}
 [data-tab-holder] [data-tab-role] {
   display: none;
 }
