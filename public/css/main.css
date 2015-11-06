@@ -950,6 +950,7 @@ body {
   -webkit-transition: all 0.3s ease-out;
           transition: all 0.3s ease-out;
   position: relative;
+  background-color: #e5e5e5;
 }
 #file-progress .bar {
   -webkit-transition: width 0.3s ease-out;
@@ -964,6 +965,7 @@ body {
   left: 50%;
   -webkit-transform: translate3d(-50%, -50%, 0);
           transform: translate3d(-50%, -50%, 0);
+  font-size: 1.25em;
 }
 #file-progress .info > a {
   display: block;
