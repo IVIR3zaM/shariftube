@@ -1,6 +1,7 @@
 <?php
 use Phalcon\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
+use Phalcon\Events\Manager as EventsManager;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
@@ -63,7 +64,9 @@ $di->setShared('view', function () use ($di, $config) {
 
 
 $di->setShared('db', function () use ($config) {
-    return new DbAdapter(array(
+    global $mysql_last_check;
+    $mysql_last_check = time();
+    $connection = new DbAdapter(array(
         'host' => $config->database->host,
         'username' => $config->database->username,
         'password' => $config->database->password,
@@ -72,6 +75,25 @@ $di->setShared('db', function () use ($config) {
         'persistent' => true,
 //        'options' => (array) $config->database->options,
     ));
+
+    $eventsManager = new EventsManager();
+    $eventsManager->attach('db:beforeQuery', function() use ($connection) {
+        global $mysql_last_check;
+        if ($mysql_last_check < time() - 5) {
+            try {
+                $connection->execute('SELECT 1');
+            } catch (\PDOException $e) {
+                if (preg_match('/gone\s+away/i', $e->getMessage())) {
+                    $connection->connect();
+                }
+            }
+        }
+        $mysql_last_check = time();
+        return true;
+    });
+
+    $connection->setEventsManager($eventsManager);
+    return $connection;
 });
 
 $di->setShared('modelsMetadata', function () use ($config) {
