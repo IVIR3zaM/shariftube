@@ -86,7 +86,10 @@ class MainTask extends Task
             exec(BASE_DIR . "/cli Main feed {$i} > /dev/null &");
         }
         echo "Running Server transfer Threads\n";
-        exec(BASE_DIR . "/cli Main transfer > /dev/null &");
+        for ($i = 1; $i <= $this->config->cli->transfer_threads; $i++) {
+            echo "Running Server transfer thread #{$i}\n";
+            exec(BASE_DIR . "/cli Main transfer {$i} > /dev/null &");
+        }
         echo "Finnish\n";
     }
 
@@ -185,26 +188,35 @@ class MainTask extends Task
                         'id' => $server->getId(),
                     ],
                 ]);
+                $remain = $server->remain;
                 $server->remain = $server->quota - $server->used;
-                if ($server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
-                    $server->enable = 'No';
-                } else {
-                    $server->enable = 'Yes';
+                if ($remain < ($this->config->cli->pause_server_remain * 1024 * 1024) || $server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
+                    if ($server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
+                        $server->enable = 'No';
+                    } else {
+                        $server->enable = 'Yes';
+                    }
                 }
                 $server->save();
             }
         }
     }
 
-    public function transferAction()
+    public function transferAction($params)
     {
         set_time_limit(0);
-        $lock = fopen(APP_DIR . '/cache/locks/transfer.lock', 'w+');
-        if (!flock($lock, LOCK_EX | LOCK_NB)) {
-            echo "Server Transfer thread is already running\n";
+        if (!isset($params[0]) || !is_numeric($params[0])) {
+            echo "Invalid transfer id\n";
             return;
         }
-        while (!file_exists(APP_DIR . '/cache/locks/transfer.shutdown')) {
+        $id = intval($params[0]);
+        $lock = fopen(APP_DIR . '/cache/locks/transfer' . $id . '.lock', 'w+');
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            echo "Server Transfer  thread #{$id} is already running\n";
+            return;
+        }
+
+        while (!file_exists(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown')) {
             $dirs = @scandir(APP_DIR . '/cache/files');
             $list = array();
             foreach ($dirs as $dir) {
@@ -228,7 +240,7 @@ class MainTask extends Task
             if (!empty($list)) {
                 $list = array_values($list);
                 $servers = Servers::find([
-                    'id IN ({ids:array})',
+                    "id IN ({ids:array}) AND deleted_at = 0 AND enable = 'Yes'",
                     'bind' => [
                         'ids' => $list,
                     ],
@@ -246,7 +258,7 @@ class MainTask extends Task
 
                         if ($files) {
                             foreach ($files as $file) {
-                                unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
+                                @unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
                                 $file->status = 'Success';
                                 $file->save();
                             }
@@ -261,12 +273,12 @@ class MainTask extends Task
                     unlink(APP_DIR . '/cache/locks/transfer.now');
                     break;
                 }
-                if (file_exists(APP_DIR . '/cache/locks/transfer.shutdown')) {
+                if (file_exists(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown')) {
                     break;
                 }
             }
         }
-        unlink(APP_DIR . '/cache/locks/transfer.shutdown');
+        unlink(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown');
         fclose($lock);
         echo "Thread stops by shutdown signal\n";
     }

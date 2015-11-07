@@ -116,6 +116,7 @@ class Mail extends Component
         $this->view->setRenderLevel($level);
 
         $ret = $this->phpmailer->send();
+        // var_export($this->phpmailer->ErrorInfo);exit;
         if ($ret) {
             $this->resetPHPMailer();
         }

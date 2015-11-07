@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html class="no-js">
     <head>
+        <meta name="robots" content="noindex, nofollow"/>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>شریف تیوب - {{ title }}</title>

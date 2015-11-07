@@ -63,6 +63,7 @@ return new \Phalcon\Config(array(
         'fetch_delays' => 5, // seconds
         'feed_threads' => 1, // must be always 1
         'feed_delays' => 3, // seconds
+        'transfer_threads' => 3,
         'transfer_delays' => 60, // seconds
         'delete_after' => 7, // days
         'pause_server_remain' => 100, // mega bytes

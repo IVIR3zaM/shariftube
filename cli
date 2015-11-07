@@ -3,8 +3,8 @@
 use Phalcon\CLI\Console as ConsoleApp;
 use Phalcon\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
-use Phalcon\Events\Manager as EventsManager;
 use Phalcon\DI\FactoryDefault\CLI as CliDI;
+use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
 use Predis\Client as PredisClient;
 use Shariftube\Curl\Curl;
@@ -22,8 +22,8 @@ $config = include APP_DIR . '/config/config.php';
 include APP_DIR . '/config/loader.php';
 
 $di->setShared('config', $config);
-$di->setShared('redis', function() use ($config) {
-    return new PredisClient((array) $config->application->redis_server);
+$di->setShared('redis', function () use ($config) {
+    return new PredisClient((array)$config->application->redis_server);
 });
 
 $di->setShared('curl', function () {
@@ -43,16 +43,21 @@ $di->setShared('db', function () use ($config) {
     ));
 
     $eventsManager = new EventsManager();
-    $eventsManager->attach('db:beforeQuery', function() use ($connection) {
+    $eventsManager->attach('db:beforeQuery', function () use ($connection) {
         global $mysql_last_check;
-        if ($mysql_last_check < time() - 5) {
-            try {
+        if (/*$connection->getSQLStatement() != 'SELECT 1' && */$mysql_last_check < time() - 900) {
+            /*try {
                 $connection->execute('SELECT 1');
             } catch (\PDOException $e) {
-                if (preg_match('/gone\s+away/i', $e->getMessage())) {
+                if (preg_match('/gone\s+away/i', $e->getMessage())) {*/
+                    try{
                     $connection->connect();
-                }
-            }
+                        
+                    } catch (\Exception $e){
+                        
+                    }
+/*                }
+            }*/
         }
         $mysql_last_check = time();
         return true;

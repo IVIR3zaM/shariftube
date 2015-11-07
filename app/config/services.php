@@ -31,7 +31,7 @@ $di->setShared('curl', function () {
 $di->setShared('url', function () use ($config) {
     $url = new UrlResolver();
     $url->setBaseUri($config->application->baseUri);
-    $url->setStaticBaseUri('http://' . $config->application->publicUrl . $config->application->baseUri);
+    $url->setStaticBaseUri('https://' . $config->application->publicUrl . $config->application->baseUri);
     return $url;
 });
 
@@ -77,16 +77,21 @@ $di->setShared('db', function () use ($config) {
     ));
 
     $eventsManager = new EventsManager();
-    $eventsManager->attach('db:beforeQuery', function() use ($connection) {
+    $eventsManager->attach('db:beforeQuery', function () use ($connection) {
         global $mysql_last_check;
-        if ($mysql_last_check < time() - 5) {
-            try {
+        if (/*$connection->getSQLStatement() != 'SELECT 1' && */$mysql_last_check < time() - 900) {
+            /*try {
                 $connection->execute('SELECT 1');
             } catch (\PDOException $e) {
-                if (preg_match('/gone\s+away/i', $e->getMessage())) {
-                    $connection->connect();
-                }
+                if (preg_match('/gone\s+away/i', $e->getMessage())) {*/
+            try{
+                $connection->connect();
+
+            } catch (\Exception $e){
+
             }
+            /*                }
+                        }*/
         }
         $mysql_last_check = time();
         return true;

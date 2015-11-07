@@ -10,7 +10,7 @@
                 <!-- Avatar -->
                 <div class="user-area-avatar">
                     <a class="badge badge-red badge-rounded user-area-logout" href="{{ url.get(['for':'logout']) }}"><i class="fa fa-power-off"></i></a>
-                    <img class="img-rounded" src="http://www.gravatar.com/avatar/{{ auth.getIdentity().email|md5 }}.jpg?s=60" alt="{{ auth.getIdentity().email|e }}">
+                    <img class="img-rounded" src="https://www.gravatar.com/avatar/{{ auth.getIdentity().email|md5 }}.jpg?s=60" alt="{{ auth.getIdentity().email|e }}">
                 </div>
                 <!-- Name -->
                 <div class="user-area-name">

@@ -78,6 +78,9 @@ class Vimeo extends Component implements Website
             if (isset($content['head']['download_content_length'])) {
                 $size = intval($content['head']['download_content_length']);
             }
+            if ($size < 1) {
+                return null;
+            }
 
             $quality = $file['height'];
             if ($quality < 240) {

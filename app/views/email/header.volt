@@ -10,5 +10,5 @@
     <body>
         <div style="width:520px;margin:0 auto;padding:20px 40px;font-family:Tahoma, Arial, sans-serif;text-align:center;direction:rtl;background-color:#f2f2f2">
         	<div style="margin-bottom:40px;">
-        		<img style="max-width:60%" src="http://shariftube.ir/images/logo.png" alt="Shariftube">
+        		<img style="max-width:60%" src="https://shariftube.ir/images/logo.png" alt="Shariftube">
         	</div>
