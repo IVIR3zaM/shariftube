@@ -85,9 +85,10 @@ class Purchases extends BaseModel
 
 
         $percentage = intval($this->getDI()->getConfig()->application->affiliate_percentage);
-        if ($percentage > 0 && $percentage < 100) {
+        $refer = $user->getReferral();
+        if ($refer && $percentage > 0 && $percentage < 100) {
             $income = new Incomes();
-            $income->user_id = $user->getId();
+            $income->user_id = $refer->getId();
             $income->purchase_id = $this->getId();
             $income->percentage = $percentage;
             $income->amount = intval(($this->amount * $percentage) / 100);
