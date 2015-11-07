@@ -2,7 +2,7 @@
     <form class="params search-bar" method="get" action="{{ url.get(['for':'files']) }}">
         <input type="hidden" name="page" value="1">
         <div class="input-group form-group">
-            <input type="text" class="form-control input-lg" name="name" id="name" value="{{ dispatcher.getParam(1)|e }}">
+            <input placeholder="جستجو در لیست ویدیوها" type="text" class="form-control input-lg" name="name" id="name" value="{{ dispatcher.getParam(1)|e }}">
             <span class="input-group-btn">
                 <button class="btn btn-search">
                     <i class="fa fa-search"></i>
