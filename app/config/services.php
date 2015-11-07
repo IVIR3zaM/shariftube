@@ -69,6 +69,7 @@ $di->setShared('db', function () use ($config) {
         'password' => $config->database->password,
         'dbname' => $config->database->dbname,
         'charset' => $config->database->charset,
+        'persistent' => true,
 //        'options' => (array) $config->database->options,
     ));
 });
