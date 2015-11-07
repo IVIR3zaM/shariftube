@@ -496,7 +496,7 @@ encryptBase64($tag->getAttribute('value'));
                     'id' => $id,
                 ],
             ]);
-            if ($package && $package->price >= 1000) {
+            if ($package && ($this->auth->getIdentity()->role == 'Admin' || $package->price > 1000)) {
 
                 $purchase = new Purchases();
                 $purchase->user_id = $this->auth->getIdentity()->getId();
@@ -518,9 +518,13 @@ encryptBase64($tag->getAttribute('value'));
             }
         }
 
+        $qry = '';
+        if ($this->auth->getIdentity()->role != 'Admin') {
+            $qry = ' AND price > 1000';
+        }
 
         $this->view->records = Packages::find([
-            "status = 'Enable'",
+            "status = 'Enable'{$qry}",
             'order' => 'price',
         ]);
         if (!$this->view->records) {

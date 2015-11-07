@@ -20,8 +20,13 @@ class Incomes extends BaseModel
     public function beforeCreate()
     {
         parent::beforeCreate();
-        $purchase = $this->getPurhase();
-        if (!empty($purchase) || $purchase->status != 'Paid') {
+        $purchase = Purchases::findFirst([
+            'id = :id:',
+            'bind' =>[
+                'id' => $this->purchase_id,
+            ],
+        ]);
+        if (empty($purchase) || $purchase->status != 'Paid') {
             return false;
         }
     }
