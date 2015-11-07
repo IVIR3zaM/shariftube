@@ -519,7 +519,7 @@ encryptBase64($tag->getAttribute('value'));
         }
 
         $qry = '';
-        if ($this->auth->getIdentity()->role == 'Admin') {
+        if ($this->auth->getIdentity()->role != 'Admin') {
             $qry = ' AND price > 1000';
         }
 
