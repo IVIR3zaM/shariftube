@@ -518,9 +518,13 @@ encryptBase64($tag->getAttribute('value'));
             }
         }
 
+        $qry = '';
+        if ($this->auth->getIdentity()->role == 'Admin') {
+            $qry = ' AND price > 1000';
+        }
 
         $this->view->records = Packages::find([
-            "status = 'Enable'",
+            "status = 'Enable'{$qry}",
             'order' => 'price',
         ]);
         if (!$this->view->records) {
