@@ -496,7 +496,7 @@ encryptBase64($tag->getAttribute('value'));
                     'id' => $id,
                 ],
             ]);
-            if ($package && $package->price >= 1000) {
+            if ($package && ($this->auth->getIdentity()->role == 'Admin' || $package->price > 1000)) {
 
                 $purchase = new Purchases();
                 $purchase->user_id = $this->auth->getIdentity()->getId();
