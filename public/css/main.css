@@ -893,13 +893,12 @@ body {
   height: 100vh;
 }
 #policy-content {
-  position: absolute;
-  top: -10em;
-  right: -15em;
+  position: relative;
   background-color: #ededed;
   color: $$kk_black;
   padding: 1.5em;
   display: none;
+  margin: 1em auto;
 }
 #policy-content .close {
   color: #272727;
