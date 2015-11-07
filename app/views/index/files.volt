@@ -40,9 +40,9 @@
     {% endif %}
     <div class="text-center form-group">درحال نمایش صفحه {{ page.current }} از {{ page.total_pages }}</div>
     <div class="row text-center form-group btn-group-st">
-        <a class="btn btn-info btn-sm {% if page.current == 1 %}disabled" {% endif %}href="{{ url.get(['for':'files']) }}">صفحه اول</a>
-        <a class="btn btn-info btn-sm {% if page.current == page.before %}disabled" {% endif %}href="{{ url.get(['for':'files','params':implode('/',[page.before, dispatcher.getParam(1)|url_encode])]) }}"><i class="fa fa-chevron-right"></i> صفحه قبل</a>
-        <a class="btn btn-info btn-sm {% if page.current == page.next %}disabled" {% endif %}href="{{ url.get(['for':'files','params':implode('/',[page.next, dispatcher.getParam(1)|url_encode])]) }}">صفحه بعد <i class="fa fa-chevron-left"></i></a>
-        <a class="btn btn-info btn-sm{% if page.current == page.last %}disabled" {% endif %}href="{{ url.get(['for':'files','params':implode('/',[page.last, dispatcher.getParam(1)|url_encode])]) }}">صفحه آخر</a>
+        <a class="btn btn-info btn-sm {% if page.current == 1 %}disabled{% endif %}" href="{{ url.get(['for':'files']) }}">صفحه اول</a>
+        <a class="btn btn-info btn-sm {% if page.current == page.before %}disabled{% endif %}" href="{{ url.get(['for':'files','params':implode('/',[page.before, dispatcher.getParam(1)|url_encode])]) }}"><i class="fa fa-chevron-right"></i> صفحه قبل</a>
+        <a class="btn btn-info btn-sm {% if page.current == page.next %}disabled{% endif %}" href="{{ url.get(['for':'files','params':implode('/',[page.next, dispatcher.getParam(1)|url_encode])]) }}">صفحه بعد <i class="fa fa-chevron-left"></i></a>
+        <a class="btn btn-info btn-sm{% if page.current == page.last %}disabled{% endif %}" href="{{ url.get(['for':'files','params':implode('/',[page.last, dispatcher.getParam(1)|url_encode])]) }}">صفحه آخر</a>
     </div>
 </div>

@@ -22,9 +22,9 @@
     {% endif %}
     <div class="form-group text-center">درحال نمایش صفحه {{ page.current }} از {{ page.total_pages }}</div>
     <div class="row text-center form-group btn-group-st">
-        <a class="btn btn-info btn-sm {% if page.current == 1 %}disabled" {% endif %}href="{{ url.get(['for':'purchases']) }}">صفحه اول</a>
-        <a class="btn btn-info btn-sm {% if page.current == page.before %}disabled" {% endif %}href="{{ url.get(['for':'purchases','page':page.before]) }}"><i class="fa fa-chevronright"></i> صفحه قبل</a>
-        <a class="btn btn-info btn-sm {% if page.current == page.next %}disabled" {% endif %}href="{{ url.get(['for':'purchases','page':page.next]) }}">صفحه بعد <i class="fa fa-chevron-left"></i></a>
-        <a class="btn btn-info btn-sm {% if page.current == page.last %}disabled" {% endif %}href="{{ url.get(['for':'purchases','page':page.last]) }}">صفحه آخر</a>
+        <a class="btn btn-info btn-sm {% if page.current == 1 %}disabled{% endif %}" href="{{ url.get(['for':'purchases']) }}">صفحه اول</a>
+        <a class="btn btn-info btn-sm {% if page.current == page.before %}disabled{% endif %}" href="{{ url.get(['for':'purchases','page':page.before]) }}"><i class="fa fa-chevronright"></i> صفحه قبل</a>
+        <a class="btn btn-info btn-sm {% if page.current == page.next %}disabled{% endif %}" href="{{ url.get(['for':'purchases','page':page.next]) }}">صفحه بعد <i class="fa fa-chevron-left"></i></a>
+        <a class="btn btn-info btn-sm {% if page.current == page.last %}disabled{% endif %}" href="{{ url.get(['for':'purchases','page':page.last]) }}">صفحه آخر</a>
     </div>
 </div>
