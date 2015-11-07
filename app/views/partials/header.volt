@@ -40,16 +40,7 @@
                     {% else %}
                     <div class="quota-progress-bar">
                         <div class="bar" data-quota-used="{{ ((auth.getIdentity().used*100)/1)|intval }}"></div>
-                        <!-- More than 70% remaining -->
-                        {% if (((auth.getIdentity().used*100)/1))|intval < 30 %}
-                        <div class="info text-en btn-success"></div>
-                        <!-- less than 70% and more than 30% remainig -->
-                        {% elseif (  (  (  (auth.getIdentity().used*100)/auth.getIdentity().quota  )  )|intval > 30 and (  (  (auth.getIdentity().used*100)/1  )  )|intval < 70  ) %}
-                        <div class="info text-en btn-warning"></div>
-                        <!-- Less than 30% remaining -->
-                        {% else %}
                         <div class="info text-en btn-danger"></div>
-                        {% endif %}
                         <div id="info" class="text-en text-ltr">
                             {{ number_format(auth.getIdentity().used/1024/1024/1024, 2) }} GB / {{ number_format(1/1024/1024/1024, 2) }} GB
                         </div>
