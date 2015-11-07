@@ -199,12 +199,18 @@ class MainTask extends Task
     public function transferAction()
     {
         set_time_limit(0);
-        $lock = fopen(APP_DIR . '/cache/locks/transfer.lock', 'w+');
-        if (!flock($lock, LOCK_EX | LOCK_NB)) {
-            echo "Server Transfer thread is already running\n";
+        if (!isset($params[0]) || !is_numeric($params[0])) {
+            echo "Invalid transfer id\n";
             return;
         }
-        while (!file_exists(APP_DIR . '/cache/locks/transfer.shutdown')) {
+        $id = intval($params[0]);
+        $lock = fopen(APP_DIR . '/cache/locks/transfer' . $id . '.lock', 'w+');
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            echo "Server Transfer  thread #{$id} is already running\n";
+            return;
+        }
+
+        while (!file_exists(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown')) {
             $dirs = @scandir(APP_DIR . '/cache/files');
             $list = array();
             foreach ($dirs as $dir) {
@@ -228,7 +234,7 @@ class MainTask extends Task
             if (!empty($list)) {
                 $list = array_values($list);
                 $servers = Servers::find([
-                    'id IN ({ids:array})',
+                    "id IN ({ids:array}) AND deleted_at = 0 AND enable = 'Yes'",
                     'bind' => [
                         'ids' => $list,
                     ],
@@ -246,7 +252,7 @@ class MainTask extends Task
 
                         if ($files) {
                             foreach ($files as $file) {
-                                unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
+                                @unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
                                 $file->status = 'Success';
                                 $file->save();
                             }
@@ -261,12 +267,12 @@ class MainTask extends Task
                     unlink(APP_DIR . '/cache/locks/transfer.now');
                     break;
                 }
-                if (file_exists(APP_DIR . '/cache/locks/transfer.shutdown')) {
+                if (file_exists(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown')) {
                     break;
                 }
             }
         }
-        unlink(APP_DIR . '/cache/locks/transfer.shutdown');
+        unlink(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown');
         fclose($lock);
         echo "Thread stops by shutdown signal\n";
     }
