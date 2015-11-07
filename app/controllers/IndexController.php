@@ -201,7 +201,10 @@ class IndexController extends ControllerBase
             $leecher = '\\Shariftube\\Websites\\' . $website->name;
             $leecher = new $leecher;
             $result = $leecher->getInfo($link);
-            if (empty($result) || empty($result['records'])) {
+            if ($result === null) {
+                $this->flash->warning('این ویدئو بخاطر قرانین کپی رایت قابل دریافت نمی باشد.');
+                $this->view->records = array();
+            } elseif (empty($result) || empty($result['records'])) {
                 $this->flash->warning('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
                 $this->view->records = array();
             } else {
