@@ -86,7 +86,10 @@ class MainTask extends Task
             exec(BASE_DIR . "/cli Main feed {$i} > /dev/null &");
         }
         echo "Running Server transfer Threads\n";
-        exec(BASE_DIR . "/cli Main transfer > /dev/null &");
+        for ($i = 1; $i <= $this->config->cli->feed_threads; $i++) {
+            echo "Running Server transfer thread #{$i}\n";
+            exec(BASE_DIR . "/cli Main transfer {$i} > /dev/null &");
+        }
         echo "Finnish\n";
     }
 
@@ -185,18 +188,21 @@ class MainTask extends Task
                         'id' => $server->getId(),
                     ],
                 ]);
+                $remain = $server->remain;
                 $server->remain = $server->quota - $server->used;
-                if ($server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
-                    $server->enable = 'No';
-                } else {
-                    $server->enable = 'Yes';
+                if ($remain < ($this->config->cli->pause_server_remain * 1024 * 1024) || $server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
+                    if ($server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
+                        $server->enable = 'No';
+                    } else {
+                        $server->enable = 'Yes';
+                    }
                 }
                 $server->save();
             }
         }
     }
 
-    public function transferAction()
+    public function transferAction($params)
     {
         set_time_limit(0);
         if (!isset($params[0]) || !is_numeric($params[0])) {
