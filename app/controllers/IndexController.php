@@ -202,10 +202,10 @@ class IndexController extends ControllerBase
             $leecher = new $leecher;
             $result = $leecher->getInfo($link);
             if ($result === null) {
-                $this->flash->warning('این ویدئو بخاطر قرانین کپی رایت قابل دریافت نمی باشد.');
+                $this->flash->error('این ویدئو بخاطر قرانین کپی رایت قابل دریافت نمی باشد.');
                 $this->view->records = array();
             } elseif (empty($result) || empty($result['records'])) {
-                $this->flash->warning('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
+                $this->flash->error('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
                 $this->view->records = array();
             } else {
                 foreach ($result['records'] as $index => $value) {
