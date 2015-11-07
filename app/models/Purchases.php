@@ -82,7 +82,7 @@ class Purchases extends BaseModel
             $transaction->rollback();
             return false;
         }
-        $this->status = 'Success';
+
 
         $percentage = intval($this->getDI()->getConfig()->application->affiliate_percentage);
         if ($percentage > 0 && $percentage < 100) {
@@ -97,6 +97,7 @@ class Purchases extends BaseModel
                 return false;
             }
         }
+        $this->status = 'Success';
 
         if (!$this->save()) {
             $transaction->rollback();
