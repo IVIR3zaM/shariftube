@@ -31,7 +31,7 @@ $di->setShared('curl', function () {
 $di->setShared('url', function () use ($config) {
     $url = new UrlResolver();
     $url->setBaseUri($config->application->baseUri);
-    $url->setStaticBaseUri('http://' . $config->application->publicUrl . $config->application->baseUri);
+    $url->setStaticBaseUri('https://' . $config->application->publicUrl . $config->application->baseUri);
     return $url;
 });
 
