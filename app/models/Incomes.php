@@ -27,6 +27,7 @@ class Incomes extends BaseModel
             ],
         ]);
         if (!empty($purchase) || $purchase->status != 'Paid') {
+            var_dump($purchase->status);exit;
             return false;
         }
     }
