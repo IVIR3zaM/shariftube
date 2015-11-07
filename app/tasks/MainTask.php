@@ -86,7 +86,7 @@ class MainTask extends Task
             exec(BASE_DIR . "/cli Main feed {$i} > /dev/null &");
         }
         echo "Running Server transfer Threads\n";
-        for ($i = 1; $i <= $this->config->cli->feed_threads; $i++) {
+        for ($i = 1; $i <= $this->config->cli->transfer_threads; $i++) {
             echo "Running Server transfer thread #{$i}\n";
             exec(BASE_DIR . "/cli Main transfer {$i} > /dev/null &");
         }
