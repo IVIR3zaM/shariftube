@@ -917,10 +917,8 @@ body {
   border: none;
   padding: 0.25em 0.75em;
 }
-@media (max-width: 988px) {
-  .list-shop li {
-    margin-bottom: 0.5em;
-  }
+.list-shop li {
+  margin-bottom: 0.5em;
 }
 #file-progress {
   -webkit-transition: all 0.3s ease-out;
