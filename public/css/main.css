@@ -917,7 +917,7 @@ body {
   border: none;
   padding: 0.25em 0.75em;
 }
-@media (max-width: 768px) {
+@media (max-width: 988px) {
   .list-shop li {
     margin-bottom: 0.5em;
   }
