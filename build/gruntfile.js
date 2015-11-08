@@ -7,38 +7,43 @@ module.exports = function(grunt){
 			compile: {
 				options: {
 					compress: false,
-					paths: ['build/stylus']
+					paths: ['stylus']
 				},
 				files: {
-					'css/main.css':'build/stylus/main.styl',
+					'../public/css/main.css':'stylus/main.styl',
 				}
 			}
 		},
 		autoprefixer: {
 			compile: {
 				files: {
-					'css/main.css':'css/main.css'
+					'../public/css/main.css':'../public/css/main.css'
 				}
 			}
 		},
 		cssmin: {
 			compile: {
 				files: {
-					'css/shariftube.min.css' : ['css/bootstrap.min.css', 'css/font-awesome.css', 'css/main.css']
+					'../public/css/shariftube.min.css' : ['frontend/css/bootstrap.min.css', 'frontend/css/font-awesome.css', 'frontend/css/main.css']
 				}
 			}
 		},
 		uglify: {
 			js_files: {
 				files: {
-					'js/shariftube.min.js' : ['js/jquery.min.js', 'js/bootstrap.min.js', 'js/leech.js', 'js/shariftube.js']
+					// jQuery must be first in order not to be warned by bootstrap js
+					'../public/js/shariftube.min.js' : ['frontend/js/jquery.min.js', 'frontend/js/bootstrap.min.js', 'frontend/js/leech.js', 'frontend/js/shariftube.js']
 				}
 			}
 		},
 		watch: {
-			stylus: {
-				files: ['build/stylus/*.styl'],
-				tasks: ['stylus', 'autoprefixer']
+			css: {
+				files: ['stylus/*.styl'],
+				tasks: ['stylus', 'autoprefixer', 'cssmin']
+			},
+			js: {
+				files: ['frontend/js/*'],
+				tasks: ['uglify']
 			}
 		}
 	});
@@ -50,7 +55,7 @@ module.exports = function(grunt){
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-cache-bust');
 	grunt.registerTask('default', ['stylus', 'autoprefixer', 'watch']);
+	grunt.registerTask('production', ['stylus', 'autoprefixer', 'cssmin', 'uglify', 'watch']);
 	grunt.registerTask('minify', ['cssmin', 'uglify']);
 };
