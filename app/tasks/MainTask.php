@@ -85,10 +85,26 @@ class MainTask extends Task
             echo "Running feed thread #{$i}\n";
             exec(BASE_DIR . "/cli Main feed {$i} > /dev/null &");
         }
+
         echo "Running Server transfer Threads\n";
-        for ($i = 1; $i <= $this->config->cli->transfer_threads; $i++) {
-            echo "Running Server transfer thread #{$i}\n";
-            exec(BASE_DIR . "/cli Main transfer {$i} > /dev/null &");
+        $dirs = @scandir(APP_DIR . '/cache/files');
+        foreach ($dirs as $dir) {
+            if (is_numeric($dir) && is_dir(APP_DIR . '/cache/files/' . $dir)) {
+                $subdirs = @scandir(APP_DIR . '/cache/files/' . $dir);
+                foreach ($subdirs as $subdir) {
+                    if (is_numeric($subdir) && is_dir(APP_DIR . '/cache/files/' . $dir . '/' . $subdir)) {
+                        $tmp = @scandir(APP_DIR . '/cache/files/' . $dir . '/' . $subdir);
+                        foreach ($tmp as $temp) {
+                            if (!is_dir(APP_DIR . '/cache/files/' . $dir . '/' . $temp)) {
+                                echo "Running Server transfer thread #{$dir}\n";
+                                exec(BASE_DIR . "/cli Main transfer {$dir} > /dev/null &");
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
         }
         echo "Finnish\n";
     }
@@ -210,6 +226,16 @@ class MainTask extends Task
             return;
         }
         $id = intval($params[0]);
+        $server = Servers::findFirst([
+            'id = :id:',
+            'bind' => [
+                'id' => $id,
+            ],
+        ]);
+        if (!$server) {
+            echo "Server #{$id} Not found\n";
+            return;
+        }
         $lock = fopen(APP_DIR . '/cache/locks/transfer' . $id . '.lock', 'w+');
         if (!flock($lock, LOCK_EX | LOCK_NB)) {
             echo "Server Transfer  thread #{$id} is already running\n";
@@ -217,52 +243,20 @@ class MainTask extends Task
         }
 
         while (!file_exists(APP_DIR . '/cache/locks/transfer' . $id . '.shutdown')) {
-            $dirs = @scandir(APP_DIR . '/cache/files');
-            $list = array();
-            foreach ($dirs as $dir) {
-                if (is_numeric($dir) && is_dir(APP_DIR . '/cache/files/' . $dir)) {
-                    $subdirs = @scandir(APP_DIR . '/cache/files/' . $dir);
-                    foreach ($subdirs as $subdir) {
-                        if (is_numeric($subdir) && is_dir(APP_DIR . '/cache/files/' . $dir . '/' . $subdir)) {
-                            $tmp = @scandir(APP_DIR . '/cache/files/' . $dir . '/' . $subdir);
-                            foreach ($tmp as $temp) {
-                                if (!is_dir(APP_DIR . '/cache/files/' . $dir . '/' . $temp)) {
-                                    $list[] = $dir;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            if (!empty($list)) {
-                $list = array_values($list);
-                $servers = Servers::find([
-                    "id IN ({ids:array}) AND deleted_at = 0 AND enable = 'Yes'",
+            $transfered = $server->transfer(APP_DIR . '/cache/files/' . $server->getId() . '/', '');
+            if (!empty($transfered)) {
+                $files = $server->getFiles([
+                    "name IN ({name:array}) AND status = 'Transferring'",
                     'bind' => [
-                        'ids' => $list,
+                        'name' => $transfered,
                     ],
                 ]);
 
-                foreach ($servers as $server) {
-                    $transfered = $server->transfer(APP_DIR . '/cache/files/' . $server->getId() . '/', '');
-                    if (!empty($transfered)) {
-                        $files = $server->getFiles([
-                            "name IN ({name:array}) AND status = 'Transferring'",
-                            'bind' => [
-                                'name' => $transfered,
-                            ],
-                        ]);
-
-                        if ($files) {
-                            foreach ($files as $file) {
-                                @unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
-                                $file->status = 'Success';
-                                $file->save();
-                            }
-                        }
+                if ($files) {
+                    foreach ($files as $file) {
+                        @unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
+                        $file->status = 'Success';
+                        $file->save();
                     }
                 }
             }
