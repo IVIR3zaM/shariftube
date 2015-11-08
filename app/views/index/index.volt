@@ -1,4 +1,8 @@
 <div class="main-section">
+    <div class="popup-video">
+        <a href="#" class="close"><i class="fa fa-times"></i></a>
+        <div id="player">درحال بارگزاری</div>
+    </div>
     <div>
         <div class="clearfix">
             <div class="col-xs-6 col-xs-offset-3">
