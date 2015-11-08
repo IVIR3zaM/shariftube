@@ -164,9 +164,11 @@ class IndexController extends ControllerBase
                 'user' => $this->auth->getIdentity()->getId(),
             ],
         ]);
+        $this->view->file = '';
         if (!$file) {
-            $this->view->file = '';
             $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+        } elseif (!in_array($file->type, ['webm', 'mp4', 'flv'])) {
+            $this->flash->error('این ویدئو قابلیت پخش آنلاین ندارد.');
         } else {
             $this->view->file = $file->getFinalLink();
         }
@@ -302,12 +304,14 @@ class IndexController extends ControllerBase
                 $this->view->records = array();
             } else {
                 foreach ($result['records'] as $index => $value) {
-                    $hash = md5($value['link']) . '.' . $value['type'];
-                    $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
-                    $value['trailer'] = $this->url->getStatic([
-                        'for' => 'video',
-                        'id' => $hash,
-                    ]);
+                    if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
+                        $hash = md5($value['link']) . '.' . $value['type'];
+                        $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
+                        $value['trailer'] = $this->url->getStatic([
+                            'for' => 'video',
+                            'id' => $hash,
+                        ]);
+                    }
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;
                 }
