@@ -111,4 +111,31 @@ $(document).ready(function() {
 	hashHandler('#signup', function() {
 		$('[data-tab-trigger="#register"]').click();
 	});
+	// JWPLAYER KEY
+	jwplayer.key="/R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw==";
+	// JWPLAYER FUNCTIONALITY
+	$(function () {
+		if($("div.player").length) {
+			var playerInstance = jwplayer("player");
+			playerInstance.setup({
+				file: $(".player").attr("data-link"),
+				width: "100%",
+				aspectratio: "16:9"
+			});
+		}
+		$("a.player").click(function(e){
+			e.preventDefault();
+			$('.popup-video').show();
+			var playerInstance = jwplayer("player");
+			playerInstance.setup({
+				file: $(this).attr("href"),
+				width: "100%",
+				aspectratio: "16:9"
+			});
+		});
+		$('.popup-video .close').click(function(e) {
+			e.preventDefault();
+			$('.popup-video').hide();
+		});
+	});
 });

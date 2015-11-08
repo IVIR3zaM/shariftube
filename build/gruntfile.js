@@ -10,14 +10,14 @@ module.exports = function(grunt){
 					paths: ['stylus']
 				},
 				files: {
-					'../public/css/main.css':'stylus/main.styl',
+					'frontend/css/main.css':'stylus/main.styl',
 				}
 			}
 		},
 		autoprefixer: {
 			compile: {
 				files: {
-					'../public/css/main.css':'../public/css/main.css'
+					'frontend/css/main.css':'frontend/css/main.css'
 				}
 			}
 		},
@@ -32,7 +32,7 @@ module.exports = function(grunt){
 			js_files: {
 				files: {
 					// jQuery must be first in order not to be warned by bootstrap js
-					'../public/js/shariftube.min.js' : ['frontend/js/jquery.min.js', 'frontend/js/bootstrap.min.js', 'frontend/js/leech.js', 'frontend/js/shariftube.js']
+					'../public/js/shariftube.min.js' : ['frontend/js/jquery.min.js', 'frontend/js/bootstrap.min.js', 'frontend/js/leech.js', 'frontend/js/shariftube.js', 'frontend/js/jwplayer.js']
 				}
 			}
 		},

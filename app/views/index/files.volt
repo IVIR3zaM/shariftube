@@ -24,8 +24,8 @@
             {% for record in page.items %}
             <tr>
                 <td>{{ record.label|e }}</td>
-                <td>{{ number_format(record.size/1024/1024, 2) }}MB</td>
-                <td>{{ record.quality|e }}</td>
+                <td class="text-en">{{ number_format(record.size/1024/1024, 2) }}MB</td>
+                <td class="text-en">{{ record.quality|e }}</td>
                 <td class="status-{{ record.status|lower|e }}">{{ status[record.status]|e }}</td>
                 <td>{{ date.date('Y-m-d H:i:s', record.created_at|strtotime)|e }}</td>
                 <td>

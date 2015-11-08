@@ -7,7 +7,7 @@
         <title>شریف تیوب - {{ title }}</title>
         <meta name="description" content="شریف تیوب، سرویسی برای استفاده آکادمیک و آموزشی با هدف آسان سازی ارتباط با شبکه های ویدیویی وب">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ url.getBaseUri() }}css/shariftube1446980489925.min.css">
+        <link rel="stylesheet" href="{{ url.getBaseUri() }}css/shariftube1446995875757.min.css">
     </head>
     <body>
     	<noscript><div style="position:fixed;width:100%;height:100%;background-color:#000;color:#fff;z-index:1000000000"><h1 style="position:absolute;top:50%;left:50%;-webkit-transform:translate3d(-50%,-50%,0);transform:translate3d(-50%,-50%,0);text-align:center;">کاربر گرامی، جاوااسکریپت مرورگر شما غیرفعال است. برای استفاده از این سرویس لطفا جاوااسکریپت مرورگر خود را فعال نمایید.</h1></div></noscript>
@@ -42,54 +42,6 @@
 	            </div>
 	        </div>
         </div>
-        <script src="{{ url.getBaseUri() }}js/shariftube1446980489925.min.js"></script>
-        <script src="{{ url.getBaseUri() }}js/jwplayer.js"></script>
-        <script>jwplayer.key="/R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw=="</script>
-        <style>
-            .popup-video {
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                display: none;
-                top: 0;
-                left: 0;
-                z-index: 1000;
-                background-color: #c5c5c5!important;
-            }
-            .popup-video .close {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                color: #fff;
-                opacity: 1;
-                font-size: 30px;
-            }
-        </style>
-        <script type="text/javascript">
-            $(function () {
-                if($("div.player").length) {
-                    var playerInstance = jwplayer("player");
-                    playerInstance.setup({
-                        file: $(".player").attr("data-link"),
-                        width: "100%",
-                        aspectratio: "16:9"
-                    });
-                }
-                $("a.player").click(function(e){
-                    e.preventDefault();
-                    $('.popup-video').show();
-                    var playerInstance = jwplayer("player");
-                    playerInstance.setup({
-                        file: $(this).attr("href"),
-                        width: "100%",
-                        aspectratio: "16:9"
-                    });
-                });
-                $('.popup-video .close').click(function(e) {
-                    e.preventDefault();
-                    $('.popup-video').hide();
-                });
-            });
-</script>
+        <script defer src="{{ url.getBaseUri() }}js/shariftube1446995875757.min.js"></script>
     </body>
 </html>
