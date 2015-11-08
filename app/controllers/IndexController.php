@@ -27,9 +27,10 @@ class IndexController extends ControllerBase
     {
         $date = new \jDateTime(true, true, 'Asia/Tehran');
         $this->view->date = $date;
+        $this->view->admin = false;
         if ($this->auth->getIdentity()) {
+            $this->view->admin = $admin = $this->auth->getIdentity()->role == 'Admin' ? true : false;
             $time = time();
-
             if ($this->auth->getIdentity()->role == 'Admin') {
                 $tickets = Tickets::find([
                     'status IN ({status:array})',
@@ -591,7 +592,6 @@ encryptBase64($tag->getAttribute('value'));
             $this->response->redirect(['for' => 'login']);
             return;
         }
-        $this->view->admin = $admin = $this->auth->getIdentity()->role == 'Admin' ? true : false;
         $this->view->title = 'پشتیبانی';
         $this->view->status = array(
             'Open' => 'باز',
