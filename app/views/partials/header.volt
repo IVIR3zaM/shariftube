@@ -53,6 +53,12 @@
                     <a class="btn btn-danger" href="{{ url.get(['for':'logout']) }}"><i class="fa"></i>خروج</a>
                 </div>
             </div>
+            {% if admin %}
+            <div>
+                <span>{{ purchases_amount }}</span>
+                <span>{{ users_count }}</span>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
