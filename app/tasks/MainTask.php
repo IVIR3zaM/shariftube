@@ -195,6 +195,11 @@ class MainTask extends Task
                     ],
                 ]);
                 if ($files) {
+                    foreach($files as $file) {
+                        $file->name = null;
+                        $file->save();
+                    }
+
                     $files->delete();
                 }
                 $server->used = Files::sum([
