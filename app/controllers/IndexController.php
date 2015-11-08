@@ -311,6 +311,8 @@ class IndexController extends ControllerBase
                             'for' => 'video',
                             'id' => $hash,
                         ]);
+                    } else {
+                        $value['trailer'] = '';
                     }
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;

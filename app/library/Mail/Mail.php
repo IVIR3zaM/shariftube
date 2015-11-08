@@ -27,7 +27,7 @@ class Mail extends Component
             $this->phpmailer->Password = $this->config->mail->password;
 
         }
-	$this->phpmailer->SMTPDebug = 2;
+	// $this->phpmailer->SMTPDebug = 2;
 	$this->phpmailer->SMTPAutoTLS = false;
         $this->phpmailer->SMTPSecure = $this->config->mail->security;
         $this->phpmailer->Port = $this->config->mail->port;

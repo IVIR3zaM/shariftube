@@ -5,9 +5,12 @@ use Phalcon\Crypt;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\DI\FactoryDefault\CLI as CliDI;
 use Phalcon\Events\Manager as EventsManager;
+use Phalcon\Mvc\View;
+use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
 use Predis\Client as PredisClient;
 use Shariftube\Curl\Curl;
+use Shariftube\Mail\Mail;
 
 define('VERSION', '1.0.0');
 
@@ -24,6 +27,36 @@ include APP_DIR . '/config/loader.php';
 $di->setShared('config', $config);
 $di->setShared('redis', function () use ($config) {
     return new PredisClient((array)$config->application->redis_server);
+});
+
+$di->setShared('mail', function () {
+    return new Mail();
+});
+$di->setShared('view', function () use ($di, $config) {
+    $view = new View();
+    $view->setViewsDir($config->application->viewsDir);
+    $view->registerEngines(array(
+        '.volt' => function ($view, $di) use ($config) {
+
+            $volt = new VoltEngine($view, $di);
+
+            $volt->setOptions(array(
+                'compiledPath' => $config->application->cacheDir . 'volt/',
+                'compiledSeparator' => '_'
+            ));
+
+            $volt->getCompiler()->addFilter('md5', 'md5');
+            $volt->getCompiler()->addFilter('intval', 'intval');
+            $volt->getCompiler()->addFilter('strtotime', 'strtotime');
+            $volt->getCompiler()->addFilter('vinixhash_encode', 'vinixhash_encode');
+            $volt->getCompiler()->addFunction('number_format', 'number_format');
+            $volt->getCompiler()->addFunction('implode', 'implode');
+
+            return $volt;
+        }
+    ));
+
+    return $view;
 });
 
 $di->setShared('curl', function () {

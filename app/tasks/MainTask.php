@@ -119,17 +119,17 @@ class MainTask extends Task
         $template = $params[0];
         $file = $params[1];
         $subject = $params[2];
-        if (!file_exists(APP_DIR . '/app/views/email/' . $template . '.volt')) {
+        if (!file_exists(APP_DIR . '/views/email/' . $template . '.volt')) {
             echo "template not found\n";
             return;
         }
-        if (!file_exists(APP_DIR . '/app/cache/emails/' . $file)) {
+        if (!file_exists(APP_DIR . '/cache/emails/' . $file . '.csv')) {
             echo "emails not found\n";
             return;
         }
 
 
-        $list = explode("\n", file_get_contents(APP_DIR . '/app/cache/emails/' . $file));
+        $list = explode("\n", file_get_contents(APP_DIR . '/cache/emails/' . $file . '.csv'));
         $emails = array();
         foreach ($list as $email) {
             $email = trim(strtolower($email));
@@ -150,10 +150,10 @@ class MainTask extends Task
         for ($i = $start; $i < ($start + $limit); $i++) {
             $email = $emails[$i];
             echo "Sending #{$i}: {$email}: ";
-            $this->getDI()->getMail()->setTemplate($template);
-            $this->getDI()->getMail()->addAddress($email);
-            $this->getDI()->getMail()->Subject = $subject;
-            if ($this->getDI()->getMail()->send()) {
+            $this->mail->setTemplate($template);
+            $this->mail->addAddress($email);
+            $this->mail->Subject = $subject;
+            if ($this->mail->send()) {
                 echo 'Sent';
             } else {
                 echo 'Failed';
