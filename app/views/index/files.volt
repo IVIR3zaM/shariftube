@@ -30,7 +30,8 @@
                 <td>{{ date.date('Y-m-d H:i:s', record.created_at|strtotime)|e }}</td>
                 <td>
                     {% if record.status == 'Success' and servers[record.server_id] is defined %}
-                    <a href="{{ record.getFinalLink()|e }}">دانلود</a>
+                    <a href="{{ record.getFinalLink()|e }}">دانلود</a> | 
+                    <a href="{{ url.get(['for':'play','id':record.id|e]) }}">پخش</a> | 
                     {% endif %}
                     <a href="{{ url.get(['for':'link','link':record.uri|vinixhash_encode]) }}">دریافت مجدد</a>
                 </td>
