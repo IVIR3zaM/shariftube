@@ -50,15 +50,13 @@
                 <!-- Buy -->
                 <div class="user-quota-buy">
                     <a class="btn btn-primary" href="{{ url.get(['for':'shop']) }}"><i class="fa fa-dollar"></i> خرید حجم</a>
-                    <a class="btn btn-danger" href="{{ url.get(['for':'logout']) }}"><i class="fa"></i>خروج</a>
+                    <a class="btn btn-danger" href="{{ url.get(['for':'logout']) }}"><i class="fa"></i>خروج</a>&nbsp;&nbsp;&nbsp;
+                    {% if admin %}
+                        <span>مجموع خرید: {{ number_format(purchases_amount, 0) }} ریال</span>&nbsp;&nbsp;&nbsp;
+                        <span>کل کاربران: {{ number_format(users_count, 0) }}</span>
+                    {% endif %}
                 </div>
             </div>
-            {% if admin %}
-            <div>
-                <span>{{ purchases_amount }}</span>
-                <span>{{ users_count }}</span>
-            </div>
-            {% endif %}
         </div>
     </div>
 </div>
