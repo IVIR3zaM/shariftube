@@ -302,7 +302,12 @@ class IndexController extends ControllerBase
                 $this->view->records = array();
             } else {
                 foreach ($result['records'] as $index => $value) {
-                    $this->session->set(md5($value['link']), array_merge($value, ['website' => json_encode($website)]));
+                    $hash = md5($value['link']);
+                    $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
+                    $value['trailer'] = $this->url->getStatic([
+                        'for' => 'video',
+                        'id' => $hash,
+                    ]);
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;
                 }
