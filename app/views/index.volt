@@ -44,7 +44,7 @@
         </div>
         <script src="{{ url.getBaseUri() }}js/shariftube1446980489925.min.js"></script>
         <script src="{{ url.getBaseUri() }}js/jwplayer.js"></script>
-        <script>jwplayer.key="R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw=="</script>
+        <script>jwplayer.key="/R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw=="</script>
         <script type="text/javascript">
             $(function () {
                 if($("#player").length) {
