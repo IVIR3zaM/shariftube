@@ -39,7 +39,7 @@
                     </div>
                     {% else %}
                     <div class="quota-progress-bar">
-                        <div class="bar" data-quota-used="{{ ((auth.getIdentity().used*100)/1)|intval }}"></div>
+                        <div class="bar" style="width:98%;"></div>
                         <div class="info text-en btn-danger"></div>
                         <div id="info" class="text-en text-ltr">
                             {{ number_format(auth.getIdentity().used/1024/1024/1024, 2) }} GB / {{ number_format(1/1024/1024/1024, 2) }} GB
