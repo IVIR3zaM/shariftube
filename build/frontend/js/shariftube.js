@@ -62,18 +62,34 @@ var widthAnimator = function(selector) {
 	}, 1500, 'easeOutCubic');
 }
 
+// Show signup section on existence of ?#signup
+var hashHandler = function(hash, fn) {
+	if (window.location.hash && window.location.hash == hash) {
+		fn();
+	}
+}
+
 // Init
 $(document).ready(function() {
+	// TABS
 	tabHandler({
 		holder: 'login-tab',
 		duration: 200
 	});
+
+	// ALERTS
 	alertHandler();
-	// Quota animation
-	widthAnimator('.quota-progress-bar .bar');
+	// CAROUSEL
+
 	// Footer Carousel
 	$('.carousel').carousel();
-	// Policy
+
+	// QUOTA
+	widthAnimator('.quota-progress-bar .bar');
+
+	// POLICY
+
+	// Disable submit if checkbox not clicked
 	$('#policy').on('click', function() {
 		if ($(this).is(':checked')) {
 			$('.submit-register > input').prop('disabled', false);
@@ -82,10 +98,17 @@ $(document).ready(function() {
 			$('.submit-register > input').prop('disabled', true);
 		}
 	});
+	// Toggle Polivcy text on click of trigger
 	$('#policy-trigger').click(function(e) {
 		$('#policy-content').fadeToggle(200);
 	});
+	// Close Policy text on click od close btn
 	$('#policy-content .close').click(function() {
 		$('#policy-content').fadeOut(200);
-	})
+	});
+
+	// Signup activation on hash existence
+	hashHandler('#signup', function() {
+		$('[data-tab-trigger="#register"]').click();
+	});
 });
