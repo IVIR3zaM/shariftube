@@ -53,13 +53,10 @@
                 background-color: #000;
                 display: -webkit-flex;
                 display: -ms-flexbox;
-                display: flex;
-                -webkit-justify-content: center;
-                -ms-flex-pack: center;
-                        justify-content: center;
-                -webkit-align-items: center;
-                -ms-flex-align: center;
-                        align-items: center;
+                display: none;
+                top: 0;
+                left: 0;
+                z-index: 1000;
             }
         </style>
         <script type="text/javascript">
