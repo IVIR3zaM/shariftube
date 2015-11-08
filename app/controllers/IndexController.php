@@ -38,6 +38,11 @@ class IndexController extends ControllerBase
                     ],
                     'order' => 'modified_at DESC',
                 ])->count();
+                $this->view->users_count = Users::count();
+                $this->view->purchases_amount = Purchases::sum([
+                    'column' => 'amount',
+                    'conditions' => "status = 'Success'",
+                ]);
             } else {
                 $tickets = Tickets::find([
                     'user_id = :user: AND status IN ({status:array})',
