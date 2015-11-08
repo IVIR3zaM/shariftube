@@ -109,6 +109,60 @@ class MainTask extends Task
         echo "Finnish\n";
     }
 
+    public function emailAction($params)
+    {
+        set_time_limit(0);
+        if (count($params) < 3) {
+            echo "Invalid params\n";
+            return;
+        }
+        $template = $params[0];
+        $file = $params[1];
+        $subject = $params[2];
+        if (!file_exists(APP_DIR . '/app/views/email/' . $template . '.volt')) {
+            echo "template not found\n";
+            return;
+        }
+        if (!file_exists(APP_DIR . '/app/cache/emails/' . $file)) {
+            echo "emails not found\n";
+            return;
+        }
+
+
+        $list = explode("\n", file_get_contents(APP_DIR . '/app/cache/emails/' . $file));
+        $emails = array();
+        foreach ($list as $email) {
+            $email = trim(strtolower($email));
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emails[] = $email;
+            }
+        }
+
+        $start = 0;
+        if (isset($params[3]) && $params[3] > 0) {
+            $start = intval($params[3]);
+        }
+        $limit = count($emails);
+        if (isset($params[4]) && $params[4] > 0 && $params[4] < $limit) {
+            $limit = intval($params[4]);
+        }
+        echo "{$limit} emails found from {$start}\n";
+        for ($i = $start; $i < ($start + $limit); $i++) {
+            $email = $emails[$i];
+            echo "Sending #{$i}: {$email}: ";
+            $this->getDI()->getMail()->setTemplate($template);
+            $this->getDI()->getMail()->addAddress($email);
+            $this->getDI()->getMail()->Subject = $subject;
+            if ($this->getDI()->getMail()->send()) {
+                echo 'Sent';
+            } else {
+                echo 'Failed';
+            }
+            echo "\n";
+        }
+        echo "Finnish\n";
+    }
+
     public function paymentFresherAction()
     {
         $purchases = Purchases::find([
@@ -195,7 +249,7 @@ class MainTask extends Task
                     ],
                 ]);
                 if ($files) {
-                    foreach($files as $file) {
+                    foreach ($files as $file) {
                         $file->name = null;
                         $file->save();
                     }
