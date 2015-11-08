@@ -164,7 +164,7 @@ class Youtube extends Component implements Website
         if (@substr($content['head']['http_code'], 0, 2) != '20') {
             return null;
         }
-       return $content['content'];
+       return $content;
     }
 
     /*public function getInfo($link = '')

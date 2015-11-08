@@ -95,18 +95,18 @@ class IndexController extends ControllerBase
         $this->view->title = '';
         $id = $this->dispatcher->getParam('id');
         if (!$this->session->has($id)) {
-            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.1');
             return;
         }
         $video = $name = $this->session->get($id);
-        $website = @json_decode($video);
+        $website = @json_decode($video['website']);
         if (!$website) {
-            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.2');
             return;
         }
 
         if (!$website || !class_exists('\\Shariftube\\Websites\\' . $website->name)) {
-            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.3');
             return;
         }
         $leecher = '\\Shariftube\\Websites\\' . $website->name;
@@ -133,6 +133,8 @@ class IndexController extends ControllerBase
         if ($result === null) {
             $this->response->setStatusCode(404, 'Not Found');
         } else {
+            $this->response->setContentType($result['head']['content_type']);
+            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
             $this->response->setHeader('Accept-Ranges', 'bytes');
             $this->response->setHeader('Content-Length', $size);
             if ($this->request->getHeader('Range')) {
@@ -142,7 +144,7 @@ class IndexController extends ControllerBase
             }
         }
 
-        $this->response->setContent($result);
+        $this->response->setContent($result['content']);
         $this->response->send();
     }
 
