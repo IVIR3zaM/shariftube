@@ -16,6 +16,18 @@ $router->add('/link/(.+)', array(
     'link' => 1,
 ))->setName('link');
 
+$router->add('/video/([a-f0-9]+)', array(
+    'controller' => 'index',
+    'action' => 'video',
+    'id' => 1,
+))->setName('video');
+
+$router->add('/play/([0-9]+)', array(
+    'controller' => 'index',
+    'action' => 'play',
+    'id' => 1,
+))->setName('play');
+
 $router->add('/search/:params', array(
     'controller' => 'index',
     'action' => 'search',

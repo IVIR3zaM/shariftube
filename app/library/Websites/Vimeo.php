@@ -142,7 +142,6 @@ class Vimeo extends Component implements Website
         if (!flock($fp, LOCK_EX | LOCK_NB)) {
             return null;
         }
-        echo "staring: file:{$file->name} size:{$file->size} \n";
         $tmp = explode(':separator:', $file->link);
         $link = $tmp[0];
         $agent = $tmp[1];
@@ -154,7 +153,6 @@ class Vimeo extends Component implements Website
             if ($end > $endSize) {
                 $end = $endSize;
             }
-            echo "bytes={$start}-{$end}\n";
             $content = $this->curl->get($link, 9999, 1, array(
                 'Range' => "bytes={$start}-{$end}",
                 'User-Agent' => $agent,
@@ -182,6 +180,29 @@ class Vimeo extends Component implements Website
             APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
         chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
         return true;
+    }
+
+    public function getTrailer($link = '', $start = 0, $end = 0)
+    {
+        $tmp = explode(':separator:', $link);
+        $link = $tmp[0];
+        $agent = $tmp[1];
+        $cookie = $tmp[2];
+
+        $content = $this->curl->get($link, 9999, 1, array(
+            'Range' => "bytes={$start}-{$end}",
+            'User-Agent' => $agent,
+            'Cookie' => $cookie,
+            'No-Cache' => 1,
+        ));
+        if (@$content['head']['http_code'] == '429') {
+            return null;
+        }
+
+        if (@substr($content['head']['http_code'], 0, 2) != '20') {
+            return null;
+        }
+        return $content['content'];
     }
 
 //    public function getInfo($link = '')

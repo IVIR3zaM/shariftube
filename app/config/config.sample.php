@@ -41,6 +41,7 @@ return new \Phalcon\Config(array(
             'database' => 0,
             'read_write_timeout' => 0,
         ],
+        'trailer_limit' => 5000000,
     ),
     'gateway' => array(
         'Payline' => [

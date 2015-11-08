@@ -85,6 +85,90 @@ class IndexController extends ControllerBase
         }
     }
 
+    public function videoAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+
+        $id = $this->dispatcher->getParam('id');
+        if (!$this->session->has($id)) {
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+            return;
+        }
+        $video = $name = $this->session->get($id);
+        $website = @json_decode($video);
+        if (!$website) {
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+            return;
+        }
+
+        if (!$website || !class_exists('\\Shariftube\\Websites\\' . $website->name)) {
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+            return;
+        }
+        $leecher = '\\Shariftube\\Websites\\' . $website->name;
+        $leecher = new $leecher;
+
+        $this->view->disable();
+        $start = 0;
+        $size = ceil($video['size']/10);
+        if ($size > $this->config->application->trailer_limit) {
+            $size = $this->config->application->trailer_limit;
+        }
+        $end = $size - 1;
+        if (preg_match('/(?P<start>\d*)\s*\-\s*(?P<end>\d*)/', $this->request->getHeader('Range'), $match)) {
+            if ($match['start'] < $end) {
+                $start = $match['start'];
+            }
+            if ($match['end'] < $end) {
+                $end = $match['end'];
+            }
+        }
+        
+        $this->response->setContentType('video/' . $video['type']);
+        $result = $leecher->getTrailer($video['link'], $start, $end);
+        if ($result === null) {
+            $this->response->setStatusCode(404, 'Not Found');
+        } else {
+            $this->response->setHeader('Accept-Ranges', 'bytes');
+            $this->response->setHeader('Content-Length', $size);
+            if ($this->request->getHeader('Range')) {
+                $this->response->setStatusCode(206, 'Partial Content');
+            } else {
+                $this->response->setStatusCode(200, 'Ok');
+            }
+        }
+
+        $this->response->setContent($result);
+        $this->response->send();
+    }
+
+    public function playAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $this->view->id  = $id = $this->dispatcher->getParam('id');
+        $file = Files::findFirst([
+            "id = :id: AND user_id = :user: AND status = 'Success' AND deleted_at = 0",
+            'bind' => [
+                'id' => $id,
+                'user' => $this->auth->getIdentity()->getId(),
+            ],
+        ]);
+        if (!$file) {
+            $this->view->file = '';
+            $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
+        } else {
+            $this->view->file = $file->getFinalLink();
+        }
+    }
+
     public function indexAction()
     {
         if (!$this->auth->getIdentity()) {
@@ -215,6 +299,7 @@ class IndexController extends ControllerBase
                 $this->view->records = array();
             } else {
                 foreach ($result['records'] as $index => $value) {
+                    $this->session->set(md5($value['link']), array_merge($value, ['website' => json_encode($website)]));
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;
                 }
