@@ -92,7 +92,7 @@ class IndexController extends ControllerBase
             $this->response->redirect(['for' => 'login']);
             return;
         }
-
+        $this->view->title = '';
         $id = $this->dispatcher->getParam('id');
         if (!$this->session->has($id)) {
             $this->flash->error('فایل مورد نظر شما در سیستم یافت نشد.');
@@ -127,7 +127,7 @@ class IndexController extends ControllerBase
                 $end = $match['end'];
             }
         }
-        
+
         $this->response->setContentType('video/' . $video['type']);
         $result = $leecher->getTrailer($video['link'], $start, $end);
         if ($result === null) {
@@ -153,6 +153,7 @@ class IndexController extends ControllerBase
             $this->response->redirect(['for' => 'login']);
             return;
         }
+        $this->view->title = 'پخش آنلاین ویدئو';
         $this->view->id  = $id = $this->dispatcher->getParam('id');
         $file = Files::findFirst([
             "id = :id: AND user_id = :user: AND status = 'Success' AND deleted_at = 0",
