@@ -69,8 +69,7 @@
                 if($("div.player").length) {
                     var playerInstance = jwplayer("player");
                     playerInstance.setup({
-                        file: $(".p app/config/config.php
-layer").attr("data-link"),
+                        file: $(".player").attr("data-link"),
                         width: "100%",
                         aspectratio: "16:9"
                     });
