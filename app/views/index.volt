@@ -45,10 +45,26 @@
         <script src="{{ url.getBaseUri() }}js/shariftube1446980489925.min.js"></script>
         <script src="{{ url.getBaseUri() }}js/jwplayer.js"></script>
         <script>jwplayer.key="/R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw=="</script>
+        <style>
+            .popup-video {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-justify-content: center;
+                -ms-flex-pack: center;
+                        justify-content: center;
+                -webkit-align-items: center;
+                -ms-flex-align: center;
+                        align-items: center;
+            }
+        </style>
         <script type="text/javascript">
             $(function () {
-                if($(".player").length) {
-
+                if($("div.player").length) {
                     var playerInstance = jwplayer("player");
                     playerInstance.setup({
                         file: $(".player").attr("data-link"),
@@ -56,7 +72,20 @@
                         aspectratio: "16:9"
                     });
                 }
-                
+                $("a.player").click(function(e){
+                    e.preventDefault();
+                    $('.popup-video').show();
+                    var playerInstance = jwplayer("player");
+                    playerInstance.setup({
+                        file: $(this).attr("href"),
+                        width: "100%",
+                        aspectratio: "16:9"
+                    });
+                });
+                $('.popup-video .close').click(function(e) {
+                    e.preventDefault();
+                    $('.popup-video').hide();
+                });
             });
 </script>
     </body>
