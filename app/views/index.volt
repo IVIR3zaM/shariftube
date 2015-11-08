@@ -54,6 +54,7 @@
                 top: 0;
                 left: 0;
                 z-index: 1000;
+                background-color: #c5c5c5!important;
             }
             .popup-video .close {
                 position: absolute;
