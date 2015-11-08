@@ -59,7 +59,11 @@
                     </form>
                 </td>
                 <td>
+                {% if record.trailer %}    
                     <a href="{{ record.trailer|e }}" class="player btn btn-info">پیش نمایش</a>
+                {% else %}
+                    ندارد
+                {% endif %}
                 </td>
             </tr>
         {% endfor %}
