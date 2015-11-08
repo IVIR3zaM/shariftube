@@ -58,13 +58,19 @@
                 left: 0;
                 z-index: 1000;
             }
+            .popup-video .close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
         </style>
         <script type="text/javascript">
             $(function () {
                 if($("div.player").length) {
                     var playerInstance = jwplayer("player");
                     playerInstance.setup({
-                        file: $(".player").attr("data-link"),
+                        file: $(".p app/config/config.php
+layer").attr("data-link"),
                         width: "100%",
                         aspectratio: "16:9"
                     });

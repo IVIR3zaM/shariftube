@@ -40,6 +40,7 @@
                 <th>سه بعدی</th>
                 <th>ظرفیت</th>
                 <th>لینک</th>
+                <th>پیش نمایش</th>
             </tr>
         {% for record in records %}
             <tr>
@@ -52,6 +53,9 @@
                         <input type="hidden" name="params" value="{{ record.params|e }}">
                         <input class="btn btn-primary btn-sm" type="submit" name="get" value="دریافت">
                     </form>
+                </td>
+                <td>
+                    <a href="{{ record.trailer|e }}" class="player btn btn-info">پیش نمایش</a>
                 </td>
             </tr>
         {% endfor %}

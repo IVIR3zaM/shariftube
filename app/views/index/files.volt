@@ -1,5 +1,6 @@
 <div class="main-section">
     <div class="popup-video">
+        <a href="#" class="close"><i class="fa fa-times"></i></a>
         <div id="player">درحال بارگزاری</div>
     </div>
     <form class="params search-bar" method="get" action="{{ url.get(['for':'files']) }}">
