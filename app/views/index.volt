@@ -43,6 +43,7 @@
 	        </div>
         </div>
         <script defer src="{{ url.getBaseUri() }}js/shariftube1446980489925.min.js"></script>
-        <script src="http://jwpsrv.com/library/R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw==.js"></script>
+        <script src="{{ url.getBaseUri() }}js/jwplayer.js"></script>
+        <script>jwplayer.key="R3wdRK19fehG5OH7lyO2CXg3MoMpyCE/eLaqw=="</script>
     </body>
 </html>
