@@ -16,7 +16,7 @@ $router->add('/link/(.+)', array(
     'link' => 1,
 ))->setName('link');
 
-$router->add('/video/([a-f0-9]+)', array(
+$router->add('/video/(.+)', array(
     'controller' => 'index',
     'action' => 'video',
     'id' => 1,
