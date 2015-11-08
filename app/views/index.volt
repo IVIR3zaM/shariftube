@@ -50,9 +50,6 @@
                 position: fixed;
                 width: 100%;
                 height: 100%;
-                background-color: #000;
-                display: -webkit-flex;
-                display: -ms-flexbox;
                 display: none;
                 top: 0;
                 left: 0;
@@ -62,6 +59,9 @@
                 position: absolute;
                 top: 10px;
                 right: 10px;
+                color: #fff;
+                opacity: 1;
+                font-size: 30px;
             }
         </style>
         <script type="text/javascript">
