@@ -7,7 +7,7 @@
         <title>شریف تیوب - {{ title }}</title>
         <meta name="description" content="شریف تیوب، سرویسی برای استفاده آکادمیک و آموزشی با هدف آسان سازی ارتباط با شبکه های ویدیویی وب">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ url.getBaseUri() }}css/shariftube1446995875757.min.css">
+        <link rel="stylesheet" href="{{ url.getBaseUri() }}css/shariftube1446995875758.min.css">
     </head>
     <body>
     	<noscript><div style="position:fixed;width:100%;height:100%;background-color:#000;color:#fff;z-index:1000000000"><h1 style="position:absolute;top:50%;left:50%;-webkit-transform:translate3d(-50%,-50%,0);transform:translate3d(-50%,-50%,0);text-align:center;">کاربر گرامی، جاوااسکریپت مرورگر شما غیرفعال است. برای استفاده از این سرویس لطفا جاوااسکریپت مرورگر خود را فعال نمایید.</h1></div></noscript>
@@ -42,6 +42,6 @@
 	            </div>
 	        </div>
         </div>
-        <script defer src="{{ url.getBaseUri() }}js/shariftube1446995875757.min.js"></script>
+        <script defer src="{{ url.getBaseUri() }}js/shariftube1446995875758.min.js"></script>
     </body>
 </html>
