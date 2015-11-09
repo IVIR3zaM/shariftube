@@ -134,7 +134,7 @@ class IndexController extends ControllerBase
             $this->response->setStatusCode(404, 'Not Found');
         } else {
             $this->response->setContentType($result['head']['content_type']);
-            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
+//            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
             $this->response->setHeader('Accept-Ranges', 'bytes');
             $this->response->setHeader('Content-Length', $size);
             if ($this->request->getHeader('Range')) {
@@ -304,16 +304,16 @@ class IndexController extends ControllerBase
                 $this->view->records = array();
             } else {
                 foreach ($result['records'] as $index => $value) {
-                    if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
+                    //if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
                         $hash = md5($value['link']) . '.' . $value['type'];
                         $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
                         $value['trailer'] = $this->url->getStatic([
                             'for' => 'video',
                             'id' => $hash,
                         ]);
-                    } else {
-                        $value['trailer'] = '';
-                    }
+                    //} else {
+                    //    $value['trailer'] = '';
+                    //}
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;
                 }
@@ -706,7 +706,7 @@ encryptBase64($tag->getAttribute('value'));
         }
         $status = strtolower($this->dispatcher->getParam(1));
         if (!in_array($status, ['open', 'all', 'closed'])) {
-            if ($admin) {
+            if ($this->view->admin) {
                 $status = 'open';
             } else {
                 $status = 'all';
@@ -725,7 +725,7 @@ encryptBase64($tag->getAttribute('value'));
                 $status = ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'];
                 break;
         }
-        if ($admin) {
+        if ($this->view->admin) {
             $tickets = Tickets::find([
                 'status IN ({status:array})',
                 'bind' => [
@@ -767,7 +767,6 @@ encryptBase64($tag->getAttribute('value'));
             'InProgress' => 'در حال انجام',
             'Closed' => 'بسته شده',
         );
-        $this->view->admin = $admin = $this->auth->getIdentity()->role == 'Admin' ? true : false;
         $this->view->id = $id = $this->dispatcher->getParam('id');
         if ($id > 0) {
             $this->view->title = 'مشاهده تیکت';
@@ -777,7 +776,7 @@ encryptBase64($tag->getAttribute('value'));
                     'id' => $id,
                 ],
             ]);
-            if ($ticket->user_id != $this->auth->getIdentity()->getId() && !$admin) {
+            if ($ticket->user_id != $this->auth->getIdentity()->getId() && !$this->view->admin) {
                 $this->view->disable();
                 $this->response->redirect(['for' => 'support']);
                 return;
@@ -793,7 +792,7 @@ encryptBase64($tag->getAttribute('value'));
                     $status = 'Answered';
                 }
 
-                if ($admin && in_array($this->request->getPost('status'), ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'])) {
+                if ($this->view->admin && in_array($this->request->getPost('status'), ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'])) {
                     $status = $this->request->getPost('status');
                 }
 
@@ -828,6 +827,16 @@ encryptBase64($tag->getAttribute('value'));
                         $error[] = 'پاسخ شما ذخیره نشد. لطفا لحظاتی بعد تلاش کنید.';
                     } else {
                         $transaction->commit();
+                        if (in_array($status,['Open', 'Answered', 'InProgress', 'Closed'])) {
+                            $user = $ticket->getUser();
+                            $this->mail->setTemplate('replay');
+                            $this->mail->setVar('user', $user);
+                            $this->mail->setVar('ticket', $ticket);
+                            $this->mail->setVar('link', $this->url->getStatic(['for' => 'ticket', 'id' => $ticket->getId()]));
+                            $this->mail->addAddress($user->email, $user->name);
+                            $this->mail->Subject = sprintf('پاسخ جدید به تیکت شماره %s', $ticket->getId());
+                            $this->mail->send();
+                        }
                         $this->flash->success('با تشکر از پاسخ شما.');
                     }
                 }
@@ -839,7 +848,7 @@ encryptBase64($tag->getAttribute('value'));
             }
         } else {
             $this->view->title = 'ارسال تیکت جدید';
-            if ($admin) {
+            if ($this->view->admin) {
                 $this->view->disable();
                 $this->response->redirect(['for' => 'support']);
                 return;
@@ -882,6 +891,13 @@ encryptBase64($tag->getAttribute('value'));
                         $error[] = 'تیکت جدید ایجاد نشد. لطفا لحظاتی بعد تلاش کنید.';
                     } else {
                         $transaction->commit();
+                        $this->mail->setTemplate('ticket');
+                        $this->mail->setVar('user', $this->auth->getIdentity());
+                        $this->mail->setVar('ticket', $ticket);
+                        $this->mail->setVar('link', $this->url->getStatic(['for' => 'ticket', 'id' => $ticket->getId()]));
+                        $this->mail->addAddress($this->auth->getIdentity()->email, $this->auth->getIdentity()->name);
+                        $this->mail->Subject = sprintf('تیکت جدید به شماره %s ایجاد شد', $ticket->getId());
+                        $this->mail->send();
                         $this->flash->success('تیکت شما با موفقیت ارسال شد و به زودی توسط اپراتورهای پشتیبانی پاسخ داده خواهد شد.');
                         $this->view->id = $id = $ticket->getId();
                         $this->view->ticket = $ticket;
@@ -1024,11 +1040,11 @@ encryptBase64($tag->getAttribute('value'));
         if ($this->request->getPost('signup')) {
             $error = array();
 
-            $email = $this->request->getPost('email');
+            $email = strtolower(trim($this->request->getPost('email')));
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error[] = 'ایمیل خود را به صورت صحیح وارد نمایید.';
             }
-            if ($email != $this->request->getPost('email_confirm')) {
+            if ($email != strtolower(trim($this->request->getPost('email_confirm')))) {
                 $error[] = 'تکرار ایمیل با ایمیل وارد شده یکسان نیستند.';
             }
             if (Users::find([
@@ -1078,7 +1094,6 @@ encryptBase64($tag->getAttribute('value'));
                 } else {
                     $user = new Users();
                 }
-                $user->quota = $user->remain = $this->config->application->sigunup_gift;
                 $user->email = $email;
                 $user->password = $this->security->hash($password);
                 $user->name = $name;

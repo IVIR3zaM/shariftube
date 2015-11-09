@@ -1,12 +1,12 @@
 <!-- Top Logo -->
 <div class="top-logo text-center">
-    <img src="{{ url.getBaseUri() }}images/logo.png" alt="SharifTube">
+    <img src="{{ url.getBaseUri()|e }}images/logo.png" alt="SharifTube">
 </div>
 
 <div class="bg-white" data-tab-holder="login-tab">
 
     <!-- Login -->
-    <form data-tab-role="#login" class="form-condensed clearfix active" action="{{ url.get(['for' : 'login']) }}" method="post">
+    <form data-tab-role="#login" class="form-condensed clearfix active" action="{{ url.get(['for' : 'login'])|e }}" method="post">
         <h2 class="form-head text-center">ورود</h2>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>
@@ -27,7 +27,7 @@
     </form>
 
     <!-- Register -->
-    <form data-tab-role="#register" class="form-condensed clearfix" action="{{ url.get(['for' : 'login']) }}" method="post">
+    <form data-tab-role="#register" class="form-condensed clearfix" action="{{ url.get(['for' : 'login'])|e }}" method="post">
         <h2 class="form-head text-center">ثبت نام</h2>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>
@@ -78,7 +78,7 @@
     </form>
 
     <!-- Forgot Password -->
-    <form data-tab-role="#forgot_password" class="form-condensed clearfix" action="{{ url.get(['for' : 'login']) }}" method="post">
+    <form data-tab-role="#forgot_password" class="form-condensed clearfix" action="{{ url.get(['for' : 'login'])|e }}" method="post">
         <h3 class="form-head text-center"><small>فراموشی رمز عبور</small></h3>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>

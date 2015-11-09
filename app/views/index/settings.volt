@@ -7,7 +7,7 @@
     </div>
     {% endif %}
 </div>
-<form method="post" class="form-condensed search-bar" action="{{ url.get(['for':'settings']) }}">
+<form method="post" class="form-condensed search-bar" action="{{ url.get(['for':'settings'])|e }}">
     <table class="table text-center">
         {% if user.getReferral() %}
         <tr>

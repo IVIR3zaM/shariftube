@@ -32,9 +32,9 @@ class Users extends BaseModel
 
     public function beforeValidationOnCreate()
     {
-        $this->quota = 0;
+        $this->quota = $this->getDI()->getConfig()->application->sigunup_gift;
         $this->used = 0;
-        $this->remain = 0;
+        $this->remain = $this->getDI()->getConfig()->application->sigunup_gift;
     }
 
     public function createReferralCode($id = 0)

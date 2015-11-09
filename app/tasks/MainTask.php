@@ -131,10 +131,11 @@ class MainTask extends Task
 
         $list = explode("\n", file_get_contents(APP_DIR . '/cache/emails/' . $file . '.csv'));
         $emails = array();
-        foreach ($list as $email) {
-            $email = trim(strtolower($email));
+        foreach ($list as $line) {
+            $email = trim(strtolower(strtok($line, ',')));
+            $name = trim(strtok(','));
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $emails[] = $email;
+                $emails[] = [$email, $name];
             }
         }
 
@@ -148,10 +149,13 @@ class MainTask extends Task
         }
         echo "{$limit} emails found from {$start}\n";
         for ($i = $start; $i < ($start + $limit); $i++) {
-            $email = $emails[$i];
+            $email = $emails[$i][0];
+            $name = $emails[$i][1];
             echo "Sending #{$i}: {$email}: ";
             $this->mail->setTemplate($template);
-            $this->mail->addAddress($email);
+            $this->mail->setVar('email', $email);
+            $this->mail->setVar('name', $name);
+            $this->mail->addAddress($email, $name);
             $this->mail->Subject = $subject;
             if ($this->mail->send()) {
                 echo 'Sent';

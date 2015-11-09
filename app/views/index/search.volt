@@ -6,7 +6,7 @@
         </div>
     </div>
     {% endif %}
-    <form class="params search-bar" action="{{ url.get(['for':'search']) }}" method="get">
+    <form class="params search-bar" action="{{ url.get(['for':'search'])|e }}" method="get">
         <div class="search-extra-features form-group">
             <div class="row">
                 <div class="col-xs-12 col-sm-3 select-item">
@@ -60,11 +60,11 @@
     {% if captcha %}
     <form method="post" action="{{ url.get(['for':'search', 'params':implode('/',[start, dur, hq, qdr, website, q])])|e }}">
         {% for name, value in hidden_items%}
-        <input type="hidden" name="params[{{ name|e }}]" value="{{ value }}">
+        <input type="hidden" name="params[{{ name|e }}]" value="{{ value|e }}">
         {% endfor %}
         <p>
             لطفا برای ادامه کار کد امنیتی زیر را وارد نمایید.<br>
-            <img src="{{ captcha_image }}"><br>
+            <img src="{{ captcha_image|e }}"><br>
             <input type="text" name="code" placeholder="کد تصویر بالا"><br>
             <input type="submit" name="captcha" value="ادامه">
         </p>
