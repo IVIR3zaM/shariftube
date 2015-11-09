@@ -10,6 +10,6 @@
 </div>
 <div>
     <p style="direction: ltr;">
-        <a style="color:#0D3635" href="{{ url.getStatic(['for':'home'])|e }}">{{ url.getStatic(['for':'home'])|e }}</a>
+        <a style="color:#0D3635" href="https://shariftube.ir/">https://shariftube.ir/</a>
     </p>
 </div>
