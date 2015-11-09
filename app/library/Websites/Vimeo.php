@@ -129,13 +129,25 @@ class Vimeo extends Component implements Website
             return false;
         }
 
-        if (file_exists(APP_DIR . '/cache/files/' . $file->name)) {
-            $file->fetched = filesize(APP_DIR . '/cache/files/' . $file->name);
+        $mount = APP_DIR . '/cache/servers/' . $server->username . '/';
+        if (file_exists($mount . 'mount')) {
+            if (!file_exists($mount . $dir)) {
+                mkdir($mount . $dir, 0755);
+                chmod($mount . $dir, 0755);
+            }
+            $filepath = $mount . $dir . '/' . $file->name;
+        } else {
+            $mount = false;
+            $filepath = APP_DIR . '/cache/files/' . $file->name;
+        }
+
+        if (file_exists($filepath)) {
+            $file->fetched = filesize($filepath);
             if (!$file->save()) {
                 return false;
             }
         }
-        $fp = fopen(APP_DIR . '/cache/files/' . $file->name, 'ab');
+        $fp = fopen($filepath, 'ab');
         if (!$fp) {
             return false;
         }
@@ -176,10 +188,15 @@ class Vimeo extends Component implements Website
             }
         } while (1);
         fclose($fp);
-        rename(APP_DIR . '/cache/files/' . $file->name,
-            APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
-        chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
-        return true;
+        if ($mount) {
+            chmod($filepath, 0644);
+            return 2;
+        } else {
+            rename(APP_DIR . '/cache/files/' . $file->name,
+                APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
+            chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
+            return true;
+        }
     }
 
     public function getTrailer($link = '', $start = 0, $end = 0)

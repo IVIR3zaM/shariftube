@@ -425,7 +425,7 @@ class MainTask extends Task
                     }
                     continue;
                 }
-                $file->status = 'Transferring';
+                $file->status = ($result > 1 ? 'Success' : 'Transferring');
                 if ($file->save()) {
                     file_put_contents(APP_DIR . '/cache/locks/transfer.now', '');
                     $this->redis->del('sharifFile:' . $fileId);

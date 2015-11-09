@@ -163,14 +163,13 @@ class Youtube extends Component implements Website
         fclose($fp);
         if ($mount) {
             chmod($filepath, 0644);
-            $file->status = 'Success';
-            $file->save();
+            return 2;
         } else {
             rename(APP_DIR . '/cache/files/' . $file->name,
                 APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
             chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
+            return true;
         }
-        return true;
     }
 
     public function getTrailer($link = '', $start = 0, $end = 0)
