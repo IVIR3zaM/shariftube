@@ -1040,11 +1040,11 @@ encryptBase64($tag->getAttribute('value'));
         if ($this->request->getPost('signup')) {
             $error = array();
 
-            $email = $this->request->getPost('email');
+            $email = strtolower(trim($this->request->getPost('email')));
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error[] = 'ایمیل خود را به صورت صحیح وارد نمایید.';
             }
-            if ($email != $this->request->getPost('email_confirm')) {
+            if ($email != strtolower(trim($this->request->getPost('email_confirm')))) {
                 $error[] = 'تکرار ایمیل با ایمیل وارد شده یکسان نیستند.';
             }
             if (Users::find([
