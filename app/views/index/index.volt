@@ -56,7 +56,7 @@
                 </td>
                 <td>
                 {% if record.trailer %}    
-                    <a target="_blank" href="{{ record.trailer|e }}" class="player btn btn-info">پیش نمایش</a>
+                    <a download target="_blank" href="{{ record.trailer|e }}" class="player btn btn-info">پیش نمایش</a>
                 {% else %}
                     ندارد
                 {% endif %}
