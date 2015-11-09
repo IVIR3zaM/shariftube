@@ -22,7 +22,7 @@
     {% endif %}
     <div class="row">
         <div class="col-xs-12 searchbar-item">
-            <form class="params search-bar" action="{{ url.get(['for':'link']) }}" method="get">
+            <form class="params search-bar" action="{{ url.get(['for':'link'])|e }}" method="get">
                 <div class="input-group form-group">
                     <input id="link" data-encrypt="vinixhash" type="text" class="form-control input-lg" name="link" placeholder="لینک ویدیو مورد نظر را واردنمایید" value="{{ link|e }}">
                     <span class="input-group-btn">
@@ -48,8 +48,8 @@
             </tr>
         {% for record in records %}
             <tr>
-                <td>{{ record.quality }}</td>
-                <td>{{ record.type }}</td>
+                <td>{{ record.quality|e }}</td>
+                <td>{{ record.type|e }}</td>
                 <td>{% if record.is_3d %}بلی{% else %}خیر{% endif %}</td>
                 <td>{{ number_format(record.size/1024/1024, 2) }} مگابایت</td>
                 <td>
