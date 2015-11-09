@@ -34,7 +34,11 @@
                         <div class="info text-en btn-danger"></div>
                         {% endif %}
                         <div id="info" class="text-en text-ltr">
+                            {% if auth.getIdentity().quota >= 1073741824 %}
                             {{ number_format(auth.getIdentity().used/1024/1024/1024, 2) }} GB / {{ number_format(auth.getIdentity().quota/1024/1024/1024, 2) }} GB
+                            {% else %}
+                            {{ number_format(auth.getIdentity().used/1024/1024, 2) }} MB / {{ number_format(auth.getIdentity().quota/1024/1024, 2) }} MB
+                            {% endif %}
                         </div>
                     </div>
                     {% else %}

@@ -1064,7 +1064,8 @@ encryptBase64($tag->getAttribute('value'));
 
             if (empty($error)) {
                 $user = Users::findFirst([
-                    'deleted_at = 0 AND email = :email:',
+//                    'deleted_at = 0 AND email = :email:',
+                    'email = :email:',
                     'bind' => [
                         'email' => $email,
                     ],
@@ -1077,6 +1078,7 @@ encryptBase64($tag->getAttribute('value'));
                 } else {
                     $user = new Users();
                 }
+                $user->quota = $user->remain = $this->config->application->sigunup_gift;
                 $user->email = $email;
                 $user->password = $this->security->hash($password);
                 $user->name = $name;

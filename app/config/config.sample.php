@@ -42,6 +42,7 @@ return new \Phalcon\Config(array(
             'read_write_timeout' => 0,
         ],
         'trailer_limit' => 5000000,
+        'sigunup_gift' => 20971520,
     ),
     'gateway' => array(
         'Payline' => [
