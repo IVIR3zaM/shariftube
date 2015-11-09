@@ -1094,7 +1094,6 @@ encryptBase64($tag->getAttribute('value'));
                 } else {
                     $user = new Users();
                 }
-                $user->quota = $user->remain = $this->config->application->sigunup_gift;
                 $user->email = $email;
                 $user->password = $this->security->hash($password);
                 $user->name = $name;
