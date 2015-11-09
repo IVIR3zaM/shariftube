@@ -18,12 +18,12 @@ class Youtube extends Component implements Website
         if (!preg_match('/v=(?P<code>[\w\-]+)/', $link, $match)) {
             return false;
         }
-        $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code'], 40,1, [
+        $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code'], 40, 1, [
             'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
         ]);
         $data = $data['content'];
         $pos = stripos($data, 'watch_as3.swf');
-        if ($pos === false){
+        if ($pos === false) {
             return false;
         }
 
@@ -31,12 +31,12 @@ class Youtube extends Component implements Website
         $player = array();
         do {
             $char = substr($data, --$pos, 1);
-            if ($char == '"' && substr($data, $pos-1, 1) != '\\') {
+            if ($char == '"' && substr($data, $pos - 1, 1) != '\\') {
                 $test = false;
             } else {
                 $player[] = $char;
             }
-        } while($test);
+        } while ($test);
         krsort($player);
         $player = str_replace('\\/', '/', implode('', $player)) . 'watch_as3.swf';
 
@@ -112,13 +112,25 @@ class Youtube extends Component implements Website
             return false;
         }
 
-        if (file_exists(APP_DIR . '/cache/files/' . $file->name)) {
-            $file->fetched = filesize(APP_DIR . '/cache/files/' . $file->name);
+        $mount = APP_DIR . '/cache/servers/' . $server->username . '/';
+        if (file_exists($mount . 'mount')) {
+            if (!file_exists($mount . $dir)) {
+                mkdir($mount . $dir, 0755);
+                chmod($mount . $dir, 0755);
+            }
+            $filepath = $mount . $dir . '/' . $file->name;
+        } else {
+            $mount = false;
+            $filepath = APP_DIR . '/cache/files/' . $file->name;
+        }
+
+        if (file_exists($filepath)) {
+            $file->fetched = filesize($filepath);
             if (!$file->save()) {
                 return false;
             }
         }
-        $fp = fopen(APP_DIR . '/cache/files/' . $file->name, 'ab');
+        $fp = fopen($filepath, 'ab');
         if (!$fp) {
             return false;
         }
@@ -149,9 +161,15 @@ class Youtube extends Component implements Website
             }
         } while (1);
         fclose($fp);
-        rename(APP_DIR . '/cache/files/' . $file->name,
-            APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
-        chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
+        if ($mount) {
+            chmod($filepath, 0644);
+            $file->status = 'Success';
+            $file->save();
+        } else {
+            rename(APP_DIR . '/cache/files/' . $file->name,
+                APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name);
+            chmod(APP_DIR . '/cache/files/' . $server->getId() . '/' . $dir . '/' . $file->name, 0644);
+        }
         return true;
     }
 
@@ -164,7 +182,7 @@ class Youtube extends Component implements Website
         if (@substr($content['head']['http_code'], 0, 2) != '20') {
             return null;
         }
-       return $content;
+        return $content;
     }
 
     /*public function getInfo($link = '')
