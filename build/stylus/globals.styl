@@ -175,7 +175,7 @@ body
 		margin-bottom 20px
 .top-links
 	border-bottom 1px solid #fff
-	background-color rgba(255,255,255,0.5)
+	background-color $kk_blue
 	@media (max-width: 1120px)
 		> div
 			padding 0
@@ -204,11 +204,12 @@ body
 			> a,
 			.fake-link
 				text-decoration none
-				color $kk_gray
+				color #fff
+				&.active
+					border-bottom 1px solid #fff
 				&:hover,
 				&:focus,
 				&.active
-					color $kk_blue
 					outline 0 none
 		&.is-referral
 			> li
