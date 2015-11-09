@@ -134,7 +134,7 @@ class IndexController extends ControllerBase
             $this->response->setStatusCode(404, 'Not Found');
         } else {
             $this->response->setContentType($result['head']['content_type']);
-//            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
+            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
             $this->response->setHeader('Accept-Ranges', 'bytes');
             $this->response->setHeader('Content-Length', $size);
             if ($this->request->getHeader('Range')) {
