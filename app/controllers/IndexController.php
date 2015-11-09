@@ -706,7 +706,7 @@ encryptBase64($tag->getAttribute('value'));
         }
         $status = strtolower($this->dispatcher->getParam(1));
         if (!in_array($status, ['open', 'all', 'closed'])) {
-            if ($admin) {
+            if ($this->view->admin) {
                 $status = 'open';
             } else {
                 $status = 'all';
@@ -725,7 +725,7 @@ encryptBase64($tag->getAttribute('value'));
                 $status = ['Open', 'Answered', 'Replay', 'InProgress', 'Closed'];
                 break;
         }
-        if ($admin) {
+        if ($this->view->admin) {
             $tickets = Tickets::find([
                 'status IN ({status:array})',
                 'bind' => [
