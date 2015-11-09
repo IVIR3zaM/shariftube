@@ -14,10 +14,22 @@
         <li class="col-md-3 col-sm-6 col-xs-12">
             <form class="bg-white text-center" action="{{ url.get(['for':'shop'])|e }}" method="post">
                 <input type="hidden" name="id" value="{{ record.id|e }}">
+
                 <div class="form-group"><h2>{{ record.label|e }}</h2></div>
-                <div class="form-group text-en text-ltr text-danger"><h4>{{ number_format(record.quota/1024/1024/1024, 2) }} GB</h4></div>
+                <div class="form-group text-en text-ltr text-danger">
+                    <h4>
+                        {% if record.quota >= 1073741824 %}
+                        {{ number_format(record.quota/1024/1024/1024,
+                    2) }} GB
+                        {% else %}
+                        {{ number_format(record.quota/1024/1024,
+                        2) }} MB
+                        {% endif %}
+                    </h4>
+                </div>
                 <div class="form-group"><h4>{{ number_format(record.price/10, 0) }} تومان</h4></div>
-                <button class="btn btn-success btn-block" type="submit"><i class="fa fa-shopping-cart"></i> خرید</button>
+                <button class="btn btn-success btn-block" type="submit"><i class="fa fa-shopping-cart"></i> خرید
+                </button>
             </form>
         </li>
         {% endfor %}
