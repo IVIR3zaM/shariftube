@@ -145,7 +145,7 @@ class MainTask extends Task
         }
         $limit = count($emails);
         if (isset($params[4]) && $params[4] > 0 && $params[4] < $limit) {
-            $limit = intval($params[4]);
+            $limit = intval($params[4]) - $start;
         }
         echo "{$limit} emails found from {$start}\n";
         for ($i = $start; $i < ($start + $limit); $i++) {
