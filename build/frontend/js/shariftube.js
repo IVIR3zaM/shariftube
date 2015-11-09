@@ -123,19 +123,5 @@ $(document).ready(function() {
 				aspectratio: "16:9"
 			});
 		}
-		$("a.player").click(function(e){
-			e.preventDefault();
-			$('.popup-video').show();
-			var playerInstance = jwplayer("player");
-			playerInstance.setup({
-				file: $(this).attr("href"),
-				width: "100%",
-				aspectratio: "16:9"
-			});
-		});
-		$('.popup-video .close').click(function(e) {
-			e.preventDefault();
-			$('.popup-video').hide();
-		});
 	});
 });
