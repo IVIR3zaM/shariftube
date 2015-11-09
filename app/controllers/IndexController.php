@@ -134,7 +134,7 @@ class IndexController extends ControllerBase
             $this->response->setStatusCode(404, 'Not Found');
         } else {
             $this->response->setContentType($result['head']['content_type']);
-            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
+//            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
             $this->response->setHeader('Accept-Ranges', 'bytes');
             $this->response->setHeader('Content-Length', $size);
             if ($this->request->getHeader('Range')) {
@@ -304,16 +304,16 @@ class IndexController extends ControllerBase
                 $this->view->records = array();
             } else {
                 foreach ($result['records'] as $index => $value) {
-                    if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
+                    //if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
                         $hash = md5($value['link']) . '.' . $value['type'];
                         $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
                         $value['trailer'] = $this->url->getStatic([
                             'for' => 'video',
                             'id' => $hash,
                         ]);
-                    } else {
-                        $value['trailer'] = '';
-                    }
+                    //} else {
+                    //    $value['trailer'] = '';
+                    //}
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;
                 }
