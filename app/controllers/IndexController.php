@@ -25,6 +25,7 @@ class IndexController extends ControllerBase
 {
     public function initialize()
     {
+        $this->response->setHeader('Server', 'sharifwebserver/0.9');
         $date = new \jDateTime(true, true, 'Asia/Tehran');
         $this->view->date = $date;
         $this->view->admin = false;
