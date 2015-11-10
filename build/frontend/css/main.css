@@ -277,6 +277,9 @@ form .form-group.form-group-multi > .multi-smaller {
 .status-success {
   color: #3d8027;
 }
+.status-prominent {
+  color: #822fbf;
+}
 .status-closed {
   color: #000;
 }
