@@ -40,7 +40,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for video in prominents %}
+                            {% for prominent in prominents %}
                             <tr>
                                 <td class="prominent-title popover" data-toggle="popover" data-trigger="hover" data-content="{{ prominent.label|e }}">{{ prominent.short_label|e }}</td>
                                 <td class="prominent-volume">{{ number_format(prominent.size/1024/1024, 2) }}</td>
