@@ -29,6 +29,7 @@ class Files extends BaseModel
         $this->belongsTo('server_id', 'Shariftube\Models\Servers', 'id', ['alias' => 'Server']);
         $this->belongsTo('website_id', 'Shariftube\Models\Websites', 'id', ['alias' => 'Website']);
     }
+
     public function beforeValidationOnCreate()
     {
         $server = Servers::getServer($this->size);
@@ -43,7 +44,7 @@ class Files extends BaseModel
         $user = Users::findFirst([
             'id = :id:',
             'bind' => [
-                'id' =>$this->user_id,
+                'id' => $this->user_id,
             ],
         ]);
         if (empty($user) || $user->remain < $this->size) {
@@ -54,6 +55,7 @@ class Files extends BaseModel
             $user->save();
         }
     }
+
     public function beforeCreate()
     {
         parent::beforeCreate();
@@ -82,15 +84,17 @@ class Files extends BaseModel
 //            }
         }
     }
+
     public function setFailed()
     {
-        if (!in_array($this->status,['InProgress', 'Transferring'])) {
+        if (!in_array($this->status, ['InProgress', 'Transferring'])) {
             return false;
         }
         $this->isFailed = true;
         $this->status = 'Failed';
         return true;
     }
+
     public function beforeUpdate()
     {
         if ($this->isFailed) {
@@ -115,7 +119,7 @@ class Files extends BaseModel
 
     public function getFinalLink()
     {
-        if ($this->status != 'Success') {
+        if (!in_array($this->status, ['Success', 'Prominent'])) {
             return '#';
         }
         $server = Servers::getServer($this->size);
