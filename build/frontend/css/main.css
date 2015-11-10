@@ -968,19 +968,27 @@ body {
   color: #f01e50;
 }
 .prominents {
-  position: fixed;
-  top: 164px;
-  left: 0;
-  padding: 0.5em;
-  background-color: #fff;
   z-index: 3;
   text-align: center;
-  height: calc(100vh - 250px);
-  max-width: 300px;
-  overflow-y: auto;
+  margin-bottom: 2em;
 }
-.table-prominents .prominent-title {
-  overflow: hidden;
+@media (max-width: 480px) {
+  .prominents {
+    padding-right: 0.1em;
+    padding-left: 0.1em;
+  }
+}
+.prominents .prominent-item {
+  padding: 0.5em;
+  margin: 0.5em auto;
+}
+.prominents .prominent-wrapper {
+  background-color: #fff;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.prominents h4 {
+  margin-bottom: 2em;
 }
 [data-tab-holder] [data-tab-role] {
   display: none;

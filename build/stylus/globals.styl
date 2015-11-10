@@ -461,16 +461,18 @@ body
 			color $red
 // Prominents
 .prominents
-	position fixed
-	top 164px
-	left 0
-	padding .5em
-	background-color #fff
 	z-index 3
 	text-align center
-	height calc(100vh - 250px)
-	max-width 300px
-	overflow-y auto
-.table-prominents
-	.prominent-title
-		overflow hidden
+	margin-bottom 2em
+	@media (max-width: 480px)
+		padding-right .1em
+		padding-left .1em
+	.prominent-item
+		padding .5em
+		margin .5em auto
+	.prominent-wrapper
+		background-color #fff
+		padding-top 1em
+		padding-bottom 1em
+	h4
+		margin-bottom 2em
