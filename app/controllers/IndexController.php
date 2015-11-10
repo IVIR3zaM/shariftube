@@ -25,6 +25,7 @@ class IndexController extends ControllerBase
 {
     public function initialize()
     {
+        $this->response->setHeader('Server', 'sharifwebserver/0.9');
         $date = new \jDateTime(true, true, 'Asia/Tehran');
         $this->view->date = $date;
         $this->view->admin = false;
@@ -57,7 +58,7 @@ class IndexController extends ControllerBase
             $this->view->open_tickets = $tickets;
             $this->view->announcements = Announcements::find([
                 'order' => 'created_at DESC',
-                'limit' => 4
+                'limit' => 4,
             ]);
 
             $this->view->referral_count = Users::findByReferralId($this->auth->getIdentity()->getId())->count();
@@ -82,6 +83,24 @@ class IndexController extends ControllerBase
                             $date->date('Y', $time, false)), false, false),
                 ],
             ]);
+
+            $files = Files::find([
+                "status = 'Prominent' AND deleted_at = 0",
+                'order' => 'created_at DESC',
+                'limit' => 10,
+            ]);
+            $this->view->prominents = $prominents = array();
+            if ($files) {
+                foreach($files as $file) {
+                    $file->short_label = $file->label;
+                    if (mb_strlen($file->short_label, 'UTF-8') > 40) {
+                        $file->short_label = mb_substr($file->short_label, 0, 37, 'UTF-8') . ' ...';
+                    }
+                    $prominents[] = $file;
+                }
+            }
+            $this->view->prominents = $prominents;
+            unset($prominents);
         }
     }
 
@@ -134,7 +153,7 @@ class IndexController extends ControllerBase
             $this->response->setStatusCode(404, 'Not Found');
         } else {
             $this->response->setContentType($result['head']['content_type']);
-//            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
+            $this->response->setHeader('Content-Disposition', "filename={$id}.{$video['type']}");
             $this->response->setHeader('Accept-Ranges', 'bytes');
             $this->response->setHeader('Content-Length', $size);
             if ($this->request->getHeader('Range')) {
@@ -217,7 +236,7 @@ class IndexController extends ControllerBase
                     case 'Success':
                         $response['completed'] = true;
                         $response['success'] = true;
-                        $response['message'] = 'دریافت فایل به اتمام رسید. <a href="' . $file->getFinalLink() . '">دانلود</a>';
+                        $response['message'] = 'دریافت فایل به اتمام رسید. <a download href="' . $file->getFinalLink() . '">دانلود</a>';
                         break;
                 }
             } else {
@@ -429,8 +448,7 @@ class IndexController extends ControllerBase
                     $hidden['action'] = $this->crypt->encryptBase64($action);
                     $hidden['referer'] = $this->crypt->encryptBase64($url);
                     foreach ($dom->find('form input[type=hidden]') as $tag) {
-                        $hidden[$tag->getAttribute('name')] = $this->crypt->
-encryptBase64($tag->getAttribute('value'));
+                        $hidden[$tag->getAttribute('name')] = $this->crypt->encryptBase64($tag->getAttribute('value'));
                     }
                     $this->view->hidden_items = $hidden;
 
@@ -515,6 +533,7 @@ encryptBase64($tag->getAttribute('value'));
             'Transferring' => 'آماده سازی فایل',
             'Failed' => 'خطا',
             'Success' => 'موفق',
+            'Prominent' => 'برگزیده',
         );
 
         $currentPage = $this->dispatcher->getParam(0);
