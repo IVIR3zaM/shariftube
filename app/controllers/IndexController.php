@@ -83,24 +83,25 @@ class IndexController extends ControllerBase
                             $date->date('Y', $time, false)), false, false),
                 ],
             ]);
-        }
-        $files = Files::find([
-            "status = 'Prominent' AND deleted_at = 0",
-            'order' => 'created_at DESC',
-            'limit' => 10,
-        ]);
-        $this->view->prominents = $prominents = array();
-        if ($files) {
-            foreach($files as $file) {
-                $file->short_label = $file->label;
-                if (mb_strlen($file->short_label, 'UTF-8') > 40) {
-                    $file->short_label = mb_substr($file->short_label, 0, 37, 'UTF-8') . ' ...';
+
+            $files = Files::find([
+                "status = 'Prominent' AND deleted_at = 0",
+                'order' => 'created_at DESC',
+                'limit' => 10,
+            ]);
+            $this->view->prominents = $prominents = array();
+            if ($files) {
+                foreach($files as $file) {
+                    $file->short_label = $file->label;
+                    if (mb_strlen($file->short_label, 'UTF-8') > 40) {
+                        $file->short_label = mb_substr($file->short_label, 0, 37, 'UTF-8') . ' ...';
+                    }
+                    $prominents[] = $file;
                 }
-                $prominents[] = $file;
             }
+            $this->view->prominents = $prominents;
+            unset($prominents, $files);
         }
-        $this->view->prominents = $prominents;
-        unset($prominents, $files);
     }
 
     public function videoAction()
@@ -176,7 +177,7 @@ class IndexController extends ControllerBase
         $this->view->title = 'پخش آنلاین ویدئو';
         $this->view->id  = $id = $this->dispatcher->getParam('id');
         $file = Files::findFirst([
-            "id = :id: AND user_id = :user: AND status = 'Success' AND deleted_at = 0",
+            "id = :id: AND user_id = :user: AND status IN ('Success', 'Prominent') AND deleted_at = 0",
             'bind' => [
                 'id' => $id,
                 'user' => $this->auth->getIdentity()->getId(),
@@ -233,6 +234,7 @@ class IndexController extends ControllerBase
                         $response['message'] = 'دریافت فایل با مشکل روبرو شد';
                         break;
                     case 'Success':
+                    case 'Prominent':
                         $response['completed'] = true;
                         $response['success'] = true;
                         $response['message'] = 'دریافت فایل به اتمام رسید. <a download href="' . $file->getFinalLink() . '">دانلود</a>';
