@@ -102,6 +102,8 @@ $(document).ready(function() {
 	$('#policy-trigger').click(function(e) {
 		$('#policy-content').fadeToggle(200);
 	});
+	// Popover on hover of prominent videos title
+	$('.popover').popover();
 	// Close Policy text on click od close btn
 	$('#policy-content .close').click(function() {
 		$('#policy-content').fadeOut(200);

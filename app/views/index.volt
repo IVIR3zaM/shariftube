@@ -7,7 +7,7 @@
         <title>شریف تیوب - {{ title }}</title>
         <meta name="description" content="شریف تیوب، سرویسی برای استفاده آکادمیک و آموزشی با هدف آسان سازی ارتباط با شبکه های ویدیویی وب">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ url.getBaseUri() }}css/shariftube1446995875759.min.css">
+        <link rel="stylesheet" href="{{ url.getBaseUri() }}css/shariftube1446995875760.min.css">
     </head>
     <body>
     	<noscript><div style="position:fixed;width:100%;height:100%;background-color:#000;color:#fff;z-index:1000000000"><h1 style="position:absolute;top:50%;left:50%;-webkit-transform:translate3d(-50%,-50%,0);transform:translate3d(-50%,-50%,0);text-align:center;">کاربر گرامی، جاوااسکریپت مرورگر شما غیرفعال است. برای استفاده از این سرویس لطفا جاوااسکریپت مرورگر خود را فعال نمایید.</h1></div></noscript>
@@ -30,7 +30,28 @@
                 <div class="col-xs-12">
                     {{ content() }}
                 </div>
-                <!-- Cloding the in condition DIV -->
+                <!-- Prominent Video -->
+                {% if prominents %}
+                <div class="prominents">
+                    <table class="table table-prominents">
+                        <thead>
+                            <tr>
+                                <th colspan="3">برخی ویدئوهای دانلود شده کاربران</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for video in prominents %}
+                            <tr>
+                                <td class="prominent-title popover" data-toggle="popover" data-trigger="hover" data-content="{{ prominent.label|e }}">{{ prominent.short_label|e }}</td>
+                                <td class="prominent-volume">{{ number_format(prominent.size/1024/1024, 2) }}</td>
+                                <td><a class="btn btn-primary btn-sm" href="{{ prominent.getFinalLink()|e }}">دانلود</a> | </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                <!-- Closing the in condition DIV -->
                 </div>
             </div>
             <!-- Footer -->
@@ -42,6 +63,6 @@
 	            </div>
 	        </div>
         </div>
-        <script defer src="{{ url.getBaseUri() }}js/shariftube1446995875759.min.js"></script>
+        <script defer src="{{ url.getBaseUri() }}js/shariftube1446995875760.min.js"></script>
     </body>
 </html>
