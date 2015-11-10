@@ -41,7 +41,7 @@
                             {% for prominent in prominents %}
                             <div class="clearfix prominent-item">
                                 <div class="col-xs-2">
-                                    <div><a class="btn-table" href="{{ prominent.getFinalLink()|e }}">دانلود</a></div>
+                                    <div><a download class="btn-table" href="{{ prominent.getFinalLink()|e }}">دانلود</a></div>
                                 </div>
                                 <div class="col-xs-3">
                                     <div class="prominent-volume text-en">{{ number_format(prominent.size/1024/1024, 2) }}MB</div>
