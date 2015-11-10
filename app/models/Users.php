@@ -7,6 +7,7 @@ class Users extends BaseModel
     public $password;
     public $role;
     public $name;
+    public $status;
     public $referral_code;
     public $referral_id;
     public $quota;

@@ -84,6 +84,7 @@
                 </ul>
             </li>
             {% endif %}
+            {% if auth.getIdentity().status != 'Suspended' %}
             <li>
                 <a{% if dispatcher.getActionName() == 'search' %} class="active"{% endif %} href="{{ url.get(['for':'search']) }}">جست و جوی ویدئو</a>
             </li>
@@ -99,12 +100,15 @@
             <li>
                 <a{% if dispatcher.getActionName() == 'purchases' %} class="active"{% endif %} href="{{ url.get(['for':'purchases']) }}">لیست خریدهای گذشته</a>
             </li>
+            {% endif %}
             <li>
                 <a{% if dispatcher.getActionName() == 'support' %} class="active"{% endif %} href="{{ url.get(['for':'support']) }}">پشتیبانی {% if open_tickets > 0 %}<span class="badge badge-red badge-rounded badge-support">{{ open_tickets|e }}</span>{% endif %}</a>
             </li>
+            {% if auth.getIdentity().status != 'Suspended' %}
             <li>
                 <a{% if dispatcher.getActionName() == 'settings' %} class="active"{% endif %} href="{{ url.get(['for':'settings']) }}">تنظیمات</a>
             </li>
+            {% endif %}
         </ul>
     </div>
 </div>

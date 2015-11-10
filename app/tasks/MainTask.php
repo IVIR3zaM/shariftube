@@ -123,30 +123,48 @@ class MainTask extends Task
             echo "template not found\n";
             return;
         }
-        if (!file_exists(APP_DIR . '/cache/emails/' . $file . '.csv')) {
+        if ($file == 'user' && isset($params[3])) {
+            $ids = array_values(array_filter(explode(',', $params[3])));
+            $users = Users::find([
+                'id IN ({ids:array})',
+                'bind' => [
+                    'ids' => $ids,
+                ],
+            ]);
+            if (!$users) {
+                echo "no users found\n";
+                return;
+            }
+            $emails = array();
+            foreach ($users as $user) {
+                $emails[] = [$user->email, $user->name];
+            }
+            $start = 0;
+            $limit = count($emails);
+        } elseif (!file_exists(APP_DIR . '/cache/emails/' . $file . '.csv')) {
             echo "emails not found\n";
             return;
-        }
+        } else {
+            $list = explode("\n", file_get_contents(APP_DIR . '/cache/emails/' . $file . '.csv'));
+            $emails = array();
+            foreach ($list as $line) {
+                $email = trim(strtolower(strtok($line, ',')));
+                $name = trim(strtok(','));
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $emails[] = [$email, $name];
+                }
+            }
 
-
-        $list = explode("\n", file_get_contents(APP_DIR . '/cache/emails/' . $file . '.csv'));
-        $emails = array();
-        foreach ($list as $line) {
-            $email = trim(strtolower(strtok($line, ',')));
-            $name = trim(strtok(','));
-            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $emails[] = [$email, $name];
+            $start = 0;
+            if (isset($params[3]) && $params[3] > 0) {
+                $start = intval($params[3]);
+            }
+            $limit = count($emails);
+            if (isset($params[4]) && $params[4] > 0 && $params[4] < $limit) {
+                $limit = intval($params[4]) - $start;
             }
         }
 
-        $start = 0;
-        if (isset($params[3]) && $params[3] > 0) {
-            $start = intval($params[3]);
-        }
-        $limit = count($emails);
-        if (isset($params[4]) && $params[4] > 0 && $params[4] < $limit) {
-            $limit = intval($params[4]) - $start;
-        }
         echo "{$limit} emails found from {$start}\n";
         for ($i = $start; $i < ($start + $limit); $i++) {
             $email = $emails[$i][0];

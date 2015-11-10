@@ -29,7 +29,12 @@ class IndexController extends ControllerBase
         $date = new \jDateTime(true, true, 'Asia/Tehran');
         $this->view->date = $date;
         $this->view->admin = false;
+        $this->view->suspended = false;
         if ($this->auth->getIdentity()) {
+            if ($this->auth->getIdentity()->status == 'Suspended') {
+                $this->flash->error('حساب کاربری شما معلق شده است. برای رفع این موضوع با پشتیبانی تماس بگیرید.');
+                $this->view->suspended = true;
+            }
             $this->view->admin = $admin = $this->auth->getIdentity()->role == 'Admin' ? true : false;
             $time = time();
             if ($this->auth->getIdentity()->role == 'Admin') {
@@ -106,6 +111,11 @@ class IndexController extends ControllerBase
 
     public function videoAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -169,6 +179,11 @@ class IndexController extends ControllerBase
 
     public function playAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -195,6 +210,11 @@ class IndexController extends ControllerBase
 
     public function indexAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -346,6 +366,11 @@ class IndexController extends ControllerBase
 
     public function searchAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -522,6 +547,11 @@ class IndexController extends ControllerBase
 
     public function filesAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -581,6 +611,11 @@ class IndexController extends ControllerBase
 
     public function shopAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -659,6 +694,11 @@ class IndexController extends ControllerBase
 
     public function purchasesAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
@@ -936,6 +976,11 @@ class IndexController extends ControllerBase
 
     public function settingsAction()
     {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
         if (!$this->auth->getIdentity()) {
             $this->view->disable();
             $this->response->redirect(['for' => 'login']);
