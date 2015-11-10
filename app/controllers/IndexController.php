@@ -83,25 +83,24 @@ class IndexController extends ControllerBase
                             $date->date('Y', $time, false)), false, false),
                 ],
             ]);
-
-            $files = Files::find([
-                "status = 'Prominent' AND deleted_at = 0",
-                'order' => 'created_at DESC',
-                'limit' => 10,
-            ]);
-            $this->view->prominents = $prominents = array();
-            if ($files) {
-                foreach($files as $file) {
-                    $file->short_label = $file->label;
-                    if (mb_strlen($file->short_label, 'UTF-8') > 40) {
-                        $file->short_label = mb_substr($file->short_label, 0, 37, 'UTF-8') . ' ...';
-                    }
-                    $prominents[] = $file;
-                }
-            }
-            $this->view->prominents = $prominents;
-            unset($prominents);
         }
+        $files = Files::find([
+            "status = 'Prominent' AND deleted_at = 0",
+            'order' => 'created_at DESC',
+            'limit' => 10,
+        ]);
+        $this->view->prominents = $prominents = array();
+        if ($files) {
+            foreach($files as $file) {
+                $file->short_label = $file->label;
+                if (mb_strlen($file->short_label, 'UTF-8') > 40) {
+                    $file->short_label = mb_substr($file->short_label, 0, 37, 'UTF-8') . ' ...';
+                }
+                $prominents[] = $file;
+            }
+        }
+        $this->view->prominents = $prominents;
+        unset($prominents, $files);
     }
 
     public function videoAction()
