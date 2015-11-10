@@ -81,7 +81,7 @@ class Auth extends Component
 
     public function loginWithRememberMe()
     {
-        $cookieToken = $this->crypt->decryptBase64($this->cookies->get('SharifUser')->getValue());
+        $cookieToken = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->cookies->get('SharifUser')->getValue()));
         $remember = RememberTokens::findFirstByToken($cookieToken);
         if ($remember) {
             $user = $remember->getUser();
@@ -196,6 +196,11 @@ class Auth extends Component
      */
     public function remove()
     {
+        $cookieToken = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->cookies->get('SharifUser')->getValue()));
+        $remember = RememberTokens::findFirstByToken($cookieToken);
+        if ($remember) {
+            $remember->delete();
+        }
         $this->cookies->get('SharifUser')->delete();
         $this->user = null;
     }
@@ -206,7 +211,7 @@ class Auth extends Component
      * @param int $id
      * @return boolean
      */
-    public function authUserById($id)
+    public function authUserById($id, $save = true)
     {
         $user = Users::findFirstById($id);
         if ($user == false) {
@@ -219,10 +224,12 @@ class Auth extends Component
             return false;
         }
 
-        $this->saveSuccessLogin($user->id);
+        if ($save) {
+            $this->saveSuccessLogin($user->id);
+            $this->createRememberEnviroment($user);
+        }
         $this->user = $user;
 
-        $this->createRememberEnviroment($user);
         return true;
     }
 }

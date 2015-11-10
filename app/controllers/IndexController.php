@@ -611,16 +611,6 @@ class IndexController extends ControllerBase
 
     public function shopAction()
     {
-        if ($this->view->suspended) {
-            $this->view->disable();
-            $this->response->redirect(['for' => 'support']);
-            return;
-        }
-        if (!$this->auth->getIdentity()) {
-            $this->view->disable();
-            $this->response->redirect(['for' => 'login']);
-            return;
-        }
         $this->view->title = 'خرید';
 
         $back = $this->dispatcher->getParam('back');
@@ -632,7 +622,7 @@ class IndexController extends ControllerBase
                     $purchase = $gateway->back();
                     if ($purchase) {
                         if ($purchase->doPayment()) {
-                            $this->auth->authUserById($this->auth->getIdentity()->getId());
+                            $this->auth->authUserById($purchase->user_id, false);
                             $this->flash->success('پرداخت شما با موفقیت انجام شد.');
                         } else {
                             $this->flash->error('پرداخت شما انجام شد. اما به دلیل خطایی در سرور تا لحظاتی دیگر حجم خریداری شده به حسابتان منظور خواهد شد.');
@@ -646,6 +636,17 @@ class IndexController extends ControllerBase
             } else {
                 $this->flash->error('پرداخت شما پردازش نشد. لطفا با پشتیبانی تماس بگیرید.');
             }
+        }
+
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
         }
 
         $id = $this->request->getPost('id');
