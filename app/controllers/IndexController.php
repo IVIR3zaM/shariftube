@@ -58,7 +58,7 @@ class IndexController extends ControllerBase
             $this->view->open_tickets = $tickets;
             $this->view->announcements = Announcements::find([
                 'order' => 'created_at DESC',
-                'limit' => 4
+                'limit' => 4,
             ]);
 
             $this->view->referral_count = Users::findByReferralId($this->auth->getIdentity()->getId())->count();
@@ -82,6 +82,12 @@ class IndexController extends ControllerBase
                         $date->mktime(23, 59, 59, $date->date('n', $time, false), $date->date('t', $time, false),
                             $date->date('Y', $time, false)), false, false),
                 ],
+            ]);
+
+            $this->view->prominents = Files::find([
+                "status = 'Prominent' AND deleted_at = 0",
+                'order' => 'created_at DESC',
+                'limit' => 10,
             ]);
         }
     }
@@ -218,7 +224,7 @@ class IndexController extends ControllerBase
                     case 'Success':
                         $response['completed'] = true;
                         $response['success'] = true;
-                        $response['message'] = 'دریافت فایل به اتمام رسید. <a href="' . $file->getFinalLink() . '">دانلود</a>';
+                        $response['message'] = 'دریافت فایل به اتمام رسید. <a download href="' . $file->getFinalLink() . '">دانلود</a>';
                         break;
                 }
             } else {
@@ -430,8 +436,7 @@ class IndexController extends ControllerBase
                     $hidden['action'] = $this->crypt->encryptBase64($action);
                     $hidden['referer'] = $this->crypt->encryptBase64($url);
                     foreach ($dom->find('form input[type=hidden]') as $tag) {
-                        $hidden[$tag->getAttribute('name')] = $this->crypt->
-encryptBase64($tag->getAttribute('value'));
+                        $hidden[$tag->getAttribute('name')] = $this->crypt->encryptBase64($tag->getAttribute('value'));
                     }
                     $this->view->hidden_items = $hidden;
 
@@ -516,6 +521,7 @@ encryptBase64($tag->getAttribute('value'));
             'Transferring' => 'آماده سازی فایل',
             'Failed' => 'خطا',
             'Success' => 'موفق',
+            'Prominent' => 'برگزیده',
         );
 
         $currentPage = $this->dispatcher->getParam(0);
