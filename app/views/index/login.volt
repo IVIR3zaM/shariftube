@@ -78,7 +78,7 @@
     </form>
 
     <!-- Forgot Password -->
-    <form data-tab-role="#forgot_password" class="form-condensed clearfix" action="{{ url.get(['for' : 'login'])|e }}" method="post">
+    <form data-tab-role="#forgot_password" class="form-condensed clearfix" action="{{ url.get(['for' : 'login'])|e }}?#signup" method="post">
         <h3 class="form-head text-center"><small>فراموشی رمز عبور</small></h3>
         <div class="form-group form-group-st form-group-round">
             <label for="email">ایمیل</label>
