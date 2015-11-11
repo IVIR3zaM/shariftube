@@ -15,6 +15,7 @@ use Shariftube\Models\ResetPasswords;
 use Shariftube\Models\Servers;
 use Shariftube\Models\TicketReplays;
 use Shariftube\Models\Tickets;
+use Shariftube\Models\Unsubscribes;
 use Shariftube\Models\Users;
 use Shariftube\Models\Websites;
 
@@ -693,6 +694,28 @@ class IndexController extends ControllerBase
         }
     }
 
+    public function unsubscribeAction()
+    {
+        $this->view->title = 'حذف ایمیل شما از خبرنامه';
+        $this->view->email = $email = $this->dispatcher->getParam('email');
+        if (Unsubscribes::count([
+            'email = :email:',
+            'bind' => [
+                'email' => $email,
+            ],
+        ])) {
+            $this->flash->success('ایمیل شما قبلا از خبرنامه حذف شده است.');
+        } else {
+            $unsubscribe = new Unsubscribes();
+            $unsubscribe->email = $email;
+            if ($unsubscribe->save()) {
+                $this->flash->success('ایمیل شما با موفقیت از خبرنامه حذف گردید.');
+            } else {
+                $this->flash->error('متاسفانه ایمیل شما از خبرنامه حذف نشد. لطفا مجددا تلاش نمایید.');
+            }
+        }
+    }
+
     public function purchasesAction()
     {
         if ($this->view->suspended) {
@@ -1077,7 +1100,7 @@ class IndexController extends ControllerBase
                     $this->mail->setVar('password', $password);
                     $this->mail->setVar('user', $user);
                     $this->mail->setVar('link', $this->url->getStatic(['for' => 'login']));
-                    $this->mail->addAddress($user->email, $user->name);
+                    $this->mail->addAddress($user->email, $user->name, true);
                     $this->mail->Subject = 'رمز عبور جدید';
                     if ($this->mail->send()) {
                         $reset->delete();
@@ -1207,7 +1230,7 @@ class IndexController extends ControllerBase
                         $this->mail->setVar('code', $reset->code);
                         $this->mail->setVar('user', $user);
                         $this->mail->setVar('link', $this->url->getStatic(['for' => 'forgot', 'code' => $reset->code]));
-                        $this->mail->addAddress($user->email, $user->name);
+                        $this->mail->addAddress($user->email, $user->name, true);
                         $this->mail->Subject = 'فراموشی رمز عبور';
                         if ($this->mail->send()) {
                             $this->flash->success('یک ایمیل حاوی لینک تغییر رمز عبور برای شما ارسال شد.');

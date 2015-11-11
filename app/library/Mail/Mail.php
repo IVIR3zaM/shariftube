@@ -3,9 +3,12 @@ namespace Shariftube\Mail;
 
 use Phalcon\Mvc\User\Component;
 use Phalcon\Mvc\View;
+use Shariftube\Models\Unsubscribes;
 
 class Mail extends Component
 {
+    private $unsubscribes = array();
+    private $emails = array();
     private $vars = array();
     private $template = null;
     private $phpmailer = null;
@@ -15,6 +18,7 @@ class Mail extends Component
     {
         $this->createPHPMailer();
     }
+
     public function createPHPMailer()
     {
         $this->phpmailer = new \PHPMailer();
@@ -27,14 +31,15 @@ class Mail extends Component
             $this->phpmailer->Password = $this->config->mail->password;
 
         }
-	// $this->phpmailer->SMTPDebug = 2;
-	$this->phpmailer->SMTPAutoTLS = false;
+        // $this->phpmailer->SMTPDebug = 2;
+        $this->phpmailer->SMTPAutoTLS = false;
         $this->phpmailer->SMTPSecure = $this->config->mail->security;
         $this->phpmailer->Port = $this->config->mail->port;
         $this->phpmailer->setFrom($this->config->mail->from, $this->config->mail->fromname);
         $this->phpmailer->Timeout = $this->config->mail->timeout;
         $this->phpmailer->CharSet = 'UTF-8';
     }
+
     public function resetPHPMailer()
     {
         $this->phpmailer = null;
@@ -89,8 +94,41 @@ class Mail extends Component
         return null;
     }
 
+    public function addAddress($address, $name = '', $force_send = false)
+    {
+        if (!$force_send && Unsubscribes::count([
+                'email = :email:',
+                'bind' => [
+                    'email' => $address,
+                ],
+            ])
+        ) {
+            $this->unsubscribes[] = $address;
+            return false;
+        }
+        $result = call_user_func_array([$this->phpmailer, 'addAddress'], [$address, $name]);
+        if ($result) {
+            $this->emails[] = $address;
+            $this->vars['unsubscribe'][$address] = $this->getDI()->getUrl()->getStatic([
+                'for' => 'unsubscribe',
+                'email' => vinixhash_encode($address),
+            ]);
+            if (!$force_send) {
+                $this->phpmailer->addCustomHeader('List-Unsubscribe', '<' . $this->vars['unsubscribe'][$address] . '>');
+            }
+        }
+        return $result;
+    }
+
     public function send()
     {
+        if (empty($this->emails)) {
+            if (empty($this->unsubscribes)) {
+                return false;
+            } else {
+                return null;
+            }
+        }
         if (!$this->template) {
             return false;
         }
@@ -101,6 +139,7 @@ class Mail extends Component
         foreach ($this->vars as $name => $value) {
             $this->view->setVar($name, $value);
         }
+
 
         $this->view->start()->render('email', 'header')->finish();
         $this->Body = $this->view->getContent();

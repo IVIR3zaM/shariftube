@@ -59,6 +59,10 @@ $di->setShared('view', function () use ($di, $config) {
     return $view;
 });
 
+$di->setShared('router', function () use ($di) {
+    return require APP_DIR . '/config/routes.php';
+});
+
 $di->setShared('curl', function () {
     return new Curl();
 });

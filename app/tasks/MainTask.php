@@ -123,6 +123,8 @@ class MainTask extends Task
             echo "template not found\n";
             return;
         }
+
+        $filter = false;
         if ($file == 'user' && isset($params[3])) {
             $ids = array_values(array_filter(explode(',', $params[3])));
             $users = Users::find([
@@ -163,22 +165,42 @@ class MainTask extends Task
             if (isset($params[4]) && $params[4] > 0 && $params[4] < $limit) {
                 $limit = intval($params[4]) - $start;
             }
+            if (isset($params[5])) {
+                $filter = true;
+            }
         }
-
+        $prominents = Files::find([
+            "status = 'Prominent' AND deleted_at = 0",
+            'order' => 'created_at DESC',
+            'limit' => 10,
+        ]);
         echo "{$limit} emails found from {$start}\n";
         for ($i = $start; $i < ($start + $limit); $i++) {
             $email = $emails[$i][0];
             $name = $emails[$i][1];
             echo "Sending #{$i}: {$email}: ";
-            $this->mail->setTemplate($template);
-            $this->mail->setVar('email', $email);
-            $this->mail->setVar('name', $name);
-            $this->mail->addAddress($email, $name);
-            $this->mail->Subject = $subject;
-            if ($this->mail->send()) {
-                echo 'Sent';
+            if ($filter && Users::count([
+                'email = :email:',
+                'bind' => [
+                    'email' => $email,
+                ],
+            ])) {
+                echo 'Filtered';
             } else {
-                echo 'Failed';
+                $this->mail->setTemplate($template);
+                $this->mail->setVar('email', $email);
+                $this->mail->setVar('name', $name);
+                $this->mail->setVar('prominents', $prominents);
+                $this->mail->addAddress($email, $name);
+                $this->mail->Subject = $subject;
+                $result = $this->mail->send();
+                if ($result === null) {
+                    echo 'Unsubscribe';
+                } elseif($result) {
+                    echo 'Sent';
+                } else {
+                    echo 'Failed';
+                }
             }
             echo "\n";
         }

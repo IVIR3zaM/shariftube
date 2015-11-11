@@ -16,6 +16,12 @@ $router->add('/link/(.+)', array(
     'link' => 1,
 ))->setName('link');
 
+$router->add('/unsubscribe/(.+)', array(
+    'controller' => 'index',
+    'action' => 'unsubscribe',
+    'email' => 1,
+))->setName('link');
+
 $router->add('/video/(.+)', array(
     'controller' => 'index',
     'action' => 'video',
