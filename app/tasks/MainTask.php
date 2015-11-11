@@ -188,7 +188,6 @@ class MainTask extends Task
                 echo 'Filtered';
             } else {
                 $this->mail->setTemplate($template);
-                $this->mail->setVar('email', $email);
                 $this->mail->setVar('name', $name);
                 $this->mail->setVar('prominents', $prominents);
                 $this->mail->addAddress($email, $name);

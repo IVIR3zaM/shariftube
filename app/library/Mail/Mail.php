@@ -109,7 +109,8 @@ class Mail extends Component
         $result = call_user_func_array([$this->phpmailer, 'addAddress'], [$address, $name]);
         if ($result) {
             $this->emails[] = $address;
-            $this->vars['unsubscribe'][$address] = 'http://shariftube.ir/unsubscribe/' . vinixhash_encode($address);
+            $this->vars['email'] = $address;
+            $this->vars['unsubscribe'] = 'http://shariftube.ir/unsubscribe/' . vinixhash_encode($address);
             if (!$force_send) {
                 $this->phpmailer->addCustomHeader('List-Unsubscribe', '<' . $this->vars['unsubscribe'][$address] . '>');
             }

@@ -9,6 +9,9 @@
     </p>
 </div>
 <div>
+    <p>
+        <a style="color:#0D3635" href="{{ unsubscribe|e }}">حذف ایمیل شما از خبرنامه</a>
+    </p>
     <p style="direction: ltr;">
         <a style="color:#0D3635" href="{{ link|e }}">{{ link|e }}</a>
     </p>

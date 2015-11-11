@@ -26,4 +26,7 @@
         از کد معرف <span style="display:inline-block;direction:ltr;margin:0 5px;color:#dc5d5d"><strong>Sharifi</strong></span>
         ثبت نام نمایید.
     </p>
+    <p>
+        <a style="color:#0D3635" href="{{ unsubscribe|e }}">حذف ایمیل شما از خبرنامه</a>
+    </p>
 </div>
