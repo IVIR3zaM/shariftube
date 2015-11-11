@@ -438,7 +438,7 @@ class IndexController extends ControllerBase
                 $link .= '&tbs=' . implode(',', $str);
             }
             $header = array();
-
+            $header['No-Cache'] = 1;
             if ($this->request->getPost('captcha')) {
                 $params = $this->request->getPost('params');
                 $action = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($params['action']));
