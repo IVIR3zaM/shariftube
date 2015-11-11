@@ -8,6 +8,7 @@ use PHPHtmlParser\Dom;
 use Shariftube\Models\Announcements;
 use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
+use Shariftube\Models\Logs;
 use Shariftube\Models\Packages;
 use Shariftube\Models\PasswordChanges;
 use Shariftube\Models\Purchases;
@@ -26,6 +27,32 @@ class IndexController extends ControllerBase
 {
     public function initialize()
     {
+        $posts =  $this->request->getPost();
+        if ($this->auth->getIdentity() || !empty($posts)) {
+            $log = new Logs();
+            if ($this->auth->getIdentity()) {
+                $log->user_id = $this->auth->getIdentity()->getId();
+            } else {
+                $log->user_id = null;
+            }
+            $log->uri = $this->request->getURI();
+
+            if (is_array($posts)) {
+                foreach ($posts as $name => $value) {
+                    if (preg_match('/pass/i', $name)) {
+                        $posts[$name] = str_repeat('*', mb_strlen($value, 'UTF-8'));
+                    }
+                }
+            }
+            if (empty($posts)) {
+                $log->posts = ' ';
+            } else {
+                $log->posts = var_export($posts, true);
+            }
+            $log->save();
+        }
+
+
         $this->view->header = true;
         $this->response->setHeader('Server', 'sharifwebserver/0.9');
         $date = new \jDateTime(true, true, 'Asia/Tehran');

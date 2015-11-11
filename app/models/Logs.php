@@ -1,10 +1,11 @@
 <?php
 namespace Shariftube\Models;
 
-class FailedLogins extends BaseModel
+class Logs extends BaseModel
 {
     public $user_id;
-    public $ip_address;
+    public $uri;
+    public $posts;
     public $created_at;
 
     public function initialize()
