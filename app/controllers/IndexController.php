@@ -697,7 +697,7 @@ class IndexController extends ControllerBase
     public function unsubscribeAction()
     {
         $this->view->title = 'حذف ایمیل شما از خبرنامه';
-        $this->view->email = $email = $this->dispatcher->getParam('email');
+        $this->view->email = $email = vinixhash_decode($this->dispatcher->getParam('email'));
         if (Unsubscribes::count([
             'email = :email:',
             'bind' => [

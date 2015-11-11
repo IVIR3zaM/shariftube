@@ -110,9 +110,10 @@ class Mail extends Component
         if ($result) {
             $this->emails[] = $address;
             $this->vars['email'] = $address;
-            $this->vars['unsubscribe'] = 'http://shariftube.ir/unsubscribe/' . vinixhash_encode($address);
+            $this->vars['hash'] = vinixhash_encode($address);
+            $this->vars['unsubscribe'] = 'http://shariftube.ir/unsubscribe/' . $this->vars['hash'];
             if (!$force_send) {
-                $this->phpmailer->addCustomHeader('List-Unsubscribe', '<' . $this->vars['unsubscribe'][$address] . '>');
+                $this->phpmailer->addCustomHeader('List-Unsubscribe', '<' . $this->vars['unsubscribe'] . '>');
             }
         }
         return $result;

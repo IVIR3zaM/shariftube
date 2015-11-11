@@ -27,6 +27,6 @@
         ثبت نام نمایید.
     </p>
     <p>
-        <a style="color:#0D3635" href="{{ unsubscribe|e }}">حذف ایمیل شما از خبرنامه</a>
+        <a style="color:#0D3635" href="https://shariftube.ir/unsubscribe/{{ hash|e }}">حذف ایمیل شما از خبرنامه</a>
     </p>
 </div>
