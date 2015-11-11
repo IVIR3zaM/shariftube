@@ -35,7 +35,7 @@ class IndexController extends ControllerBase
             } else {
                 $log->user_id = null;
             }
-            $log->uri = $this->request->getURI();
+            $log->uri = urldecode($this->request->getURI());
 
             if (is_array($posts)) {
                 foreach ($posts as $name => $value) {
