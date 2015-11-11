@@ -109,7 +109,7 @@ class Mail extends Component
         $result = call_user_func_array([$this->phpmailer, 'addAddress'], [$address, $name]);
         if ($result) {
             $this->emails[] = $address;
-            if ($this->getDI()->getUrl()) {
+            if ($this->getDI()->has('url')) {
                 $this->vars['unsubscribe'][$address] = $this->getDI()->getUrl()->getStatic([
                     'for' => 'unsubscribe',
                     'email' => vinixhash_encode($address),
