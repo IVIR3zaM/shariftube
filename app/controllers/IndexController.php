@@ -442,6 +442,7 @@ class IndexController extends ControllerBase
             if ($this->request->getPost('captcha')) {
                 $params = $this->request->getPost('params');
                 $action = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($params['action']));
+                $header['No-Cache'] = 1;
                 $header['Referer'] = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($params['referer']));
                 $query = array();
                 foreach ($params as $index => $value) {
@@ -481,7 +482,7 @@ class IndexController extends ControllerBase
                     $this->view->hidden_items = $hidden;
 
 
-                    $content = $this->curl->get($image, 20, 5, array('Referer' => $url));
+                    $content = $this->curl->get($image, 20, 5, array('Referer' => $url, 'No-Cache' => 1));
                     if ($content['content']) {
                         $this->view->captcha_image = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
                     }
