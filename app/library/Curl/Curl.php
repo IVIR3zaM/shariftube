@@ -137,24 +137,17 @@ class Curl extends Component
             $head = $result['head'];
         }
 
-        if ($debug) {
-            echo "<h1>{$url}</h1>";
-            var_dump($head);
-            echo '<pre>' . htmlspecialchars($content) . '</pre>';
-            exit;
-        }
+        
 
         $true_head = substr($content, 0, $head['header_size']);
-        if ($reddirects > 0 && preg_match('/\s+Location\s*:\s*(?P<url>(?:(?!\s).)+)\s+/i', $true_head, $match)) {
-            $org_header['Referrer'] = $url;
-            return $this->get($match['url'], $timeout, $reddirects - 1, $org_header, $onlyhead, $debug);
-        } else {
-            $content = substr($content, $head['header_size']);
+        $content = substr($content, $head['header_size']);
+        if (preg_match('/google\.[\w]+/', $url) && preg_match('/ei\=(?P<ei>[\w]+)/', $head['redirect_url'], $match)) {
+            file_put_contents(APP_DIR . '/cache/google.ei', $match['ei']);
         }
-        if (preg_match('/Set\-Cookie\s*:\s*(?P<name>[^\=]+)\=(?P<value>[^\s\;]+)/i',
-                $true_head, $match)
-        ) {
-            if (preg_match('/google\.com/', $url)) {
+        
+        preg_match_all('/Set\-Cookie\s*:\s*(?P<name>[^\=]+)\=(?P<value>[^\s\;]+)/i', $true_head, $match);
+        if (!empty($match['name'])) {
+            if (preg_match('/google\.[\w]+/', $url)) {
                 $head['cookie'] = @unserialize(file_get_contents(APP_DIR . '/cache/google.cookie'));
                 if (!is_array($head['cookie'])) {
                     $head['cookie'] = array();
@@ -162,14 +155,27 @@ class Curl extends Component
             } else {
                 $head['cookie'] = array();
             }
-
-            $head['cookie'][$match['name']] = $match['value'];
-            if (preg_match('/google\.com/', $url)) {
+            foreach($match['name'] as $i=>$value) {
+                $head['cookie'][$value] = $match['value'][$i];
+            }
+            
+            if (preg_match('/google\.[\w]+/', $url)) {
                 file_put_contents(APP_DIR . '/cache/google.cookie', serialize($head['cookie']));
             }
         }
+        if ($reddirects > 0 && preg_match('/\s+Location\s*:\s*(?P<url>(?:(?!\s).)+)\s+/i', $true_head, $match)) {
+            $org_header['Referrer'] = $url;
+            return $this->get(preg_replace('/google\.[\w]+/', 'google.com',$match['url']), $timeout, $reddirects - 1, $org_header, $onlyhead, $debug);
+        }
         if (isset($head['url'])) {
             $url = $head['url'];
+        }
+        if ($debug) {
+            echo "<h1>{$url}</h1>";
+            var_export($head);
+            echo $true_head;
+            echo '<pre>' . htmlspecialchars($content) . '</pre>';
+            exit;
         }
         return array('head' => $head, 'content' => $content, 'url' => $url);
     }

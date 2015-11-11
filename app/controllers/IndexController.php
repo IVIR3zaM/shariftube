@@ -400,12 +400,17 @@ class IndexController extends ControllerBase
 
         $this->view->title = 'جست و جوی ویدئو';
 
+
         $this->view->records = $records = array();
         $this->view->captcha = false;
         $this->view->captcha_image = '';
         $this->view->hidden_items = array();
         $this->view->last_item = $this->view->start;
         $this->view->have_next = false;
+        // if ($this->auth->getIdentity()->getId()!=1) {
+        //     $this->flash->error('موتور جست و جو فعلا در دسترس نیست. لطفا بعدا مراجعه نمایید.');
+        //     return;
+        // }
         if ($this->view->q) {
             $websites = array();
             foreach ($this->view->websites as $item) {
@@ -414,7 +419,7 @@ class IndexController extends ControllerBase
                     $websites[$domain] = $item->name;
                 }
             }
-            $link = 'http://www.google.com/search?hl=en&q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
+            $link = 'https://www.google.com/search?hl=en&q=' . urlencode($this->view->q) . ($this->view->website != 'All' && in_array($this->view->website,
                     $websites) ? '+site%3A' . urlencode(array_search($this->view->website,
                         $websites)) : '') . '&num=50&tbm=vid';
             if ($this->view->start > 0) {
@@ -437,6 +442,11 @@ class IndexController extends ControllerBase
                 }
                 $link .= '&tbs=' . implode(',', $str);
             }
+            $link .= '&gws_rd=ssl';
+            $ei = @file_get_contents(APP_DIR . '/cache/google.ei');
+            if ($ei) {
+                $link .= '&ei='.urlencode($ei);
+            }
             $header = array();
             $header['No-Cache'] = 1;
             if ($this->request->getPost('captcha')) {
@@ -455,9 +465,11 @@ class IndexController extends ControllerBase
                 $query[] = 'submit=Submit';
                 $link = "{$action}?" . implode('&', $query);
             }
-//            $link = 'http://ipv4.google.com/sorry/IndexRedirect?continue=' . urlencode($link);
+            // $link = '';
 //            $content = $this->curl->get($link, 5, 1, $header,false,1);
-            $content = $this->curl->get($link, 20, 2, $header);
+            // $content = $this->curl->get($link, 20, 0, $header, false, true);
+            $content = $this->curl->get($link, 20, 5, $header);
+
             if ($content['content']) {
                 $dom = new Dom();
                 $dom->load($content['content'], ['whitespaceTextNode' => false,]);
