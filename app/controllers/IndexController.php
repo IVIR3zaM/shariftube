@@ -707,7 +707,7 @@ class IndexController extends ControllerBase
             ],
         ])) {
             $this->flash->success('ایمیل شما قبلا از خبرنامه حذف شده است.');
-        } else {
+        } elseif (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $unsubscribe = new Unsubscribes();
             $unsubscribe->email = $email;
             if ($unsubscribe->save()) {
@@ -715,6 +715,8 @@ class IndexController extends ControllerBase
             } else {
                 $this->flash->error('متاسفانه ایمیل شما از خبرنامه حذف نشد. لطفا مجددا تلاش نمایید.');
             }
+        } else {
+            $this->flash->error('ایمیل شما در لیست خبرنامه ما موجود نیست.');
         }
     }
 
