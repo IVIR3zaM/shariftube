@@ -1197,7 +1197,7 @@ class IndexController extends ControllerBase
             }
 
             $name = $this->request->getPost('name');
-            if (mb_strlen($name, 'UTF-8') < 5) {
+            if (mb_strlen($name, 'UTF-8') < 3) {
                 $error[] = 'لطفا نام خود را به صورت کامل وارد کنید.';
             }
 
