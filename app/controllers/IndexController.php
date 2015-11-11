@@ -26,6 +26,7 @@ class IndexController extends ControllerBase
 {
     public function initialize()
     {
+        $this->view->header = true;
         $this->response->setHeader('Server', 'sharifwebserver/0.9');
         $date = new \jDateTime(true, true, 'Asia/Tehran');
         $this->view->date = $date;
@@ -696,6 +697,7 @@ class IndexController extends ControllerBase
 
     public function unsubscribeAction()
     {
+        $this->view->header = false;
         $this->view->title = 'حذف ایمیل شما از خبرنامه';
         $this->view->email = $email = vinixhash_decode($this->dispatcher->getParam('email'));
         if (Unsubscribes::count([
@@ -1071,6 +1073,7 @@ class IndexController extends ControllerBase
 
     public function loginAction()
     {
+        $this->view->header = false;
         $this->view->title = 'ورود به سایت';
         if ($this->auth->getIdentity()) {
             $this->view->disable();
@@ -1250,6 +1253,7 @@ class IndexController extends ControllerBase
 
     public function route404Action()
     {
+        $this->view->header = false;
         $this->view->title = 'آدرس نا معتبر';
     }
 }
