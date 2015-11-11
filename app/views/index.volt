@@ -15,14 +15,14 @@
             <!-- Header -->
             <div class="row header">
                 <div class="col-xs-12">
-                    {% if dispatcher.getActionName() not in ['login', 'route404']%}
+                    {% if header %}
                         {{ partial("partials/header") }}
                     {% endif %}
                 </div>
             </div>
             <!-- Main -->
             <div class="container main-container">
-                {% if dispatcher.getActionName() in ['login', 'route404'] %}
+                {% if !header %}
                     {{ '<div class="row center-item">' }}
                 {% else %}
                     {{ '<div class="row dashboard-state">' }}
@@ -33,7 +33,7 @@
                 <!-- Closing the in condition DIV -->
                 </div>
                 <!-- Prominent Video -->
-                {% if dispatcher.getActionName() not in ['login', 'route404'] and prominents %}
+                {% if header and prominents %}
                 <div class="main-section">
                     <div class="prominents clearfix">
                         <div class="prominent-wrapper">
@@ -59,7 +59,7 @@
             <!-- Footer -->
 	        <div class="footer row">
 	            <div class="col-xs-12">
-	                {% if dispatcher.getActionName() not in ['login', 'route404']%}
+	                {% if header %}
 	                {{ partial("partials/footer") }}
 	                {% endif %}
 	            </div>
