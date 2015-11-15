@@ -4,7 +4,7 @@
  </div>
  <div style="margin-bottom:20px;">
  	<p>
- 		<form action="https://shariftube.ir/comment/" type="post">
+ 		<form action="https://shariftube.ir/comment/" method="post">
  			<input type="hidden" name="auth" value="{{ auth|e }}">
  			<div style="margin: 10px auto">
  				<label>دیدگاه شما</label>
