@@ -6,6 +6,7 @@ use Shariftube\Models\Files;
 use Shariftube\Models\Purchases;
 use Shariftube\Models\Servers;
 use Shariftube\Models\Users;
+use Phalcon\Db\RawValue;
 
 class MainTask extends Task
 {
@@ -277,10 +278,12 @@ class MainTask extends Task
         $servers = Servers::find(['deleted_at = 0']);
         if ($servers) {
             foreach ($servers as $server) {
+                echo "Looking in server #{$server->getId()} ($server->username)\n";
                 foreach ($server->ls() as $dir) {
                     if (preg_match('/^[\d]{8}$/', $dir)) {
                         $time = strtotime(substr($dir, 0, 4) . '-' . substr($dir, 4, 2) . '-' . substr($dir, 6, 2));
                         if ($time < strtotime("-{$this->config->cli->delete_after} Days")) {
+                            echo "removing {$dir}\n";
                             $server->rmdir($dir);
                         }
                     }
@@ -291,23 +294,26 @@ class MainTask extends Task
                         'date' => date('Y-m-d', strtotime("-{$this->config->cli->delete_after} Days")),
                     ],
                 ]);
+                echo count($files) . " Files to remove\n";
                 if ($files) {
                     foreach ($files as $file) {
-                        $file->name = null;
+                        $file->name = new RawValue('NULL');
                         $file->save();
+                        $file->delete();
+                        echo "removing #{$file->getid()} ({$file->label})\n";
                     }
-
-                    $files->delete();
                 }
-                $server->used = Files::sum([
+                $server->used = intval(Files::sum([
                     'column' => 'size',
                     'conditions' => 'server_id = :id: AND deleted_at = 0',
                     'bind' => [
                         'id' => $server->getId(),
                     ],
-                ]);
+                ]));
                 $remain = $server->remain;
                 $server->remain = $server->quota - $server->used;
+                echo "used = {$server->used}\n";
+                echo "remain = {$server->remain}\n";
                 if ($remain < ($this->config->cli->pause_server_remain * 1024 * 1024) || $server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
                     if ($server->remain < ($this->config->cli->pause_server_remain * 1024 * 1024)) {
                         $server->enable = 'No';
