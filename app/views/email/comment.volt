@@ -9,7 +9,7 @@
  			<div style="margin: 10px auto">
  				<label>دیدگاه شما</label>
  				<div style="margin: 10px auto">
- 					<textarea name="comment" cols="50" rows="20" style="height: 150px"></textarea>
+ 					<textarea name="comment" cols="50" rows="10"></textarea>
  				</div>
  			</div>
  			<div style="margin: 10px auto">

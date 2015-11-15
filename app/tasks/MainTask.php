@@ -126,14 +126,21 @@ class MainTask extends Task
         }
 
         $filter = false;
-        if ($file == 'user' && isset($params[3])) {
-            $ids = array_values(array_filter(explode(',', $params[3])));
-            $users = Users::find([
-                'id IN ({ids:array})',
-                'bind' => [
-                    'ids' => $ids,
-                ],
-            ]);
+        if ($file == 'user') {
+            if (isset($params[3])) {
+                $ids = array_values(array_filter(explode(',', $params[3])));
+                $users = Users::find([
+                    'id IN ({ids:array})',
+                    'bind' => [
+                        'ids' => $ids,
+                    ],
+                ]);
+            } else {
+                $users = Users::find([
+                    "deleted_at = 0 AND status != 'Suspended'",
+                ]);
+            }
+            
             if (!$users) {
                 echo "no users found\n";
                 return;
@@ -193,8 +200,7 @@ class MainTask extends Task
                 $this->mail->setVar('name', $name);
                 $this->mail->setVar('prominents', $prominents);
                 if (isset($auth[$i])) {
-                    $pass = vinixhash_encode($auth[$i]->password);
-                    $this->mail->setVar('auth', $this->crypt->encryptBase64("{$auth[$i]->getId()},{$auth[$i]->email},{$pass}"));
+                    $this->mail->setVar('auth', $this->crypt->encryptBase64("{$auth[$i]->getId()},{$auth[$i]->email}"));
                 }
                 $this->mail->addAddress($email, $name);
                 $this->mail->Subject = $subject;

@@ -147,23 +147,23 @@ class IndexController extends ControllerBase
         $this->view->title = 'ارسال نظر';
         $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->request->getPost('auth')));
         $auth = explode(',', $auth);
-        if (count($auth) != '3') {
+        if (count($auth) != '2') {
             $this->flash->error('اطلاعات ارسال شده صحیح نمی باشند.');
             return;
         }
-        $user = Users::getFirst([
+        $user = Users::findFirst([
             "id = :id: AND email = :email: AND deleted_at = 0 AND status != 'Suspended'",
             'bind' => [
                 'id' => $auth[0],
                 'email' => $auth[1],
             ],
         ]);
-        if (!$user || !$this->security->checkHash(vinixhash_decode($auth[2]), $user->password)) {
+        if (!$user/* || !$this->security->checkHash(vinixhash_decode($auth[2]), $user->password)*/) {
             $this->flash->error('شما اجازه ارسال نظر ندارید.');
             return;
         }
         $content = $this->request->getPost('comment');
-        if (strlen($content < 3)) {
+        if (strlen($content) < 3) {
             $this->flash->error('لطفا متن نظر را کامل وارد نمایید.');
             return;
         }
