@@ -138,9 +138,10 @@ class MainTask extends Task
                 echo "no users found\n";
                 return;
             }
-            $emails = array();
+            $emails = $auth = array();
             foreach ($users as $user) {
                 $emails[] = [$user->email, $user->name];
+                $auth[] = $user;
             }
             $start = 0;
             $limit = count($emails);
@@ -191,6 +192,10 @@ class MainTask extends Task
                 $this->mail->setTemplate($template);
                 $this->mail->setVar('name', $name);
                 $this->mail->setVar('prominents', $prominents);
+                if (isset($auth[$i])) {
+                    $pass = vinixhash_encode($auth[$i]->password);
+                    $this->mail->setVar('auth', $this->crypt->encryptBase64("{$auth[$i]->getId()},{$auth[$i]->email},{$pass}"));
+                }
                 $this->mail->addAddress($email, $name);
                 $this->mail->Subject = $subject;
                 $result = $this->mail->send();

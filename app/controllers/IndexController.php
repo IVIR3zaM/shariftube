@@ -6,6 +6,7 @@ use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 use PHPHtmlParser\Dom;
 use Shariftube\Models\Announcements;
+use Shariftube\Models\Comments;
 use Shariftube\Models\Files;
 use Shariftube\Models\Incomes;
 use Shariftube\Models\Logs;
@@ -135,6 +136,45 @@ class IndexController extends ControllerBase
             }
             $this->view->prominents = $prominents;
             unset($prominents, $files);
+        }
+    }
+
+    public function commentAction()
+    {
+        if (!$this->auth->getIdentity()) {
+            $this->view->header = false;
+        }
+        $this->view->title = 'ارسال نظر';
+        $auth = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->request->getPost('auth')));
+        $auth = explode(',', $auth);
+        if (count($auth) != '3') {
+            $this->flash->error('اطلاعات ارسال شده صحیح نمی باشند.');
+            return;
+        }
+        $user = Users::getFirst([
+            "id = :id: AND email = :email: AND deleted_at = 0 AND status != 'Suspended'",
+            'bind' => [
+                'id' => $auth[0],
+                'email' => $auth[1],
+            ],
+        ]);
+        if (!$user || !$this->security->checkHash(vinixhash_decode($auth[2]), $user->password)) {
+            $this->flash->error('شما اجازه ارسال نظر ندارید.');
+            return;
+        }
+        $content = $this->request->getPost('comment');
+        if (strlen($content < 3)) {
+            $this->flash->error('لطفا متن نظر را کامل وارد نمایید.');
+            return;
+        }
+        $comment = new Comments();
+        $comment->user_id = $user->getId();
+        $comment->content = $content;
+        $comment->status = 'Waiting';
+        if ($comment->save()) {
+            $this->flash->success('با سپاس از زمانی که گذاشتید. نظر شما ثبت شد.');
+        } else {
+            $this->flash->error('متاسفانه ثبت نظر شما با مشکل مواجه شد. لطفا دوباره تلاش نمایید.');
         }
     }
 

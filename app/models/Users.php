@@ -29,6 +29,7 @@ class Users extends BaseModel
         $this->hasMany('id', 'Shariftube\Models\RememberTokens', 'user_id', ['alias' => 'RememberTokens']);
         $this->hasMany('id', 'Shariftube\Models\ResetPasswords', 'user_id', ['alias' => 'ResetPasswords']);
         $this->hasMany('id', 'Shariftube\Models\Tickets', 'user_id', ['alias' => 'Tickets']);
+        $this->hasMany('id', 'Shariftube\Models\Comments', 'user_id', ['alias' => 'Comments']);
     }
 
     public function beforeValidationOnCreate()
