@@ -4,11 +4,13 @@
  </div>
  <div style="margin-bottom:20px;">
  	<p>
- 		<form action="https://shariftube.ir/comment/">
+ 		<form action="https://shariftube.ir/comment/" type="post">
  			<input type="hidden" name="auth" value="{{ auth|e }}">
  			<div style="margin: 10px auto">
  				<label>دیدگاه شما</label>
- 				<textarea name="comment" cols="30" row="10"></textarea>
+ 				<div style="margin: 10px auto">
+ 					<textarea name="comment" cols="50" rows="20" style="height: 150px"></textarea>
+ 				</div>
  			</div>
  			<div style="margin: 10px auto">
  				<input type="submit" value="ارسال">
