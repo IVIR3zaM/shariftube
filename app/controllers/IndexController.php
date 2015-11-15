@@ -145,7 +145,7 @@ class IndexController extends ControllerBase
             $this->view->header = false;
         }
         $this->view->title = 'ارسال نظر';
-        $auth = preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->request->getPost('auth')));
+        $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->request->getPost('auth')));
         $auth = explode(',', $auth);
         if (count($auth) != '3') {
             $this->flash->error('اطلاعات ارسال شده صحیح نمی باشند.');
