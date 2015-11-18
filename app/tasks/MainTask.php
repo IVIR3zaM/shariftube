@@ -201,6 +201,7 @@ class MainTask extends Task
                 $this->mail->setVar('prominents', $prominents);
                 if (isset($auth[$i])) {
                     $this->mail->setVar('auth', $this->crypt->encryptBase64("{$auth[$i]->getId()},{$auth[$i]->email}"));
+                    $this->mail->setVar('vinix_auth', vinixhash_encode($this->crypt->encrypt("{$auth[$i]->getId()},{$auth[$i]->email}")));
                 }
                 $this->mail->addAddress($email, $name);
                 $this->mail->Subject = $subject;

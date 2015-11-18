@@ -141,11 +141,24 @@ class IndexController extends ControllerBase
 
     public function commentAction()
     {
+        $this->view->home_link = false;
         if (!$this->auth->getIdentity()) {
             $this->view->header = false;
+            $this->view->home_link = true;
         }
         $this->view->title = 'ارسال نظر';
-        $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($this->request->getPost('auth')));
+        if ($this->request->getPost('auth')) {
+            $auth = $this->request->getPost('auth');
+        } else {
+            $auth = $this->dispatcher->getParam('auth');
+        }
+        if (preg_match('/^(?:[a-z][0-9])+$/',$auth)) {
+            $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decrypt(vinixhash_decode($auth)));
+        } else {
+            $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($auth));
+        }
+        $this->view->auth = vinixhash_encode($this->crypt->encrypt($auth));
+
         $auth = explode(',', $auth);
         if (count($auth) != '2') {
             $this->flash->error('اطلاعات ارسال شده صحیح نمی باشند.');
@@ -162,19 +175,26 @@ class IndexController extends ControllerBase
             $this->flash->error('شما اجازه ارسال نظر ندارید.');
             return;
         }
-        $content = $this->request->getPost('comment');
-        if (strlen($content) < 3) {
-            $this->flash->error('لطفا متن نظر را کامل وارد نمایید.');
-            return;
-        }
-        $comment = new Comments();
-        $comment->user_id = $user->getId();
-        $comment->content = $content;
-        $comment->status = 'Waiting';
-        if ($comment->save()) {
-            $this->flash->success('با سپاس از زمانی که گذاشتید. نظر شما ثبت شد.');
+        $this->view->comment_form = false;
+        if ($this->request->getPost('comment')) {
+            $content = $this->request->getPost('comment');
+            if (strlen($content) < 3) {
+                $this->view->link_form = true;
+                $this->flash->error('لطفا متن نظر را کامل وارد نمایید.');
+                return;
+            }
+            $comment = new Comments();
+            $comment->user_id = $user->getId();
+            $comment->content = $content;
+            $comment->status = 'Waiting';
+            if ($comment->save()) {
+                $this->flash->success('با سپاس از زمانی که گذاشتید. نظر شما ثبت شد.');
+            } else {
+                $this->view->link_form = true;
+                $this->flash->error('متاسفانه ثبت نظر شما با مشکل مواجه شد. لطفا دوباره تلاش نمایید.');
+            }
         } else {
-            $this->flash->error('متاسفانه ثبت نظر شما با مشکل مواجه شد. لطفا دوباره تلاش نمایید.');
+            $this->view->comment_form = true;
         }
     }
 

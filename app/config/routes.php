@@ -10,9 +10,10 @@ $router->add('/', array(
     'action' => 'index',
 ))->setName('home');
 
-$router->add('/comment/', array(
+$router->add('/comment/(.*)', array(
     'controller' => 'index',
     'action' => 'comment',
+    'auth' => 1,
 ))->setName('comment');
 
 $router->add('/link/(.+)', array(
