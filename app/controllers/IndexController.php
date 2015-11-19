@@ -142,21 +142,23 @@ class IndexController extends ControllerBase
     public function commentAction()
     {
         $this->view->home_link = false;
+        $this->view->comment_form = false;
         if (!$this->auth->getIdentity()) {
             $this->view->header = false;
             $this->view->home_link = true;
         }
         $this->view->title = 'ارسال نظر';
+        $auth = '';
         if ($this->request->getPost('auth')) {
             $auth = $this->request->getPost('auth');
-        } else {
-            $auth = $this->dispatcher->getParam('auth');
-        }
-        if (preg_match('/^(?:[a-z][0-9])+$/',$auth)) {
-            $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decrypt(vinixhash_decode($auth)));
-        } else {
             $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($auth));
+        } else if($this->dispatcher->getParam('auth')) {
+            $auth = $this->dispatcher->getParam('auth');
+            $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decrypt(vinixhash_decode($auth)));
+        } else if($this->auth->getIdentity()) {
+            $auth = $this->auth->getIdentity()->getId().','.$this->auth->getIdentity()->email;
         }
+
         $this->view->auth = vinixhash_encode($this->crypt->encrypt($auth));
 
         $auth = explode(',', $auth);
@@ -175,7 +177,7 @@ class IndexController extends ControllerBase
             $this->flash->error('شما اجازه ارسال نظر ندارید.');
             return;
         }
-        $this->view->comment_form = false;
+
         if ($this->request->getPost('comment')) {
             $content = $this->request->getPost('comment');
             if (strlen($content) < 3) {
