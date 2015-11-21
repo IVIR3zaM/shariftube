@@ -104,6 +104,9 @@
             <li>
                 <a{% if dispatcher.getActionName() == 'support' %} class="active"{% endif %} href="{{ url.get(['for':'support']) }}">پشتیبانی {% if open_tickets > 0 %}<span class="badge badge-red badge-rounded badge-support">{{ open_tickets|e }}</span>{% endif %}</a>
             </li>
+            <li>
+                <a{% if dispatcher.getActionName() == 'comment' %} class="active"{% endif %} href="{{ url.get(['for':'comment']) }}">نظر شما</a>
+            </li>
             {% if auth.getIdentity().status != 'Suspended' %}
             <li>
                 <a{% if dispatcher.getActionName() == 'settings' %} class="active"{% endif %} href="{{ url.get(['for':'settings']) }}">تنظیمات</a>
