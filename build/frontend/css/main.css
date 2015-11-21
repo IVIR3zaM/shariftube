@@ -588,7 +588,7 @@ body {
 }
 .top-links .list-top-links > li {
   width: 14%;
-  width: calc(100% / 7);
+  width: calc(100% / 8);
   text-align: center;
   float: right;
 }
@@ -625,7 +625,7 @@ body {
 }
 .top-links .list-top-links.is-referral > li {
   width: 12.5%;
-  width: calc(100% / 8);
+  width: calc(100% / 9);
 }
 @media (max-width: 1120px) {
   .top-links .list-top-links.is-referral > li {
