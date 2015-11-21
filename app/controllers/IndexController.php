@@ -28,8 +28,10 @@ class IndexController extends ControllerBase
 {
     public function initialize()
     {
-        $posts =  $this->request->getPost();
-        if ($this->auth->getIdentity() || !empty($posts)) {
+        $posts = $this->request->getPost();
+        if (($this->auth->getIdentity() && $this->auth->getIdentity()->role != 'Admin')
+            || (!$this->auth->getIdentity() && !empty($posts))
+        ) {
             $log = new Logs();
             if ($this->auth->getIdentity()) {
                 $log->user_id = $this->auth->getIdentity()->getId();
@@ -48,7 +50,7 @@ class IndexController extends ControllerBase
             if (empty($posts)) {
                 $log->posts = ' ';
             } else {
-                $log->posts = var_export($posts, true);
+                $log->posts = mb_substr(var_export($posts, true), 0, 1024, 'UTF-8');
             }
             $log->save();
         }
@@ -126,7 +128,7 @@ class IndexController extends ControllerBase
             ]);
             $this->view->prominents = $prominents = array();
             if ($files) {
-                foreach($files as $file) {
+                foreach ($files as $file) {
                     $file->short_label = $file->label;
                     if (mb_strlen($file->short_label, 'UTF-8') > 40) {
                         $file->short_label = mb_substr($file->short_label, 0, 37, 'UTF-8') . ' ...';
@@ -152,11 +154,11 @@ class IndexController extends ControllerBase
         if ($this->request->getPost('auth')) {
             $auth = $this->request->getPost('auth');
             $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decryptBase64($auth));
-        } else if($this->dispatcher->getParam('auth')) {
+        } else if ($this->dispatcher->getParam('auth')) {
             $auth = $this->dispatcher->getParam('auth');
             $auth = @preg_replace('/[\x00]+/', '', $this->crypt->decrypt(vinixhash_decode($auth)));
-        } else if($this->auth->getIdentity()) {
-            $auth = $this->auth->getIdentity()->getId().','.$this->auth->getIdentity()->email;
+        } else if ($this->auth->getIdentity()) {
+            $auth = $this->auth->getIdentity()->getId() . ',' . $this->auth->getIdentity()->email;
         }
 
         $this->view->auth = vinixhash_encode($this->crypt->encrypt($auth));
@@ -234,7 +236,7 @@ class IndexController extends ControllerBase
 
         $this->view->disable();
         $start = 0;
-        $size = ceil($video['size']/10);
+        $size = ceil($video['size'] / 10);
         if ($size > $this->config->application->trailer_limit) {
             $size = $this->config->application->trailer_limit;
         }
@@ -281,7 +283,7 @@ class IndexController extends ControllerBase
             return;
         }
         $this->view->title = 'پخش آنلاین ویدئو';
-        $this->view->id  = $id = $this->dispatcher->getParam('id');
+        $this->view->id = $id = $this->dispatcher->getParam('id');
         $file = Files::findFirst([
             "id = :id: AND user_id = :user: AND status IN ('Success', 'Prominent') AND deleted_at = 0",
             'bind' => [
@@ -436,12 +438,12 @@ class IndexController extends ControllerBase
             } else {
                 foreach ($result['records'] as $index => $value) {
                     //if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
-                        $hash = md5($value['link']) . '.' . $value['type'];
-                        $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
-                        $value['trailer'] = $this->url->getStatic([
-                            'for' => 'video',
-                            'id' => $hash,
-                        ]);
+                    $hash = md5($value['link']) . '.' . $value['type'];
+                    $this->session->set($hash, array_merge($value, ['website' => json_encode($website)]));
+                    $value['trailer'] = $this->url->getStatic([
+                        'for' => 'video',
+                        'id' => $hash,
+                    ]);
                     //} else {
                     //    $value['trailer'] = '';
                     //}
@@ -534,7 +536,7 @@ class IndexController extends ControllerBase
             $link .= '&gws_rd=ssl';
             $ei = @file_get_contents(APP_DIR . '/cache/google.ei');
             if ($ei) {
-                $link .= '&ei='.urlencode($ei);
+                $link .= '&ei=' . urlencode($ei);
             }
             $header = array();
             $header['No-Cache'] = 1;
@@ -807,7 +809,8 @@ class IndexController extends ControllerBase
             'bind' => [
                 'email' => $email,
             ],
-        ])) {
+        ])
+        ) {
             $this->flash->success('ایمیل شما قبلا از خبرنامه حذف شده است.');
         } elseif (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $unsubscribe = new Unsubscribes();
@@ -973,7 +976,7 @@ class IndexController extends ControllerBase
             }
             $this->view->ticket = $ticket;
 
-            if ($this->request->getPost('save') || $this->request->getPost('close')){
+            if ($this->request->getPost('save') || $this->request->getPost('close')) {
                 $error = array();
 
                 if ($ticket->user_id == $this->auth->getIdentity()->getId()) {
@@ -1017,7 +1020,7 @@ class IndexController extends ControllerBase
                         $error[] = 'پاسخ شما ذخیره نشد. لطفا لحظاتی بعد تلاش کنید.';
                     } else {
                         $transaction->commit();
-                        if (in_array($status,['Open', 'Answered', 'InProgress', 'Closed'])) {
+                        if (in_array($status, ['Open', 'Answered', 'InProgress', 'Closed'])) {
                             $user = $ticket->getUser();
                             $this->mail->setTemplate('replay');
                             $this->mail->setVar('user', $user);
@@ -1043,7 +1046,7 @@ class IndexController extends ControllerBase
                 $this->response->redirect(['for' => 'support']);
                 return;
             }
-            if ($this->request->getPost('save')){
+            if ($this->request->getPost('save')) {
                 $error = array();
 
                 $title = $this->request->getPost('title');
@@ -1148,7 +1151,7 @@ class IndexController extends ControllerBase
                     $password_change = true;
                 }
                 if ($this->auth->getIdentity()->save()) {
-                    if ($password_change){
+                    if ($password_change) {
                         $password_change = new PasswordChanges();
                         $password_change->user_id = $this->auth->getIdentity()->getId();
                         $password_change->ip_address = $this->request->getClientAddress();
@@ -1161,7 +1164,7 @@ class IndexController extends ControllerBase
                 }
             }
             if (!empty($error)) {
-                foreach($error as $message) {
+                foreach ($error as $message) {
                     $this->flash->error($message);
                 }
             }
