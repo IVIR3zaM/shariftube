@@ -26,7 +26,7 @@
                 <td>{{ record.label|e }}</td>
                 <td class="text-en">{{ number_format(record.size/1024/1024, 2) }}MB</td>
                 <td class="text-en">{{ record.quality|e }}</td>
-                <td class="status-{% if record.deleted_at > 0 %}deleted{% else %}{{ record.status|lower|e }}{% endif %}">{{ status[record.status]|e }}</td>
+                <td class="status-{% if record.deleted_at > 0 %}deleted{% else %}{{ record.status|lower|e }}{% endif %}">{% if record.deleted_at > 0 %}حذف شده{% else %}{{ status[record.status]|e }}{% endif %}</td>
                 <td>{{ date.date('Y-m-d H:i:s', record.created_at|strtotime)|e }}</td>
                 <td>
                     {% if record.status == 'Success' and servers[record.server_id] is defined and record.deleted_at == 0 %}
