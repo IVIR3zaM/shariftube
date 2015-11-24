@@ -22,14 +22,14 @@
                 <th>تنظیمات</th>
             </tr>
             {% for record in page.items %}
-            <tr>
+            <tr{% if record.deleted_at > 0 %} style="background-color: #fbb;"{% endif %}>
                 <td>{{ record.label|e }}</td>
                 <td class="text-en">{{ number_format(record.size/1024/1024, 2) }}MB</td>
                 <td class="text-en">{{ record.quality|e }}</td>
-                <td class="status-{{ record.status|lower|e }}">{{ status[record.status]|e }}</td>
+                <td class="status-{% if record.deleted_at > 0 %}deleted{% else %}{{ record.status|lower|e }}{% endif %}">{{ status[record.status]|e }}</td>
                 <td>{{ date.date('Y-m-d H:i:s', record.created_at|strtotime)|e }}</td>
                 <td>
-                    {% if record.status == 'Success' and servers[record.server_id] is defined %}
+                    {% if record.status == 'Success' and servers[record.server_id] is defined and record.deleted_at == 0 %}
                     <a href="{{ record.getFinalLink()|e }}">دانلود</a> | 
                     <a href="{{ url.get(['for':'play','id':record.id|e]) }}">پخش</a> | 
                     {% endif %}

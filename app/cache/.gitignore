@@ -1,0 +1,8 @@
+*
+!.gitignore
+!curl
+!emails
+!files
+!locks
+!metaData
+!volt
