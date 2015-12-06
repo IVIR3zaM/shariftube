@@ -1,5 +1,3 @@
-{% if suggestions|length %}
-{% endif %}
 <div class="main-section">
     <div>
         <div class="clearfix">
@@ -67,5 +65,26 @@
         {% endfor %}
         </table>
     </div>
+    {% endif %}
+    {% if suggestions|length %}
+    <h4 class="text-center bg-white well">ویدئو های مشابه</h4>
+    <ul class="list-unstyled list-records row">
+        {% for record in suggestions %}
+        <li class="col-md-6 col-sm-12">
+            <div class="record clearfix">
+                <div class="record-details">
+                    <h3 class="record-title">{{ record.title }}</h3>
+                    <!-- Add if record.duration -->
+                    <time class="record-duration"><i class="fa fa-clock-o"></i> {{ record.duration }}</time>
+                    <a class="btn btn-primary record-link" href="{{ url.get(['for':'link', 'link':record.link])|e }}"><i class="fa fa-download"></i> دریافت</a>
+                </div>
+                <div class="record-thumb">
+                    <!-- Add if record.image -->
+                    <img src="{{ record.image }}">
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     {% endif %}
 </div>

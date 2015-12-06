@@ -453,9 +453,14 @@ class IndexController extends ControllerBase
                     $result['records'][$index] = (object)$value;
                 }
                 if (isset($result['suggestions']) && !empty($result['suggestions'])) {
-                    $this->view->suggestions = $result['suggestions'];
+                    foreach ($result['suggestions'] as $index => $value) {
+                        $result['suggestions'][$index] = (object)$value;
+                    }
+                } else {
+                    $result['suggestions'] = array();
                 }
                 $this->view->records = $result['records'];
+                $this->view->suggestions = $result['suggestions'];
                 $this->view->label = $result['label'];
             }
             unset($result);
