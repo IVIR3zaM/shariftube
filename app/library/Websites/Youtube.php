@@ -110,15 +110,15 @@ class Youtube extends Component implements Website
         foreach ($data as $itag => $url) {
             if (isset($formats[$itag])) {
                 $size = 0;
-                /*$content = $this->curl->get($url, 20, 1, [
+                $content = $this->curl->get($url, 20, 1, [
                     'Referer' => $player,
                     'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
-                ], true);*/
+                ], true);
                 if (isset($content['head']['download_content_length'])) {
                     $size = intval($content['head']['download_content_length']);
                 }
                 if ($size < 1) {
-                    //return null;
+                    return null;
                 }
 
                 $videos[] = array(
