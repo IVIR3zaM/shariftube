@@ -56,6 +56,9 @@ class Youtube extends Component implements Website
                 if ($index>=10) {
                     break;
                 }
+                if (!count($li->find('[data-vid]'))) {
+                    continue;
+                }
                 $item = array();
                 $item['link'] = 'https://www.youtube.com/watch?v='.$li->find('[data-vid]')[0]->getAttribute('data-vid');
                 $item['title'] = html_entity_decode(trim($li->find('.title')[0]->text),  ENT_QUOTES, 'UTF-8');
