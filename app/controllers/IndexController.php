@@ -367,6 +367,7 @@ class IndexController extends ControllerBase
 
         $this->view->title = 'درخواست ویدئو';
         $this->view->link = $link = vinixhash_decode($this->dispatcher->getParam('link'));
+        $this->view->suggestions = array();
         $this->view->records = array();
         $this->view->label = '';
         $this->view->file_id = 0;
