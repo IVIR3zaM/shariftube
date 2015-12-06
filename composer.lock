@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/paquettg/php-html-parser.git",
-                "reference": "690095176e8b1af93d53cc96ade03a277b3b71f8"
+                "reference": "e570797d3dccd0c81ea2b94d666698c9cfd6554f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paquettg/php-html-parser/zipball/690095176e8b1af93d53cc96ade03a277b3b71f8",
-                "reference": "690095176e8b1af93d53cc96ade03a277b3b71f8",
+                "url": "https://api.github.com/repos/paquettg/php-html-parser/zipball/e570797d3dccd0c81ea2b94d666698c9cfd6554f",
+                "reference": "e570797d3dccd0c81ea2b94d666698c9cfd6554f",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "html",
                 "parser"
             ],
-            "time": "2015-10-26 19:50:04"
+            "time": "2015-11-17 01:29:22"
         },
         {
             "name": "paquettg/string-encode",

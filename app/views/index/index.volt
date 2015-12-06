@@ -1,3 +1,5 @@
+{% if suggestions|length %}
+{% endif %}
 <div class="main-section">
     <div>
         <div class="clearfix">

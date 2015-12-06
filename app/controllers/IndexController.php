@@ -432,10 +432,12 @@ class IndexController extends ControllerBase
             if ($result === null) {
                 $this->flash->error('این ویدئو بخاطر قوانین کپی رایت قابل دریافت نمی باشد.');
                 $this->view->records = array();
+                $this->view->suggestions = array();
             } elseif (empty($result) || empty($result['records'])) {
                 $this->flash->error('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
-                $this->view->records = array();
+                $this->view->suggestions = array();
             } else {
+                $this->view->suggestions = array();
                 foreach ($result['records'] as $index => $value) {
                     //if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
                     $hash = md5($value['link']) . '.' . $value['type'];
@@ -449,6 +451,9 @@ class IndexController extends ControllerBase
                     //}
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
                     $result['records'][$index] = (object)$value;
+                }
+                if (isset($result['suggestions']) && !empty($result['suggestions'])) {
+                    $this->view->suggestions = $result['suggestions'];
                 }
                 $this->view->records = $result['records'];
                 $this->view->label = $result['label'];

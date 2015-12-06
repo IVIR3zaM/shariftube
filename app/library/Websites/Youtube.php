@@ -3,6 +3,7 @@ namespace Shariftube\Websites;
 
 use Phalcon\Mvc\User\Component;
 use Shariftube\Models\Files;
+use PHPHtmlParser\Dom;
 
 class Youtube extends Component implements Website
 {
@@ -46,6 +47,40 @@ class Youtube extends Component implements Website
         $urls = explode(',', str_replace('\u0026', '&', $match['map']));
 
         $title = "YouTube Video";
+        $suggestions = array();
+
+        $dom = new Dom();
+        $dom->load(preg_replace('/"\s+\>/', '">', $data), ['whitespaceTextNode' => false]);
+        if (count($dom->find('li.video-list-item'))) {
+            foreach ($dom->find('li.video-list-item') as $index => $li) {
+                if ($index>=10) {
+                    break;
+                }
+                $item = array();
+                $item['link'] = 'https://www.youtube.com/watch?v='.$li->find('[data-vid]')[0]->getAttribute('data-vid');
+                $item['title'] = html_entity_decode(trim($li->find('.title')[0]->text),  ENT_QUOTES, 'UTF-8');
+                $item['duration'] = trim($li->find('.video-time')[0]->text);
+                $item['image'] = html_entity_decode(trim($li->find('img')[0]->getAttribute('src')),  ENT_QUOTES, 'UTF-8');
+
+                $item['image'] = '';
+                $src = html_entity_decode(trim($li->find('img[data-thumb]')[0]->getAttribute('data-thumb')),  ENT_QUOTES, 'UTF-8');
+                if (substr($src,0,2) == '//') {
+                    $src = 'https:' . $src;
+                }
+                if (substr($item['image'],0,1) == '/') {
+                    $src = 'https://www.youtube.com' . $src;
+                }
+                if ($src) {
+                    $content = $this->curl->get($src, 10, 1);
+                    if ($content['content']) {
+                        $item['image'] = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
+                    }
+                    unset($content);
+                }
+                $suggestions[] = $item;
+            }
+        }
+
         if (preg_match('/\<title\>(?P<title>[^\<]+)/i', $data, $match)) {
             $title = html_entity_decode(preg_replace('/\s*\-\s*YouTube/i', '', $match['title']), ENT_QUOTES, 'UTF-8');
         }
@@ -75,15 +110,15 @@ class Youtube extends Component implements Website
         foreach ($data as $itag => $url) {
             if (isset($formats[$itag])) {
                 $size = 0;
-                $content = $this->curl->get($url, 20, 1, [
+                /*$content = $this->curl->get($url, 20, 1, [
                     'Referer' => $player,
                     'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
-                ], true);
+                ], true);*/
                 if (isset($content['head']['download_content_length'])) {
                     $size = intval($content['head']['download_content_length']);
                 }
                 if ($size < 1) {
-                    return null;
+                    //return null;
                 }
 
                 $videos[] = array(
@@ -97,7 +132,7 @@ class Youtube extends Component implements Website
 
             }
         }
-        return ['records' => $videos, 'label' => $title];
+        return ['records' => $videos, 'label' => $title, 'suggestions' => $suggestions];
     }
 
     public function getVideo(Files $file)
