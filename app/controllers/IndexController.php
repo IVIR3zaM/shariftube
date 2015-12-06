@@ -455,6 +455,7 @@ class IndexController extends ControllerBase
                 }
                 if (isset($result['suggestions']) && !empty($result['suggestions'])) {
                     foreach ($result['suggestions'] as $index => $value) {
+                        $value['link'] = vinixhash_encode($value['link']);
                         $result['suggestions'][$index] = (object)$value;
                     }
                 } else {
