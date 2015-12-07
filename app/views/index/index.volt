@@ -29,7 +29,7 @@
                     {% if record.date %}
                     <date class="record-date"><i class="fa fa-calendar"></i> {{ date.date('j F Y', record.date) }}</date>
                     {% endif %}
-                    <a class="btn btn-primary record-link" href="{{ url.get(['for':'link', 'link':record.link])|e }}"><i class="fa fa-download"></i> دریافت</a>
+                    <a class="btn btn-primary record-link" href="{{ url.get(['for':'click', 'id':record.id])|e }}"><i class="fa fa-download"></i> دریافت</a>
                 </div>
                 <div class="record-thumb">
                     <!-- Add if record.image -->

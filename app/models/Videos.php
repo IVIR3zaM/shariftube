@@ -177,35 +177,46 @@ class Videos extends BaseModel
         return $list;
     }
 
-    public static function prepareVideos($videos = array(), \Phalcon\Di\FactoryDefault $di)
+    public function prepareUri()
+    {
+        return vinixhash_encode('https://www.youtube.com/watch?v=' . $this->uri);
+    }
+
+    public function prepare()
+    {
+        $item = array();
+        $item['id'] = $this->getId();
+        $item['date'] = strtotime($this->uploaded_at);
+        $item['link'] = $this->prepareUri();
+        $item['title'] = $this->title;
+        $item['duration'] = 0;
+
+        $item['website'] = 'Youtube';
+        $item['description'] = $this->description;
+
+        $item['image'] = '';
+        $src = $this->thumbnail;
+        if (substr($src, 0, 2) == '//') {
+            $src = 'https:' . $src;
+        }
+        if (substr($item['image'], 0, 1) == '/') {
+            $src = 'https://www.youtube.com' . $src;
+        }
+        if ($src) {
+            $content = $this->getDI()->getCurl()->get($src, 10, 1);
+            if (@$content['head']['http_code'] == 200 && $content['content']) {
+                $item['image'] = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
+            }
+            unset($content);
+        }
+        return (object)$item;
+    }
+
+    public static function prepareVideos($videos = array())
     {
         $list = array();
         foreach ($videos as $video) {
-            $item = array();
-            $item['date'] = strtotime($video->uploaded_at);
-            $item['link'] = vinixhash_encode('https://www.youtube.com/watch?v=' . $video->uri);
-            $item['title'] = $video->title;
-            $item['duration'] = 0;
-
-            $item['website'] = 'Youtube';
-            $item['description'] = $video->description;
-
-            $item['image'] = '';
-            $src = $video->thumbnail;
-            if (substr($src, 0, 2) == '//') {
-                $src = 'https:' . $src;
-            }
-            if (substr($item['image'], 0, 1) == '/') {
-                $src = 'https://www.youtube.com' . $src;
-            }
-            if ($src) {
-                $content = $di->getCurl()->get($src, 10, 1);
-                if (@$content['head']['http_code'] == 200 && $content['content']) {
-                    $item['image'] = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
-                }
-                unset($content);
-            }
-            $list[] = (object)$item;
+            $list[] = $video->prepare();
         }
         return $list;
     }

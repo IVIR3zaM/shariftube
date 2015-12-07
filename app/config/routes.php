@@ -10,6 +10,12 @@ $router->add('/', array(
     'action' => 'index',
 ))->setName('home');
 
+$router->add('/click/([0-9]+)', array(
+    'controller' => 'index',
+    'action' => 'click',
+    'id' => 1,
+))->setName('click');
+
 $router->add('/link/', array(
     'controller' => 'index',
     'action' => 'get',

@@ -161,7 +161,32 @@ class IndexController extends ControllerBase
             return;
         }
         $this->view->title = 'خانه';
-        $this->view->videos = Videos::prepareVideos($videos, $this->getDI());
+        $this->view->videos = Videos::prepareVideos($videos);
+    }
+
+    public function clickAction()
+    {
+        $this->view->disable();
+        if ($this->view->suspended) {
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
+        if (!$this->auth->getIdentity()) {
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+        $video = Videos::findFirst([
+            "id = :id:",
+            'bind' => [
+                'id' => $this->dispatcher->getParam('id'),
+            ],
+        ]);
+        if (empty($video)) {
+            $this->response->redirect(['for' => 'home']);
+            return;
+        }
+        Videos::click($this->auth->getIdentity(), $video);
+        $this->response->redirect(['for' => 'link', 'link' => $video->prepareUri()]);
     }
 
     public function commentAction()
