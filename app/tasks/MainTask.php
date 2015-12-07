@@ -293,7 +293,7 @@ class MainTask extends Task
                 echo "Looking in server #{$server->getId()} ($server->username)\n";
                 foreach ($server->ls() as $dir) {
                     if (preg_match('/^[\d]{8}$/', $dir)) {
-                        $time = strtotime(substr($dir, 0, 4) . '-' . substr($dir, 4, 2) . '-' . substr($dir, 6, 2));
+                        $time = strtotime(substr($dir, 0, 4) . '-' . substr($dir, 4, 2) . '-' . substr($dir, 6, 2) . ' 23:59:59');
                         if ($time < strtotime("-{$this->config->cli->delete_after} Days")) {
                             echo "removing {$dir}\n";
                             $server->rmdir($dir);
