@@ -3,6 +3,7 @@ namespace Shariftube\Websites;
 
 use Phalcon\Mvc\User\Component;
 use Shariftube\Models\Files;
+use PHPHtmlParser\Dom;
 
 class Vimeo extends Component implements Website
 {
@@ -12,6 +13,7 @@ class Vimeo extends Component implements Website
     {
         $this->limit = $this->getDI()->getConfig()->website->Vimeo->size_limit;
     }
+
     public function getInfo($link = '')
     {
         if (!preg_match('/(?P<code>[\d]+)$/', $link, $match)) {
@@ -26,7 +28,7 @@ class Vimeo extends Component implements Website
                 'No-Cache' => 1,
             ));
             $i--;
-        } while(@$data['head']['http_code'] != 200 && $i>0);
+        } while (@$data['head']['http_code'] != 200 && $i > 0);
 
         if (!preg_match('/data\-config\-url\s*=\s*"(?P<url>[^\'"]+)/i', $data['content'], $m)) {
             return false;
@@ -39,6 +41,7 @@ class Vimeo extends Component implements Website
         if (!is_array($cookie)) {
             $cookie = array();
         }
+        $cookie['language'] = 'en';
         $cookie['vuid'] = $m['vuid'];
         $list = array();
         foreach ($cookie as $name => $value) {
@@ -56,27 +59,83 @@ class Vimeo extends Component implements Website
             'Cookie' => $cookie,
             'User-Agent' => $agent,
             'No-Cache' => 1,
-        ));//, 0, ($this->auth->getIdentity()->getId() == 1?1:0));
+        ));
         $data = json_decode($data['content'], 1);
-        // if ($this->auth->getIdentity()->getId() == 1) {
-        // 	var_export($data);exit;
-        // }
+
         if (!isset($data['request']['files']['progressive'])
             && is_array($data['request']['files']['progressive'])
             && !empty($data['request']['files']['progressive'])
         ) {
             return false;
         }
+
+        $suggestions = array();
+
+        $content = $this->curl->get("https://vimeo.com/{$match['code']}?action=brozar&page=1&page_size=10&recommendation_algorithm=v0",
+            10, 0, array(
+                'X-Requested-With' => 'XMLHttpRequest',
+                'Referer' => $link,
+                'Origin' => 'https://vimeo.com',
+                'User-Agent' => $agent,
+                'Cookie' => $cookie,
+                'No-Cache' => 1,
+            )
+        );
+
+        if (stripos($content['content'], '<ol')) {
+            $dom = new Dom();
+            $dom->load($content['content'], ['whitespaceTextNode' => false]);
+            if (count($dom->find('ol li'))) {
+                foreach ($dom->find('ol li') as $index => $li) {
+                    if ($index >= 10) {
+                        break;
+                    }
+                    if (!count($li->find('[data-clip-id]'))) {
+                        continue;
+                    }
+                    $item = array();
+                    $item['link'] = 'https://vimeo.com/' . $li->find('[data-clip-id]')[0]->getAttribute('data-clip-id');
+                    $item['title'] = html_entity_decode(trim($li->find('.title')[0]->text), ENT_QUOTES, 'UTF-8');
+                    $item['duration'] = 0;
+                    $item['date'] = 0;
+                    if (count($li->find('[datetime]'))) {
+                        $item['date'] = strtotime($li->find('[datetime]')[0]->getAttribute('datetime'));
+                    }
+
+                    $item['website'] = 'Vimeo';
+                    $item['description'] = '';
+
+                    $item['image'] = '';
+                    $src = html_entity_decode(trim($li->find('img')[0]->getAttribute('src')), ENT_QUOTES,
+                        'UTF-8');
+                    if (substr($src, 0, 2) == '//') {
+                        $src = 'https:' . $src;
+                    }
+                    if (substr($item['image'], 0, 1) == '/') {
+                        $src = 'https://vimeo.com' . $src;
+                    }
+                    if ($src) {
+                        $content = $this->curl->get($src, 10, 1);
+                        if (@$content['head']['http_code'] == 200 && $content['content']) {
+                            $item['image'] = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
+                        }
+                        unset($content);
+                    }
+                    $suggestions[] = $item;
+                }
+            }
+        }
+
         $thumb = '';
         if (isset($data['video']['thumbs']['base'])) {
-        	$content = $this->curl->get($data['video']['thumbs']['base'], 10, 0, array(
-	                'Referer' => $link,
-	                'Origin' => 'https://vimeo.com',
-	                'User-Agent' => $agent,
-	                'Cookie' => $cookie,
-	                'No-Cache' => 1,
+            $content = $this->curl->get($data['video']['thumbs']['base'], 10, 0, array(
+                    'Referer' => $link,
+                    'Origin' => 'https://vimeo.com',
+                    'User-Agent' => $agent,
+                    'Cookie' => $cookie,
+                    'No-Cache' => 1,
                 )
-        	);
+            );
             if (@$content['head']['http_code'] == 200 && $content['content']) {
                 $thumb = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
             }
@@ -92,7 +151,7 @@ class Vimeo extends Component implements Website
                 'User-Agent' => $agent,
                 'Cookie' => $cookie,
                 'No-Cache' => 1,
-                ), true);
+            ), true);
             if (isset($content['head']['download_content_length'])) {
                 $size = intval($content['head']['download_content_length']);
             }
@@ -100,33 +159,35 @@ class Vimeo extends Component implements Website
                 return null;
             }
 
-            if (isset($file['quality']) && in_array($file['quality'], ['144p','240p','270p','360p','480p','720p','1080p','2160p','3072p','4320p'])) {
-            	$quality = $file['quality'];
+            if (isset($file['quality']) && in_array($file['quality'],
+                    ['144p', '240p', '270p', '360p', '480p', '720p', '1080p', '2160p', '3072p', '4320p'])
+            ) {
+                $quality = $file['quality'];
             } else {
-            	$quality = $file['height'];
-	            if ($quality < 240) {
-	                $quality = '144p';
-	            } elseif ($quality < 270) {
-	                $quality = '240p';
-	            } elseif ($quality < 360) {
-	                $quality = '270p';
-	            } elseif ($quality < 480) {
-	                $quality = '360p';
-	            } elseif ($quality < 720) {
-	                $quality = '480p';
-	            } elseif ($quality < 1080) {
-	                $quality = '720p';
-	            } elseif ($quality < 2160) {
-	                $quality = '1080p';
-	            } elseif ($quality < 3072) {
-	                $quality = '2160p';
-	            } elseif ($quality < 4320) {
-	                $quality = '3072p';
-	            } else {
-	                $quality = '4320p';
-	            }
+                $quality = $file['height'];
+                if ($quality < 240) {
+                    $quality = '144p';
+                } elseif ($quality < 270) {
+                    $quality = '240p';
+                } elseif ($quality < 360) {
+                    $quality = '270p';
+                } elseif ($quality < 480) {
+                    $quality = '360p';
+                } elseif ($quality < 720) {
+                    $quality = '480p';
+                } elseif ($quality < 1080) {
+                    $quality = '720p';
+                } elseif ($quality < 2160) {
+                    $quality = '1080p';
+                } elseif ($quality < 3072) {
+                    $quality = '2160p';
+                } elseif ($quality < 4320) {
+                    $quality = '3072p';
+                } else {
+                    $quality = '4320p';
+                }
             }
-            
+
             $videos[] = array(
                 'type' => 'mp4',
                 'size' => $size,
@@ -136,7 +197,7 @@ class Vimeo extends Component implements Website
                 'is_3d' => false,
             );
         }
-        return ['records' => $videos, 'label' => $title];
+        return ['records' => $videos, 'label' => $title, 'thumb' => $thumb, 'suggestions' => $suggestions];
     }
 
     public function getVideo(Files $file)

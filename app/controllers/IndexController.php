@@ -370,6 +370,7 @@ class IndexController extends ControllerBase
         $this->view->suggestions = array();
         $this->view->records = array();
         $this->view->label = '';
+        $this->view->thumb = '';
         $this->view->file_id = 0;
         if ($link) {
             $website = Websites::findWebsite($link);
@@ -464,6 +465,7 @@ class IndexController extends ControllerBase
                 $this->view->records = $result['records'];
                 $this->view->suggestions = $result['suggestions'];
                 $this->view->label = $result['label'];
+                $this->view->thumb = $result['thumb'];
             }
             unset($result);
         }

@@ -19,7 +19,7 @@ class Youtube extends Component implements Website
         if (!preg_match('/v=(?P<code>[\w\-]+)/', $link, $match)) {
             return false;
         }
-        $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code'], 40, 1, [
+        $data = $this->curl->get('https://www.youtube.com/watch?v=' . $match['code'] . '&gl=US', 40, 1, [
             'User-Agent' => 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) Gecko/20100101 Firefox/33.0'
         ]);
         $data = $data['content'];
@@ -48,34 +48,46 @@ class Youtube extends Component implements Website
 
         $title = "YouTube Video";
         $suggestions = array();
+        $thumb = '';
 
         $dom = new Dom();
         $dom->load(preg_replace('/"\s+\>/', '">', $data), ['whitespaceTextNode' => false]);
+        if (count($dom->find('[itemprop=thumbnailUrl]'))) {
+            $content = $this->curl->get($dom->find('[itemprop=thumbnailUrl]')[0]->getAttribute('href'), 10, 1);
+            if (@$content['head']['http_code'] == 200 && $content['content']) {
+                $thumb = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
+            }
+            unset($content);
+        }
         if (count($dom->find('li.video-list-item'))) {
             foreach ($dom->find('li.video-list-item') as $index => $li) {
-                if ($index>=10) {
+                if ($index >= 10) {
                     break;
                 }
                 if (!count($li->find('[data-vid]'))) {
                     continue;
                 }
                 $item = array();
-                $item['link'] = 'https://www.youtube.com/watch?v='.$li->find('[data-vid]')[0]->getAttribute('data-vid');
-                $item['title'] = html_entity_decode(trim($li->find('.title')[0]->text),  ENT_QUOTES, 'UTF-8');
+                $item['date'] = 0;
+                $item['link'] = 'https://www.youtube.com/watch?v=' . $li->find('[data-vid]')[0]->getAttribute('data-vid');
+                $item['title'] = html_entity_decode(trim($li->find('.title')[0]->text), ENT_QUOTES, 'UTF-8');
                 $item['duration'] = trim($li->find('.video-time')[0]->text);
-                $item['image'] = html_entity_decode(trim($li->find('img')[0]->getAttribute('src')),  ENT_QUOTES, 'UTF-8');
+
+                $item['website'] = 'Youtube';
+                $item['description'] = '';
 
                 $item['image'] = '';
-                $src = html_entity_decode(trim($li->find('img[data-thumb]')[0]->getAttribute('data-thumb')),  ENT_QUOTES, 'UTF-8');
-                if (substr($src,0,2) == '//') {
+                $src = html_entity_decode(trim($li->find('img[data-thumb]')[0]->getAttribute('data-thumb')), ENT_QUOTES,
+                    'UTF-8');
+                if (substr($src, 0, 2) == '//') {
                     $src = 'https:' . $src;
                 }
-                if (substr($item['image'],0,1) == '/') {
+                if (substr($item['image'], 0, 1) == '/') {
                     $src = 'https://www.youtube.com' . $src;
                 }
                 if ($src) {
                     $content = $this->curl->get($src, 10, 1);
-                    if ($content['content']) {
+                    if (@$content['head']['http_code'] == 200 && $content['content']) {
                         $item['image'] = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
                     }
                     unset($content);
@@ -132,10 +144,9 @@ class Youtube extends Component implements Website
                     'quality' => $formats[$itag][1],
                     'is_3d' => $formats[$itag][2],
                 );
-
             }
         }
-        return ['records' => $videos, 'label' => $title, 'suggestions' => $suggestions];
+        return ['records' => $videos, 'label' => $title, 'thumb' => $thumb, 'suggestions' => $suggestions];
     }
 
     public function getVideo(Files $file)
