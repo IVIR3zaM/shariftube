@@ -31,7 +31,7 @@
         </div>
     </div>
     {% if records|length %}
-    <div class="row">
+    <div class="row text-center form-group">
         <h3>{{ label|e }}</h3>
         {% if thumb %}
         <img width="145" src="{{ thumb|e }}">
