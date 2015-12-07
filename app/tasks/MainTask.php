@@ -38,7 +38,7 @@ class MainTask extends Task
                         break;
                 }
                 $value = array_filter(explode(',', $value));
-                if (empty($value)) {
+                if (empty($value) && $value !== '0') {
                     $test = 0;
                     break;
                 }
@@ -73,7 +73,10 @@ class MainTask extends Task
             }
 
             echo "Running cron '{$cron}'\n";
-            exec(BASE_DIR . "/cli Main {$cron} > /dev/null &");
+            if (!strpos($cron, ' ')) {
+                $cron = "Main {$cron}";
+            }
+            exec(BASE_DIR . "/cli {$cron} > /dev/null &");
         }
 
         echo "Running Fetch Threads\n";

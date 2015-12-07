@@ -86,10 +86,13 @@
             {% endif %}
             {% if auth.getIdentity().status != 'Suspended' %}
             <li>
+                <a{% if dispatcher.getActionName() == 'index' %} class="active"{% endif %} href="{{ url.get(['for':'home']) }}">خانه</a>
+            </li>
+            <li>
                 <a{% if dispatcher.getActionName() == 'search' %} class="active"{% endif %} href="{{ url.get(['for':'search']) }}">جست و جوی ویدئو</a>
             </li>
             <li>
-                <a{% if dispatcher.getActionName() == 'index' %} class="active"{% endif %} href="{{ url.get(['for':'home']) }}">درخواست ویدئو</a>
+                <a{% if dispatcher.getActionName() == 'get' %} class="active"{% endif %} href="{{ url.get(['for':'get']) }}">درخواست ویدئو</a>
             </li>
             <li>
                 <a{% if dispatcher.getActionName() == 'files' %} class="active"{% endif %} href="{{ url.get(['for':'files']) }}">لیست ویدئوها</a>

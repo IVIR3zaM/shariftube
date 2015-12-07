@@ -76,5 +76,14 @@ return new \Phalcon\Config(array(
         'userFresher' => '*/2 * * * *',
         'cleanOldCache' => '0 * * * *',
         'paymentFresher' => '*/5 * * * *',
+        'Channel info' => '*/5 * * * *',
+        'Channel update' => '*/10 * * * *',
+    ),
+    'channels' => array(
+        'api_key' => 'AIzaSyB3m9oUPaU28pqV1fJazmYp2N5mLMVPwjQ',
+        'api_url' => 'https://www.googleapis.com/youtube/v3/',
+        'limit' => 500,
+        'base' => 10,
+        'home_page' => 20,
     ),
 ));

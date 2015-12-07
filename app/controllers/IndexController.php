@@ -19,6 +19,7 @@ use Shariftube\Models\TicketReplays;
 use Shariftube\Models\Tickets;
 use Shariftube\Models\Unsubscribes;
 use Shariftube\Models\Users;
+use Shariftube\Models\Videos;
 use Shariftube\Models\Websites;
 
 /**
@@ -139,6 +140,28 @@ class IndexController extends ControllerBase
             $this->view->prominents = $prominents;
             unset($prominents, $files);
         }
+    }
+    public function indexAction()
+    {
+        if ($this->view->suspended) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'support']);
+            return;
+        }
+        if (!$this->auth->getIdentity()) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'login']);
+            return;
+        }
+
+        $videos = Videos::getList($this->auth->getIdentity(), $this->config->channels->home_page, $this->config->channels->base);
+        if (empty($videos)) {
+            $this->view->disable();
+            $this->response->redirect(['for' => 'get']);
+            return;
+        }
+        $this->view->title = 'خانه';
+        $this->view->videos = Videos::prepareVideos($videos, $this->getDI());
     }
 
     public function commentAction()
@@ -301,7 +324,7 @@ class IndexController extends ControllerBase
         }
     }
 
-    public function indexAction()
+    public function getAction()
     {
         if ($this->view->suspended) {
             $this->view->disable();
@@ -1198,7 +1221,7 @@ class IndexController extends ControllerBase
         $this->view->title = 'ورود به سایت';
         if ($this->auth->getIdentity()) {
             $this->view->disable();
-            $this->response->redirect(['for' => 'search']);
+            $this->response->redirect(['for' => 'home']);
             return;
         }
 
@@ -1243,7 +1266,7 @@ class IndexController extends ControllerBase
             ])
             ) {
                 $this->view->disable();
-                $this->response->redirect(['for' => 'search']);
+                $this->response->redirect(['for' => 'home']);
                 return;
             } else {
                 $this->flash->error('ایمیل یا رمز عبور اشتباه است.');
@@ -1313,7 +1336,7 @@ class IndexController extends ControllerBase
                 $user->referral_id = $referral->getId();
                 if ($user->save() && $this->auth->authUserById($user->getId())) {
                     $this->view->disable();
-                    $this->response->redirect(['for' => 'search']);
+                    $this->response->redirect(['for' => 'home']);
                     return;
                 } else {
                     $error[] = 'سیستم موقتا مشکل دارد. لطفا مجددا تلاش نمایید.';

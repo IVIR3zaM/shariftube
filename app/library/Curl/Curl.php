@@ -115,8 +115,8 @@ class Curl extends Component
 //    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 //    curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
 
-//            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-//            curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+            curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:8080');
 
             $content = curl_exec($ch);
             $head = curl_getinfo($ch);
