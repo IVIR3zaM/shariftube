@@ -56,15 +56,33 @@ class Vimeo extends Component implements Website
             'Cookie' => $cookie,
             'User-Agent' => $agent,
             'No-Cache' => 1,
-        ));
+        ));//, 0, ($this->auth->getIdentity()->getId() == 1?1:0));
         $data = json_decode($data['content'], 1);
-        if (!isset($data['request']['files']['h264'])
-            && is_array($data['request']['files']['h264'])
-            && !empty($data['request']['files']['h264'])
+        // if ($this->auth->getIdentity()->getId() == 1) {
+        // 	var_export($data);exit;
+        // }
+        if (!isset($data['request']['files']['progressive'])
+            && is_array($data['request']['files']['progressive'])
+            && !empty($data['request']['files']['progressive'])
         ) {
             return false;
         }
-        $data = $data['request']['files']['h264'];
+        $thumb = '';
+        if (isset($data['video']['thumbs']['base'])) {
+        	$content = $this->curl->get($data['video']['thumbs']['base'], 10, 0, array(
+	                'Referer' => $link,
+	                'Origin' => 'https://vimeo.com',
+	                'User-Agent' => $agent,
+	                'Cookie' => $cookie,
+	                'No-Cache' => 1,
+                )
+        	);
+            if (@$content['head']['http_code'] == 200 && $content['content']) {
+                $thumb = 'data:' . @$content['head']['content_type'] . ';base64,' . urlencode(base64_encode($content['content']));
+            }
+            unset($content);
+        }
+        $data = $data['request']['files']['progressive'];
         $videos = array();
         foreach ($data as $file) {
             $size = 0;
@@ -82,29 +100,33 @@ class Vimeo extends Component implements Website
                 return null;
             }
 
-            $quality = $file['height'];
-            if ($quality < 240) {
-                $quality = '144p';
-            } elseif ($quality < 270) {
-                $quality = '240p';
-            } elseif ($quality < 360) {
-                $quality = '270p';
-            } elseif ($quality < 480) {
-                $quality = '360p';
-            } elseif ($quality < 720) {
-                $quality = '480p';
-            } elseif ($quality < 1080) {
-                $quality = '720p';
-            } elseif ($quality < 2160) {
-                $quality = '1080p';
-            } elseif ($quality < 3072) {
-                $quality = '2160p';
-            } elseif ($quality < 4320) {
-                $quality = '3072p';
+            if (isset($file['quality']) && in_array($file['quality'], ['144p','240p','270p','360p','480p','720p','1080p','2160p','3072p','4320p'])) {
+            	$quality = $file['quality'];
             } else {
-                $quality = '4320p';
+            	$quality = $file['height'];
+	            if ($quality < 240) {
+	                $quality = '144p';
+	            } elseif ($quality < 270) {
+	                $quality = '240p';
+	            } elseif ($quality < 360) {
+	                $quality = '270p';
+	            } elseif ($quality < 480) {
+	                $quality = '360p';
+	            } elseif ($quality < 720) {
+	                $quality = '480p';
+	            } elseif ($quality < 1080) {
+	                $quality = '720p';
+	            } elseif ($quality < 2160) {
+	                $quality = '1080p';
+	            } elseif ($quality < 3072) {
+	                $quality = '2160p';
+	            } elseif ($quality < 4320) {
+	                $quality = '3072p';
+	            } else {
+	                $quality = '4320p';
+	            }
             }
-
+            
             $videos[] = array(
                 'type' => 'mp4',
                 'size' => $size,
