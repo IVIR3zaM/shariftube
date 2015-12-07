@@ -33,6 +33,9 @@
     {% if records|length %}
     <div class="row">
         <h3>{{ label|e }}</h3>
+        {% if thumb %}
+        <img width="145" src="{{ thumb|e }}">
+        {% endif %}
         <table class="table table-hover">
             <tr>
                 <th>کیفیت</th>
