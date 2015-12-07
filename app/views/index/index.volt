@@ -31,10 +31,12 @@
         </div>
     </div>
     {% if records|length %}
-    <div class="row text-center form-group">
+    <div class="row text-center">
         <h3>{{ label|e }}</h3>
         {% if thumb %}
-        <img width="145" src="{{ thumb|e }}">
+        <div class="form-group">
+            <img width="145" src="{{ thumb|e }}">
+        </div>
         {% endif %}
         <table class="table table-hover">
             <tr>
