@@ -186,6 +186,10 @@ class MainTask extends Task
             'order' => 'created_at DESC',
             'limit' => 10,
         ]);
+        $announcements = Announcements::find([
+            'order' => 'created_at DESC',
+            'limit' => 4,
+        ]);
         echo "{$limit} emails found from {$start}\n";
         for ($i = $start; $i < ($start + $limit); $i++) {
             $email = $emails[$i][0];
@@ -203,6 +207,7 @@ class MainTask extends Task
                 $this->mail->setTemplate($template);
                 $this->mail->setVar('name', $name);
                 $this->mail->setVar('prominents', $prominents);
+                $this->mail->setVar('announcements', $announcements);
                 if (isset($auth[$i])) {
                     $this->mail->setVar('auth', $this->crypt->encryptBase64("{$auth[$i]->getId()},{$auth[$i]->email}"));
                     $this->mail->setVar('vinix_auth',
