@@ -37,6 +37,11 @@ class Files extends BaseModel
             throw new \Exception('NO_SERVER');
         }
         $this->server_id = $server->getId();
+        if (Files::isProminent($this->uri)) {
+            $size = ceil($this->size / 2);
+        } else {
+            $size = $this->size;
+        }
         $server->used += $this->size;
         $server->remain -= $this->size;
         $server->save();
@@ -47,11 +52,11 @@ class Files extends BaseModel
                 'id' => $this->user_id,
             ],
         ]);
-        if (empty($user) || $user->remain < $this->size) {
+        if (empty($user) || $user->remain < $size) {
             throw new \Exception('LOW_BALANCE');
         } else {
-            $user->used += $this->size;
-            $user->remain -= $this->size;
+            $user->used += $size;
+            $user->remain -= $size;
             $user->save();
         }
     }
@@ -85,6 +90,19 @@ class Files extends BaseModel
         }
     }
 
+    public static function isProminent($link)
+    {
+        if (!preg_match('/v=(?P<code>[\w\-]+)/', $link, $match)) {
+            return false;
+        }
+        return Videos::count([
+            "uri = :uri:",
+            'bind' => [
+                'uri' => $match['code'],
+            ],
+        ]) ? true : false;
+    }
+
     public function setFailed()
     {
         if (!in_array($this->status, ['InProgress', 'Transferring'])) {
@@ -98,7 +116,7 @@ class Files extends BaseModel
     public function beforeUpdate()
     {
         if ($this->isFailed) {
-            $server = Servers::getServer($this->size);
+            $server = $this->getServer();
             if (!$server) {
                 return false;
             }
@@ -110,9 +128,18 @@ class Files extends BaseModel
             if (empty($user)) {
                 return false;
             } else {
-                $user->used -= $this->size;
-                $user->remain += $this->size;
+                if (Files::isProminent($this->uri)) {
+                    $size = ceil($this->size / 2);
+                } else {
+                    $size = $this->size;
+                }
+                $user->used -= $size;
+                $user->remain += $size;
                 $user->save();
+            }
+        } elseif ($this->status == 'Success') {
+            if (Files::isProminent($this->uri)) {
+                $this->status = 'Prominent';
             }
         }
     }
@@ -122,7 +149,7 @@ class Files extends BaseModel
         if (!in_array($this->status, ['Success', 'Prominent'])) {
             return '#';
         }
-        $server = Servers::getServer($this->size);
+        $server = $this->getServer();
         if (!$server) {
             return '#';
         }

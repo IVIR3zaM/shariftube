@@ -3,7 +3,7 @@ jQuery(function ($) {
         var last_index = -1, current_index = 0, progress = $("#file-progress").attr('rel');
         var ProgressBar = setInterval(function () {
             $.ajax({
-                url: '/',
+                url: '/link/',
                 dataType: 'json',
                 type: 'post',
                 data: 'progress=' + progress + '&index=' + current_index,

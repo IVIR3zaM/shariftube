@@ -52,7 +52,14 @@
                 <td>{{ record.quality|e }}</td>
                 <td>{{ record.type|e }}</td>
                 <td>{% if record.is_3d %}بلی{% else %}خیر{% endif %}</td>
-                <td>{{ number_format(record.size/1024/1024, 2) }} مگابایت</td>
+                <td>
+                    {% if is_prominent %}
+                        <del>{{ number_format(record.size/1024/1024, 2) }} مگابایت</del><br />
+                        {{ number_format(record.real_size/1024/1024, 2) }} مگابایت
+                    {% else %}
+                        {{ number_format(record.size/1024/1024, 2) }} مگابایت
+                    {% endif %}
+                </td>
                 <td>
                     <form method="post" action="{{ url.get(['for':'link', 'link':dispatcher.getParam('link')])|e }}">
                         <input type="hidden" name="params" value="{{ record.params|e }}">

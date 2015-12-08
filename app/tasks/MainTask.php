@@ -143,7 +143,7 @@ class MainTask extends Task
                     "deleted_at = 0 AND status != 'Suspended'",
                 ]);
             }
-            
+
             if (!$users) {
                 echo "no users found\n";
                 return;
@@ -192,11 +192,12 @@ class MainTask extends Task
             $name = $emails[$i][1];
             echo "Sending #{$i}: {$email}: ";
             if ($filter && Users::count([
-                'email = :email:',
-                'bind' => [
-                    'email' => $email,
-                ],
-            ])) {
+                    'email = :email:',
+                    'bind' => [
+                        'email' => $email,
+                    ],
+                ])
+            ) {
                 echo 'Filtered';
             } else {
                 $this->mail->setTemplate($template);
@@ -204,14 +205,15 @@ class MainTask extends Task
                 $this->mail->setVar('prominents', $prominents);
                 if (isset($auth[$i])) {
                     $this->mail->setVar('auth', $this->crypt->encryptBase64("{$auth[$i]->getId()},{$auth[$i]->email}"));
-                    $this->mail->setVar('vinix_auth', vinixhash_encode($this->crypt->encrypt("{$auth[$i]->getId()},{$auth[$i]->email}")));
+                    $this->mail->setVar('vinix_auth',
+                        vinixhash_encode($this->crypt->encrypt("{$auth[$i]->getId()},{$auth[$i]->email}")));
                 }
                 $this->mail->addAddress($email, $name);
                 $this->mail->Subject = $subject;
                 $result = $this->mail->send();
                 if ($result === null) {
                     echo 'Unsubscribe';
-                } elseif($result) {
+                } elseif ($result) {
                     echo 'Sent';
                 } else {
                     echo 'Failed';
@@ -257,13 +259,20 @@ class MainTask extends Task
         if ($users) {
             foreach ($users as $user) {
                 $user->used = Files::sum([
-                    'column' => 'size',
-                    'conditions' => 'user_id = :id: AND status IN({status:array})',
-                    'bind' => [
-                        'id' => $user->getId(),
-                        'status' => ['Waiting', 'InProgress', 'Transferring', 'Success'],
-                    ],
-                ]);
+                        'column' => 'size',
+                        'conditions' => 'user_id = :id: AND status IN({status:array})',
+                        'bind' => [
+                            'id' => $user->getId(),
+                            'status' => ['Waiting', 'InProgress', 'Transferring', 'Success'],
+                        ],
+                    ]) + ceil(Files::sum([
+                        'column' => 'size',
+                        'conditions' => 'user_id = :id: AND status IN({status:array})',
+                        'bind' => [
+                            'id' => $user->getId(),
+                            'status' => ['Prominent'],
+                        ],
+                    ]));
                 $user->remain = $user->quota - $user->used;
                 $user->save();
             }
@@ -296,7 +305,8 @@ class MainTask extends Task
                 echo "Looking in server #{$server->getId()} ($server->username)\n";
                 foreach ($server->ls() as $dir) {
                     if (preg_match('/^[\d]{8}$/', $dir)) {
-                        $time = strtotime(substr($dir, 0, 4) . '-' . substr($dir, 4, 2) . '-' . substr($dir, 6, 2) . ' 23:59:59');
+                        $time = strtotime(substr($dir, 0, 4) . '-' . substr($dir, 4, 2) . '-' . substr($dir, 6,
+                                2) . ' 23:59:59');
                         if ($time < strtotime("-{$this->config->cli->delete_after} Days")) {
                             echo "removing {$dir}\n";
                             $server->rmdir($dir);
@@ -377,7 +387,8 @@ class MainTask extends Task
 
                 if ($files) {
                     foreach ($files as $file) {
-                        @unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd', strtotime($file->created_at)) . '/' . $file->name);
+                        @unlink(APP_DIR . '/cache/files/' . $server->getId() . '/' . date('Ymd',
+                                strtotime($file->created_at)) . '/' . $file->name);
                         $file->status = 'Success';
                         $file->save();
                     }
@@ -424,7 +435,9 @@ class MainTask extends Task
                 ]);
                 if (!empty($files)) {
                     foreach ($files as $file) {
-                        if (!$this->redis->sismember('sharifFiles', $file->getId()) && !$this->redis->sismember('sharifSelected', $file->getId())) {
+                        if (!$this->redis->sismember('sharifFiles',
+                                $file->getId()) && !$this->redis->sismember('sharifSelected', $file->getId())
+                        ) {
                             $file->locked_at = date('Y-m-d H:i:s');
                             $file->status = 'InProgress';
                             if ($file->save()) {

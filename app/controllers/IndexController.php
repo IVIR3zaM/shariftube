@@ -417,6 +417,7 @@ class IndexController extends ControllerBase
         $this->view->link = $link = vinixhash_decode($this->dispatcher->getParam('link'));
         $this->view->suggestions = array();
         $this->view->records = array();
+        $this->view->is_prominent = false;
         $this->view->label = '';
         $this->view->thumb = '';
         $this->view->file_id = 0;
@@ -487,6 +488,7 @@ class IndexController extends ControllerBase
                 $this->flash->error('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
                 $this->view->suggestions = array();
             } else {
+                $this->view->is_prominent = Files::isProminent($link);
                 $this->view->suggestions = array();
                 foreach ($result['records'] as $index => $value) {
                     //if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
@@ -500,6 +502,7 @@ class IndexController extends ControllerBase
                     //    $value['trailer'] = '';
                     //}
                     $value['params'] = $this->crypt->encryptBase64(json_encode($value));
+                    $value['real_size'] = $this->view->is_prominent ? ceil($value['size']/2) : $value['size'];
                     $result['records'][$index] = (object)$value;
                 }
                 if (isset($result['suggestions']) && !empty($result['suggestions'])) {
