@@ -482,14 +482,10 @@ class IndexController extends ControllerBase
             $result = $leecher->getInfo($link);
             if ($result === null) {
                 $this->flash->error('این ویدئو بخاطر قوانین کپی رایت قابل دریافت نمی باشد.');
-                $this->view->records = array();
-                $this->view->suggestions = array();
             } elseif (empty($result) || empty($result['records'])) {
                 $this->flash->error('هیچ ویدئویی در آدرس وارد شده یافت نشد.');
-                $this->view->suggestions = array();
             } else {
                 $this->view->is_prominent = Files::isProminent($link);
-                $this->view->suggestions = array();
                 foreach ($result['records'] as $index => $value) {
                     //if (in_array($value['type'], ['webm', 'mp4', 'flv'])) {
                     $hash = md5($value['link']) . '.' . $value['type'];

@@ -1,6 +1,6 @@
 <div class="main-section">
     {% if videos|length %}
-    <h4 class="text-center bg-white well">ویدئو های پیشنهادی ما به شما</h4>
+    <h4 class="text-center bg-white well">ویدئو های پیشنهادی ما به شما (دریافت به صورت نیم بها)</h4>
     <ul class="list-unstyled list-records row">
         {% for record in videos %}
         <li class="col-md-6 col-sm-12">
