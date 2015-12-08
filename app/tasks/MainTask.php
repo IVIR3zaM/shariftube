@@ -2,6 +2,7 @@
 namespace Shariftube\Tasks;
 
 use Phalcon\CLI\Task;
+use Shariftube\Models\Announcements;
 use Shariftube\Models\Files;
 use Shariftube\Models\Purchases;
 use Shariftube\Models\Servers;
