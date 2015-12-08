@@ -92,7 +92,7 @@ class Files extends BaseModel
 
     public static function isProminent($link)
     {
-        if (!preg_match('/v=(?P<code>[\w\-]+)/', $link, $match)) {
+        if (!preg_match('/v=(?P<code>[\w\-]+)$/', $link, $match)) {
             return false;
         }
         return Videos::count([
@@ -137,10 +137,13 @@ class Files extends BaseModel
                 $user->remain += $size;
                 $user->save();
             }
-        } elseif ($this->status == 'Success') {
-            if (Files::isProminent($this->uri)) {
-                $this->status = 'Prominent';
-            }
+        }
+    }
+    public function beforeSave()
+    {
+        parent::beforeSave();
+        if ($this->status == 'Success' && Files::isProminent($this->uri)) {
+            $this->status = 'Prominent';
         }
     }
 
