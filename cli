@@ -8,6 +8,7 @@ use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Files as MetaDataAdapter;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Predis\Client as PredisClient;
 use Shariftube\Curl\Curl;
 use Shariftube\Mail\Mail;
@@ -28,6 +29,10 @@ include APP_DIR . '/config/helpers.php';
 $di->setShared('config', $config);
 $di->setShared('redis', function () use ($config) {
     return new PredisClient((array)$config->application->redis_server);
+});
+
+$di->setShared('transaction', function () {
+    return new TransactionManager();
 });
 
 $di->setShared('mail', function () {
